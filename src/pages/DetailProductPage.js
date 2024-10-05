@@ -17,7 +17,8 @@ const ProductDetail = () => {
     const PrevArrow = ({ className, style, onClick }) => (
         <div
             className={className}
-            style={{ ...style, width: 40,
+            style={{
+                ...style, width: 40,
                 height: 40,
                 display: 'block',
                 background: isHoveredUp ? '#ef233c' : '#fff',
@@ -25,7 +26,8 @@ const ProductDetail = () => {
                 color: isHoveredUp ? '#fff' : '#000',
                 textAlign: 'center',
                 top: '-4%',
-                transition: 'background 0.3s, color 0.3s',  }}
+                transition: 'background 0.3s, color 0.3s',
+            }}
             onClick={onClick}
             onMouseEnter={() => setIsHoveredUp(true)}
             onMouseLeave={() => setIsHoveredUp(false)}
@@ -48,12 +50,12 @@ const ProductDetail = () => {
                 color: isHoveredDown ? '#fff' : '#000',
                 textAlign: 'center',
                 transition: 'background-color 0.3s ease, color 0.3s ease', // Đảm bảo cú pháp đúng
-              }}
+            }}
             onClick={onClick}
             onMouseEnter={() => setIsHoveredDown(true)}
             onMouseLeave={() => setIsHoveredDown(false)}
         >
-            <i className="fa fa-chevron-down" style={{ fontSize: 20, position: 'absolute', right: '22%', top: '20%'}}></i>
+            <i className="fa fa-chevron-down" style={{ fontSize: 20, position: 'absolute', right: '22%', top: '20%' }}></i>
         </div>
     );
     const settings = {
@@ -63,12 +65,11 @@ const ProductDetail = () => {
         slidesToScroll: 1,
         vertical: true,
         verticalSwiping: true,
-        arrows: true, // Ẩn mũi tên mặc định của Slick
+        arrows: true,
         nextArrow: <NextArrow />, // Mũi tên xuống tùy chỉnh
         prevArrow: <PrevArrow />, // Mũi tên lên tùy chỉnh
-        
-      };
-      
+    };
+
 
     return (
         <div className="section">
@@ -91,12 +92,8 @@ const ProductDetail = () => {
                                     (imgSrc, index) => (
                                         <div
                                             key={index}
-                                            className="product-preview"
+                                            className={`product-preview ${selectedImage === imgSrc ? "selected" : ""}`}
                                             onClick={() => handleImageClick(imgSrc)}
-                                            style={{
-                                                border: selectedImage === imgSrc ? "2px solid #ef233c" : "none",
-    
-                                            }}
                                         >
                                             <img src={imgSrc} alt={`Product ${index + 1}`} />
                                         </div>

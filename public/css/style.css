@@ -54,6 +54,10 @@ Table OF Contents
     margin: 0 5px; /* Thêm khoảng cách giữa các hình */
     padding: 5px; /* Thêm padding để border không bị cắt */
 }
+.product-img img {
+  transition: all 0.3s ease;
+}
+
 /* .slick-slide > div {
   border-right: 1px solid #000;
   
@@ -870,6 +874,7 @@ textarea.input {
   box-shadow: 0px 0px 0px 0px #E4E7ED, 0px 0px 0px 1px #E4E7ED;
   -webkit-transition: 0.2s all;
   transition: 0.2s all;
+  cursor: 'pointer';
 }
 
 .product:hover {
@@ -880,7 +885,6 @@ textarea.input {
 .product .product-img {
   position: relative;
 }
-
 .product .product-img>img {
   width: 100%;
 }
@@ -889,12 +893,14 @@ textarea.input {
   position: absolute;
   top: 15px;
   right: 15px;
+  
 }
 
 .product .product-img .product-label>span {
   border: 2px solid;
   padding: 2px 10px;
   font-size: 12px;
+  
 }
 
 .product .product-img .product-label>span.sale {

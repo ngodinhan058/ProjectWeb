@@ -1,5 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 
 
@@ -8,8 +9,13 @@ import SeeAllProductPage from './pages/SeeAllProductPage';
 
 function App() {
   return (
-  //  <ProductDetails />
-   <SeeAllProductPage />
+    <Router>
+      <Routes>
+        <Route path="/" element={<SeeAllProductPage />} />
+        <Route path="/:id" element={<ProductDetails />} />
+      </Routes>
+    </Router>
+
   );
 }
 

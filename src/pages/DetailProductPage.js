@@ -2,10 +2,29 @@ import React, { useState } from "react";
 import Slider from "react-slick"; // Import react-slick
 import "slick-carousel/slick/slick.css"; // Import slick CSS
 import "slick-carousel/slick/slick-theme.css"; // Import slick theme CSS
+import { useLocation } from 'react-router-dom';
 
 const ProductDetail = () => {
-    const [selectedImage, setSelectedImage] = useState("./img/product01.png");
+    
+    const location = useLocation();
+    console.log(location.state); // Kiểm tra dữ liệu
+    const { img1, img2, name, category, price, oldPrice, rating, sale, isNew } = location.state || {};
+    const [selectedImage, setSelectedImage] = useState(img1);
 
+    
+
+    const renderRating = () => {
+        const stars = [];
+        for (let i = 1; i <= 5; i++) {
+          stars.push(
+            <i
+              key={i}
+              className={i <= rating ? 'fa fa-star' : 'fa fa-star-o'}
+            ></i>
+          );
+        }
+        return stars;
+      };
     const handleImageClick = (imgSrc) => {
         setSelectedImage(imgSrc);
     };
@@ -61,7 +80,7 @@ const ProductDetail = () => {
     const settings = {
         infinite: true,
         speed: 500,
-        slidesToShow: 3,
+        slidesToShow: 2,
         slidesToScroll: 1,
         vertical: true,
         verticalSwiping: true,
@@ -88,7 +107,7 @@ const ProductDetail = () => {
                     <div className="col-md-2 col-md-pull-5">
                         <div id="product-imgs">
                             <Slider {...settings}>
-                                {["./img/product01.png", "./img/product03.png", "./img/product06.png", "./img/product08.png"].map(
+                                {[img1, img2].map(
                                     (imgSrc, index) => (
                                         <div
                                             key={index}
@@ -106,14 +125,10 @@ const ProductDetail = () => {
                     {/* Product Details */}
                     <div className="col-md-5">
                         <div className="product-details">
-                            <h2 className="product-name">Product name goes here</h2>
+                            <h2 className="product-name">{name}</h2>
                             <div>
                                 <div className="product-rating">
-                                    <i className="fa fa-star"></i>
-                                    <i className="fa fa-star"></i>
-                                    <i className="fa fa-star"></i>
-                                    <i className="fa fa-star"></i>
-                                    <i className="fa fa-star-o"></i>
+                                {renderRating()}
                                 </div>
                                 <a className="review-link" href="#">
                                     10 Review(s) | Add your review
@@ -121,7 +136,7 @@ const ProductDetail = () => {
                             </div>
                             <div>
                                 <h3 className="product-price">
-                                    $980.00 <del className="product-old-price">$990.00</del>
+                                    ${price} <del className="product-old-price">${oldPrice}</del>
                                 </h3>
                                 <span className="product-available">In Stock</span>
                             </div>
@@ -177,10 +192,7 @@ const ProductDetail = () => {
                             <ul className="product-links">
                                 <li>Category:</li>
                                 <li>
-                                    <a href="#">Headphones</a>
-                                </li>
-                                <li>
-                                    <a href="#">Accessories</a>
+                                    <a href="#">{category}</a>
                                 </li>
                             </ul>
 

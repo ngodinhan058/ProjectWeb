@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import Product from '../component/Product'; // Import component Product đã tạo trước đó
 
+
 const Store = () => {
     // Dữ liệu giả sản phẩm
     const products = [
-        { imgSrc: './img/product01.png', category: 'Category', name: 'Product 1', price: 980.00, oldPrice: 990.00, rating: 4, isNew: true },
-        { imgSrc: './img/product02.png', category: 'Category', name: 'Product 2', price: 780.00, oldPrice: 800.00, rating: 5, isNew: false },
-        { imgSrc: './img/product03.png', category: 'Category', name: 'Product 3', price: 500.00, oldPrice: 600.00, rating: 3, isNew: true },
-        { imgSrc: './img/product04.png', category: 'Category', name: 'Product 4', price: 980.00, oldPrice: 990.00, rating: 4, isNew: true },
-        { imgSrc: './img/product05.png', category: 'Category', name: 'Product 5', price: 780.00, oldPrice: 800.00, rating: 5, isNew: false },
-        { imgSrc: './img/product06.png', category: 'Category', name: 'Product 6', price: 500.00, oldPrice: 600.00, rating: 3, isNew: true },
-        { imgSrc: './img/product04.png', category: 'Category', name: 'Product 4', price: 980.00, oldPrice: 990.00, rating: 4, isNew: true },
-        { imgSrc: './img/product06.png', category: 'Category', name: 'Product 5', price: 780.00, oldPrice: 800.00, rating: 5, isNew: false },
-
+        { id: 1, img1: './img/product01.png',img2: './img/product02.png', category: 'Category', name: 'Product 1', price: 980.00, oldPrice: 990.00, rating: 1, isNew: false, sale: null},
+        { id: 2, img1: './img/product02.png',img2: './img/product03.png', category: 'Category', name: 'Product 2', price: 980.00, oldPrice: 990.00, rating: 2, isNew: false, sale: 50 },
+        { id: 3, img1: './img/product03.png',img2: './img/product04.png', category: 'Category', name: 'Product 3', price: 980.00, oldPrice: 990.00, rating: 3, isNew: true, sale: null },
+        { id: 4, img1: './img/product04.png',img2: './img/product05.png', category: 'Category', name: 'Product 4', price: 980.00, oldPrice: 990.00, rating: 5, isNew: true, sale: 30 },
+        { id: 5, img1: './img/product05.png',img2: './img/product06.png', category: 'Category', name: 'Product 5', price: 980.00, oldPrice: 990.00, rating: 1, isNew: false, sale: null },
+        { id: 6, img1: './img/product06.png',img2: './img/product07.png', category: 'Category', name: 'Product 6', price: 980.00, oldPrice: 990.00, rating: 0, isNew: true, sale: 30 },
+        { id: 7, img1: './img/product07.png',img2: './img/product08.png', category: 'Category', name: 'Product 7', price: 980.00, oldPrice: 990.00, rating: 1, isNew: true, sale: 70 },
+        { id: 8, img1: './img/product08.png',img2: './img/product01.png', category: 'Category', name: 'Product 8', price: 980.00, oldPrice: 990.00, rating: 5, isNew: false, sale: 30 },
     ];
 
     // State quản lý trang hiện tại và số sản phẩm trên mỗi trang
@@ -32,9 +32,9 @@ const Store = () => {
     };
     return (
 
-        <div class="section">
-            <div class="container">
-                <div id="aside" class="col-md-3"></div>
+        <div className="section">
+            <div className="container">
+                <div id="aside" className="col-md-3"></div>
 
                 <div id="store" className="col-md-9">
                     {/* Store top filter */}
@@ -65,8 +65,8 @@ const Store = () => {
 
                     {/* Store products */}
                     <div className="row">
-                        {currentProducts.map((product, index) => (
-                            <Product key={index} {...product} />
+                        {currentProducts.map((product) => (
+                            <Product key={product.id} {...product} />
                         ))}
                     </div>
                     {/* /store products */}

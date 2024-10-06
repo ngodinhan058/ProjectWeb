@@ -4,10 +4,12 @@ import './App.css';
 
 
 import ProductDetails from './pages/DetailProductPage';
+import SeeAllProductPage from './pages/SeeAllProductPage';
 
 function App() {
   return (
-   <ProductDetails />
+  //  <ProductDetails />
+   <SeeAllProductPage />
   );
 }
 

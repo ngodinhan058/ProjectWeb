@@ -11,7 +11,7 @@ const Store = () => {
         { imgSrc: './img/product05.png', category: 'Category', name: 'Product 5', price: 780.00, oldPrice: 800.00, rating: 5, isNew: false },
         { imgSrc: './img/product06.png', category: 'Category', name: 'Product 6', price: 500.00, oldPrice: 600.00, rating: 3, isNew: true },
         { imgSrc: './img/product04.png', category: 'Category', name: 'Product 4', price: 980.00, oldPrice: 990.00, rating: 4, isNew: true },
-        { imgSrc: './img/product05.png', category: 'Category', name: 'Product 5', price: 780.00, oldPrice: 800.00, rating: 5, isNew: false },
+        { imgSrc: './img/product06.png', category: 'Category', name: 'Product 5', price: 780.00, oldPrice: 800.00, rating: 5, isNew: false },
 
     ];
 

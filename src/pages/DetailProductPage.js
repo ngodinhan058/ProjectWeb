@@ -131,7 +131,7 @@ const ProductDetail = () => {
                                 {renderRating()}
                                 </div>
                                 <a className="review-link" href="#">
-                                    10 Review(s) | Add your review
+                                    5 Review(s) | Add your review
                                 </a>
                             </div>
                             <div>

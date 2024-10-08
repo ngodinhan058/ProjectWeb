@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Product from '../component/Product'; // Import component Product đã tạo trước đó
+import Product from '../components/Product'; // Import component Product đã tạo trước đó
 
 
 const Store = () => {

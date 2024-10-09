@@ -1,22 +1,31 @@
 import React, { useState } from 'react';
 
-const BrandFilter = () => {
+const BrandFilter = ({ onBrandChange }) => {
   const [selectedBrands, setSelectedBrands] = useState({});
 
   const brands = [
     { id: 'brand-1', name: 'SAMSUNG', count: 578 },
     { id: 'brand-2', name: 'LG', count: 125 },
     { id: 'brand-3', name: 'SONY', count: 755 },
-    { id: 'brand-4', name: 'SAMSUNG', count: 578 },
-    { id: 'brand-5', name: 'LG', count: 125 },
-    { id: 'brand-6', name: 'SONY', count: 755 },
+    { id: 'brand-4', name: 'Category', count: 755 },
   ];
 
   const handleCheckboxChange = (id) => {
-    setSelectedBrands((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
+    setSelectedBrands((prev) => {
+      const newSelectedBrands = {
+        ...prev,
+        [id]: !prev[id],
+      };
+
+      // Tạo mảng các thương hiệu đã chọn
+      const selectedBrandList = Object.keys(newSelectedBrands)
+        .filter(brandId => newSelectedBrands[brandId])
+        .map(brandId => brands.find(brand => brand.id === brandId).name);
+
+      // Gọi onBrandChange với danh sách thương hiệu đã chọn
+      onBrandChange(selectedBrandList);
+      return newSelectedBrands;
+    });
   };
 
   return (

@@ -50,7 +50,22 @@ Table OF Contents
 /*=========================================================
 	01 -> GENERAL
 ===========================================================*/
+.product-preview {
+    margin: 0 5px; /* Thêm khoảng cách giữa các hình */
+    padding: 5px; /* Thêm padding để border không bị cắt */
+}
+.product-img img {
+  transition: all 0.3s ease;
+}
 
+/* .slick-slide > div {
+  border-right: 1px solid #000;
+  
+}
+.slick-slide > div:hover {
+  border-right: 1px solid #ff0000;
+  
+} */
 /*----------------------------*\
 	Typography
 \*----------------------------*/
@@ -859,6 +874,7 @@ textarea.input {
   box-shadow: 0px 0px 0px 0px #E4E7ED, 0px 0px 0px 1px #E4E7ED;
   -webkit-transition: 0.2s all;
   transition: 0.2s all;
+  cursor: 'pointer';
 }
 
 .product:hover {
@@ -869,7 +885,6 @@ textarea.input {
 .product .product-img {
   position: relative;
 }
-
 .product .product-img>img {
   width: 100%;
 }
@@ -878,12 +893,14 @@ textarea.input {
   position: absolute;
   top: 15px;
   right: 15px;
+  
 }
 
 .product .product-img .product-label>span {
   border: 2px solid;
   padding: 2px 10px;
   font-size: 12px;
+  
 }
 
 .product .product-img .product-label>span.sale {
@@ -1402,7 +1419,7 @@ textarea.input {
   -webkit-transform: translateX(15px);
   -ms-transform: translateX(15px);
   transform: translateX(15px);
-  right: 15px;
+  
 }
 
 #product-main-img .slick-prev, #product-main-img .slick-next {
@@ -1425,14 +1442,14 @@ textarea.input {
 }
 
 #product-imgs .product-preview {
-  margin: 0px 5px;
+  margin: 0px;
   border: 1px solid #E4E7ED;
 }
-
-#product-imgs .product-preview.slick-current {
-  border-color: #D10024;
+#product-imgs .product-preview:focus-visible {
+  margin: 0px;
+  border: 2px solid #000;
+  z-index: 99;
 }
-
 #product-imgs .slick-prev {
   top: -20px;
   left: 50%;

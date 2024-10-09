@@ -4,18 +4,15 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 
 
-import ProductDetails from './pages/DetailProductPage';
-import SeeAllProductPage from './pages/SeeAllProductPage';
+import Header from './components/Header';
+import Footer from './components/Footer';
 
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<SeeAllProductPage />} />
-        <Route path="/:id" element={<ProductDetails />} />
-      </Routes>
+      <Header />
+      <Footer />
     </Router>
-
   );
 }
 

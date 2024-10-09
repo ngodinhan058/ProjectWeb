@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Product from '../components/Product'; // Import component Product đã tạo trước đó
 import FilterPrice from '../components/PriceFilter'; // Import component Product đã tạo trước đó
 import FilterBrand from '../components/BrandFilter'; // Import component Product đã tạo trước đó
@@ -7,14 +7,14 @@ import FilterBrand from '../components/BrandFilter'; // Import component Product
 const Store = () => {
     // Dữ liệu giả sản phẩm
     const products = [
-        { id: 1, img1: './img/product01.png',img2: './img/product02.png', category: 'Category', name: 'Product 1', price: 980.00, oldPrice: 990.00, rating: 1, isNew: false, sale: null},
-        { id: 2, img1: './img/product02.png',img2: './img/product03.png', category: 'Category', name: 'Product 2', price: 980.00, oldPrice: 990.00, rating: 2, isNew: false, sale: 50 },
-        { id: 3, img1: './img/product03.png',img2: './img/product04.png', category: 'Category', name: 'Product 3', price: 980.00, oldPrice: 990.00, rating: 3, isNew: true, sale: null },
-        { id: 4, img1: './img/product04.png',img2: './img/product05.png', category: 'Category', name: 'Product 4', price: 980.00, oldPrice: 990.00, rating: 5, isNew: true, sale: 30 },
-        { id: 5, img1: './img/product05.png',img2: './img/product06.png', category: 'Category', name: 'Product 5', price: 980.00, oldPrice: 990.00, rating: 1, isNew: false, sale: null },
-        { id: 6, img1: './img/product06.png',img2: './img/product07.png', category: 'Category', name: 'Product 6', price: 980.00, oldPrice: 990.00, rating: 0, isNew: true, sale: 30 },
-        { id: 7, img1: './img/product07.png',img2: './img/product08.png', category: 'Category', name: 'Product 7', price: 980.00, oldPrice: 990.00, rating: 1, isNew: true, sale: 70 },
-        { id: 8, img1: './img/product08.png',img2: './img/product01.png', category: 'Category', name: 'Product 8', price: 980.00, oldPrice: 990.00, rating: 5, isNew: false, sale: 30 },
+        { id: 1, img1: './img/product01.png', img2: './img/product02.png', category: 'Category', name: 'Product 1', price: 980.00, oldPrice: 990.00, rating: 1, isNew: false, sale: null },
+        { id: 2, img1: './img/product02.png', img2: './img/product03.png', category: 'Category', name: 'Product 2', price: 980.00, oldPrice: 990.00, rating: 2, isNew: false, sale: 50 },
+        { id: 3, img1: './img/product03.png', img2: './img/product04.png', category: 'Category', name: 'Product 3', price: 980.00, oldPrice: 990.00, rating: 3, isNew: true, sale: null },
+        { id: 4, img1: './img/product04.png', img2: './img/product05.png', category: 'Category', name: 'Product 4', price: 980.00, oldPrice: 990.00, rating: 5, isNew: true, sale: 30 },
+        { id: 5, img1: './img/product05.png', img2: './img/product06.png', category: 'Category', name: 'Product 5', price: 980.00, oldPrice: 990.00, rating: 1, isNew: false, sale: null },
+        { id: 6, img1: './img/product06.png', img2: './img/product07.png', category: 'Category', name: 'Product 6', price: 980.00, oldPrice: 990.00, rating: 0, isNew: true, sale: 30 },
+        { id: 7, img1: './img/product07.png', img2: './img/product08.png', category: 'Category', name: 'Product 7', price: 980.00, oldPrice: 990.00, rating: 1, isNew: true, sale: 70 },
+        { id: 8, img1: './img/product08.png', img2: './img/product01.png', category: 'Category', name: 'Product 8', price: 980.00, oldPrice: 990.00, rating: 5, isNew: false, sale: 30 },
     ];
 
     // State quản lý trang hiện tại và số sản phẩm trên mỗi trang
@@ -26,6 +26,15 @@ const Store = () => {
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
     const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
 
+    const [isLoading, setIsLoading] = useState(true); // Trạng thái loading
+    // Giả lập việc tải dữ liệu trong 2 giây
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsLoading(false);
+        }, 2000); // Thời gian chờ 2 giây
+
+        return () => clearTimeout(timer); // Dọn dẹp bộ đếm thời gian
+    }, []);
     // Tạo mảng số trang
     const totalPages = Math.ceil(products.length / productsPerPage);
 
@@ -71,7 +80,7 @@ const Store = () => {
                     {/* Store products */}
                     <div className="row">
                         {currentProducts.map((product) => (
-                            <Product key={product.id} {...product} />
+                            <Product key={product.id} {...product} isLoading={isLoading}/>
                         ))}
                     </div>
                     {/* /store products */}

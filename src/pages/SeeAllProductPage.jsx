@@ -5,19 +5,53 @@ import Product from '../components/Product'; // Import component Product đã t�
 const Store = () => {
     // Dữ liệu giả sản phẩm
     const products = [
-        { id: 1, img1: './img/product01.png',img2: './img/product02.png', category: 'Category', name: 'Product 1', price: 980.00, oldPrice: 990.00, rating: 1, isNew: false, sale: null},
+        { id: 1, img1: './img/20230304_9yEIrUoAkjIxrmbe.jpeg',img2: './img/20230304_rkzwbDstkLriSEhu.jpeg', category: 'Category', name: 'Product 1', price: 980.00, oldPrice: 990.00, rating: 1, isNew: false, sale: null},
         { id: 2, img1: './img/product02.png',img2: './img/product03.png', category: 'Category', name: 'Product 2', price: 980.00, oldPrice: 990.00, rating: 2, isNew: false, sale: 50 },
         { id: 3, img1: './img/product03.png',img2: './img/product04.png', category: 'Category', name: 'Product 3', price: 980.00, oldPrice: 990.00, rating: 3, isNew: true, sale: null },
-        { id: 4, img1: './img/product04.png',img2: './img/product05.png', category: 'Category', name: 'Product 4', price: 980.00, oldPrice: 990.00, rating: 5, isNew: true, sale: 30 },
+        { id: 4, img1: './img/20230520_4Yf4WmBs11.jpeg',img2: './img/20230427_igl1jUu9wv.png', category: 'Category', name: 'Product 4', price: 980.00, oldPrice: 990.00, rating: 5, isNew: true, sale: 30 },
         { id: 5, img1: './img/product05.png',img2: './img/product06.png', category: 'Category', name: 'Product 5', price: 980.00, oldPrice: 990.00, rating: 1, isNew: false, sale: null },
-        { id: 6, img1: './img/product06.png',img2: './img/product07.png', category: 'Category', name: 'Product 6', price: 980.00, oldPrice: 990.00, rating: 0, isNew: true, sale: 30 },
+        { id: 6, img1: './img/20230424_fwmnvLxZKl.jpeg',img2: './img/20230525_OzpmexkNIq.jpeg', category: 'Category', name: 'Product 6', price: 980.00, oldPrice: 990.00, rating: 0, isNew: true, sale: 30 },
         { id: 7, img1: './img/product07.png',img2: './img/product08.png', category: 'Category', name: 'Product 7', price: 980.00, oldPrice: 990.00, rating: 1, isNew: true, sale: 70 },
-        { id: 8, img1: './img/product08.png',img2: './img/product01.png', category: 'Category', name: 'Product 8', price: 980.00, oldPrice: 990.00, rating: 5, isNew: false, sale: 30 },
+        { id: 8, img1: './img/product08.png',img2: './img/product09.png', category: 'Category', name: 'Product 8', price: 980.00, oldPrice: 990.00, rating: 5, isNew: false, sale: 30 },
+        { id: 9, img1: './img/product09.png',img2: './img/product10.png', category: 'Category', name: 'Product 1', price: 980.00, oldPrice: 990.00, rating: 1, isNew: false, sale: null},
+        { id: 10, img1: './img/product10.png',img2: './img/product11.png', category: 'Category', name: 'Product 2', price: 980.00, oldPrice: 990.00, rating: 2, isNew: false, sale: 50 },
+        { id: 11, img1: './img/product11.png',img2: './img/product12.png', category: 'Category', name: 'Product 3', price: 980.00, oldPrice: 990.00, rating: 3, isNew: true, sale: null },
+        { id: 12, img1: './img/product12.png',img2: './img/product01.png', category: 'Category', name: 'Product 4', price: 980.00, oldPrice: 990.00, rating: 5, isNew: true, sale: 30 },
+        { id: 13, img1: './img/product01.png',img2: './img/product02.png', category: 'Category', name: 'Product 5', price: 980.00, oldPrice: 990.00, rating: 1, isNew: false, sale: null },
+        { id: 14, img1: './img/product02.png',img2: './img/product03.png', category: 'Category', name: 'Product 6', price: 980.00, oldPrice: 990.00, rating: 0, isNew: true, sale: 30 },
+        { id: 15, img1: './img/product03.png',img2: './img/product04.png', category: 'Category', name: 'Product 7', price: 980.00, oldPrice: 990.00, rating: 1, isNew: true, sale: 70 },
+        { id: 16, img1: './img/product04.png',img2: './img/product05.png', category: 'Category', name: 'Product 8', price: 980.00, oldPrice: 990.00, rating: 5, isNew: false, sale: 30 },
+        { id: 17, img1: './img/product05.png',img2: './img/product06.png', category: 'Category', name: 'Product 1', price: 980.00, oldPrice: 990.00, rating: 1, isNew: false, sale: null},
+        { id: 18, img1: './img/product06.png',img2: './img/product03.png', category: 'Category', name: 'Product 2', price: 980.00, oldPrice: 990.00, rating: 2, isNew: false, sale: 50 },
+        { id: 19, img1: './img/product07.png',img2: './img/product04.png', category: 'Category', name: 'Product 3', price: 980.00, oldPrice: 990.00, rating: 3, isNew: true, sale: null },
+        { id: 20, img1: './img/product08.png',img2: './img/product05.png', category: 'Category', name: 'Product 4', price: 980.00, oldPrice: 990.00, rating: 5, isNew: true, sale: 30 },
+        { id: 21, img1: './img/product09.png',img2: './img/product06.png', category: 'Category', name: 'Product 5', price: 980.00, oldPrice: 990.00, rating: 1, isNew: false, sale: null },
+        { id: 22, img1: './img/product10.png',img2: './img/product07.png', category: 'Category', name: 'Product 6', price: 980.00, oldPrice: 990.00, rating: 0, isNew: true, sale: 30 },
+        { id: 23, img1: './img/product11.png',img2: './img/product08.png', category: 'Category', name: 'Product 7', price: 980.00, oldPrice: 990.00, rating: 1, isNew: true, sale: 70 },
+        { id: 24, img1: './img/product12.png',img2: './img/product01.png', category: 'Category', name: 'Product 8', price: 980.00, oldPrice: 990.00, rating: 5, isNew: false, sale: 30 },
+        { id: 25, img1: './img/product05.png',img2: './img/product06.png', category: 'Category', name: 'Product 1', price: 980.00, oldPrice: 990.00, rating: 1, isNew: false, sale: null},
+        { id: 26, img1: './img/product06.png',img2: './img/product03.png', category: 'Category', name: 'Product 2', price: 980.00, oldPrice: 990.00, rating: 2, isNew: false, sale: 50 },
+        { id: 27, img1: './img/product07.png',img2: './img/product04.png', category: 'Category', name: 'Product 3', price: 980.00, oldPrice: 990.00, rating: 3, isNew: true, sale: null },
+        { id: 28, img1: './img/product08.png',img2: './img/product05.png', category: 'Category', name: 'Product 4', price: 980.00, oldPrice: 990.00, rating: 5, isNew: true, sale: 30 },
+        { id: 29, img1: './img/product09.png',img2: './img/product06.png', category: 'Category', name: 'Product 5', price: 980.00, oldPrice: 990.00, rating: 1, isNew: false, sale: null },
+        { id: 30, img1: './img/product10.png',img2: './img/product07.png', category: 'Category', name: 'Product 6', price: 980.00, oldPrice: 990.00, rating: 0, isNew: true, sale: 30 },
+        { id: 31, img1: './img/product11.png',img2: './img/product08.png', category: 'Category', name: 'Product 7', price: 980.00, oldPrice: 990.00, rating: 1, isNew: true, sale: 70 },
+        { id: 32, img1: './img/product12.png',img2: './img/product01.png', category: 'Category', name: 'Product 8', price: 980.00, oldPrice: 990.00, rating: 5, isNew: false, sale: 30 }, { id: 17, img1: './img/product05.png',img2: './img/product06.png', category: 'Category', name: 'Product 1', price: 980.00, oldPrice: 990.00, rating: 1, isNew: false, sale: null},
+        { id: 33, img1: './img/product06.png',img2: './img/product03.png', category: 'Category', name: 'Product 2', price: 980.00, oldPrice: 990.00, rating: 2, isNew: false, sale: 50 },
+        { id: 34, img1: './img/product07.png',img2: './img/product04.png', category: 'Category', name: 'Product 3', price: 980.00, oldPrice: 990.00, rating: 3, isNew: true, sale: null },
+        { id: 35, img1: './img/product08.png',img2: './img/product05.png', category: 'Category', name: 'Product 4', price: 980.00, oldPrice: 990.00, rating: 5, isNew: true, sale: 30 },
+        { id: 36, img1: './img/product09.png',img2: './img/product06.png', category: 'Category', name: 'Product 5', price: 980.00, oldPrice: 990.00, rating: 1, isNew: false, sale: null },
+        { id: 37, img1: './img/product10.png',img2: './img/product07.png', category: 'Category', name: 'Product 6', price: 980.00, oldPrice: 990.00, rating: 0, isNew: true, sale: 30 },
+        { id: 38, img1: './img/product11.png',img2: './img/product08.png', category: 'Category', name: 'Product 7', price: 980.00, oldPrice: 990.00, rating: 1, isNew: true, sale: 70 },
+        { id: 39, img1: './img/product12.png',img2: './img/product01.png', category: 'Category', name: 'Product 8', price: 980.00, oldPrice: 990.00, rating: 5, isNew: false, sale: 30 },
+        { id: 40, img1: './img/product12.png',img2: './img/product01.png', category: 'Category', name: 'Product 8', price: 980.00, oldPrice: 990.00, rating: 5, isNew: false, sale: 30 },
+        { id: 41, img1: './img/product12.png',img2: './img/product01.png', category: 'Category', name: 'Product 8', price: 980.00, oldPrice: 990.00, rating: 5, isNew: false, sale: 30 },
+        { id: 42, img1: './img/product12.png',img2: './img/product01.png', category: 'Category', name: 'Product 8', price: 980.00, oldPrice: 990.00, rating: 5, isNew: false, sale: 30 },
     ];
 
     // State quản lý trang hiện tại và số sản phẩm trên mỗi trang
     const [currentPage, setCurrentPage] = useState(1);
-    const productsPerPage = 3;
+    const productsPerPage = 20;
 
     // Tính toán các sản phẩm cần hiển thị dựa trên trang hiện tại
     const indexOfLastProduct = currentPage * productsPerPage;
@@ -56,10 +90,6 @@ const Store = () => {
                                 </select>
                             </label>
                         </div>
-                        <ul className="store-grid">
-                            <li className="active"><i className="fa fa-th"></i></li>
-                            <li><a href="#"><i className="fa fa-th-list"></i></a></li>
-                        </ul>
                     </div>
                     {/* /store top filter */}
 

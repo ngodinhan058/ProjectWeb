@@ -25,7 +25,7 @@ const Product = ({  id, img1, img2, name, category, price, oldPrice, rating, sal
     });
   };
   return (
-    <div className="col-md-4 col-xs-6">
+    <div className="col-md-3 col-xs-6">
       <div key={id} className="product"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}

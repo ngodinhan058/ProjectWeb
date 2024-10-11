@@ -66,7 +66,7 @@ const Product = ({ id, img1, img2, name, category, price, oldPrice, rating, sale
               <Skeleton width={100} />
             ) : (
               <>
-                ${price.toFixed(2)} <del className="product-old-price">${oldPrice.toFixed(2)}</del>
+                ${price.toFixed(2)} <del className="product-old-price">${price.toFixed(2)}</del>
               </>
             )}
           </h4>

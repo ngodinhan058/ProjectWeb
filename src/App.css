@@ -1,3 +1,51 @@
+/* Scroll to Top */
+
+.store-pagination li.active a {
+  background-color: #333;
+  color: white;
+  cursor: not-allowed;
+}
+.store-pagination a {
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  margin: 0 5px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.scroll-to-top-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #ff4d4d; /* Màu đỏ */
+  color: white;
+  border: none;
+  padding: 15px; /* Tăng kích thước padding */
+  border-radius: 50%; /* Giữ hình tròn */
+  cursor: pointer;
+  font-size: 24px; /* Tăng kích thước chữ */
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 0.3s ease-in-out, transform 0.2s; /* Thêm hiệu ứng khi nhấn */
+}
+
+.scroll-to-top-btn:hover {
+  background-color: #e60000; /* Màu đỏ đậm hơn khi hover */
+}
+
+.scroll-to-top-btn i {
+  margin: 0;
+}
+
+.scroll-to-top-btn:active {
+  transform: scale(0.95); /* Nhấn nút sẽ nhỏ lại một chút */
+}
+
+
+/* ---------------- */
+
 .App {
   text-align: center;
 }

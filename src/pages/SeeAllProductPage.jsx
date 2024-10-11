@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Product from '../components/Product'; // Import component Product đã tạo trước đó
 import BrandFilter from '../components/BrandFilter';
 import SizeFilter from '../components/SizeFilter';
+import SortAndShow from '../components/SortAndShow';
 
 const products = [
   {
@@ -207,35 +208,7 @@ const Store = () => {
 
         <div id="store" className="col-md-9">
           {/* Store top filter */}
-          <div className="store-filter clearfix">
-            <div className="store-sort">
-              <label>
-                Sort By:
-                <select className="input-select">
-                  <option value="0">Popular</option>
-                  <option value="1">Position</option>
-                </select>
-              </label>
-
-              <label>
-                Show:
-                <select className="input-select">
-                  <option value="0">20</option>
-                  <option value="1">50</option>
-                </select>
-              </label>
-            </div>
-            <ul className="store-grid">
-              <li className="active">
-                <i className="fa fa-th"></i>
-              </li>
-              <li>
-                <a href="#">
-                  <i className="fa fa-th-list"></i>
-                </a>
-              </li>
-            </ul>
-          </div>
+          <SortAndShow />
           {/* /store top filter */}
 
           {/* Store products */}

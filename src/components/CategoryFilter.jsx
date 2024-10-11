@@ -8,56 +8,77 @@ const CategoryFilter = () => {
   const categories = [
     {
       id: 'category-1',
-      name: 'Quần áo thể thao',
+      name: 'Đồng hồ',
       subcategories: [
-        { id: 'subcategory-1', name: 'Áo thể thao', count: 200 },
-        { id: 'subcategory-2', name: 'Quần thể thao', count: 150 },
-        { id: 'subcategory-6', name: 'Áo khoác thể thao', count: 120 },
-        { id: 'subcategory-7', name: 'Bộ đồ thể thao', count: 80 },
+        { id: 'subcategory-1', name: 'Đồng hồ thể thao', count: 200 },
+        { id: 'subcategory-2', name: 'Đồng hồ thông minh', count: 150 },
+        { id: 'subcategory-3', name: 'Đồng hồ cơ', count: 120 },
+        { id: 'subcategory-4', name: 'Đồng hồ điện tử', count: 80 },
       ],
     },
     {
       id: 'category-2',
-      name: 'Phụ kiện thể thao',
+      name: 'Phụ kiện',
       subcategories: [
-        { id: 'subcategory-3', name: 'Giày thể thao', count: 300 },
-        { id: 'subcategory-4', name: 'Mũ thể thao', count: 50 },
-        { id: 'subcategory-5', name: 'Túi thể thao', count: 100 },
-        { id: 'subcategory-8', name: 'Vớ thể thao', count: 60 },
-        { id: 'subcategory-9', name: 'Băng đô thể thao', count: 30 },
+        { id: 'subcategory-1', name: 'Giày thể thao', count: 300 },
+        { id: 'subcategory-2', name: 'Mũ thể thao', count: 50 },
+        { id: 'subcategory-3', name: 'Túi thể thao', count: 100 },
+        { id: 'subcategory-4', name: 'Vớ thể thao', count: 60 },
+        { id: 'subcategory-5', name: 'Băng đô thể thao', count: 30 },
       ],
     },
     {
       id: 'category-3',
-      name: 'Thiết bị thể thao',
+      name: 'Áo',
       subcategories: [
-        { id: 'subcategory-10', name: 'Dụng cụ tập gym', count: 250 },
-        { id: 'subcategory-11', name: 'Máy chạy bộ', count: 40 },
-        { id: 'subcategory-12', name: 'Tạ thể hình', count: 90 },
-        { id: 'subcategory-13', name: 'Xe đạp tập thể dục', count: 25 },
+        { id: 'subcategory-1', name: 'Áo thun thể thao', count: 250 },
+        { id: 'subcategory-2', name: 'Áo khoác thể thao', count: 40 },
+        { id: 'subcategory-3', name: 'Áo lót thể thao', count: 90 },
+        { id: 'subcategory-4', name: 'Áo dài tay', count: 25 },
       ],
     },
     {
       id: 'category-4',
-      name: 'Dụng cụ thể thao ngoài trời',
+      name: 'Quần',
       subcategories: [
-        { id: 'subcategory-14', name: 'Vợt tennis', count: 75 },
-        { id: 'subcategory-15', name: 'Bóng đá', count: 110 },
-        { id: 'subcategory-16', name: 'Ván trượt', count: 60 },
-        { id: 'subcategory-17', name: 'Bóng rổ', count: 130 },
+        { id: 'subcategory-1', name: 'Quần đùi thể thao', count: 75 },
+        { id: 'subcategory-2', name: 'Quần legging', count: 110 },
+        { id: 'subcategory-3', name: 'Quần dài thể thao', count: 60 },
+        { id: 'subcategory-4', name: 'Quần jogger', count: 130 },
       ],
     },
     {
       id: 'category-5',
-      name: 'Trang phục bơi lội',
+      name: 'Giày địa hình',
       subcategories: [
-        { id: 'subcategory-18', name: 'Đồ bơi nam', count: 80 },
-        { id: 'subcategory-19', name: 'Đồ bơi nữ', count: 90 },
-        { id: 'subcategory-20', name: 'Kính bơi', count: 50 },
-        { id: 'subcategory-21', name: 'Mũ bơi', count: 40 },
+        { id: 'subcategory-1', name: 'Giày leo núi', count: 80 },
+        { id: 'subcategory-2', name: 'Giày trekking', count: 90 },
+        { id: 'subcategory-3', name: 'Giày chạy địa hình', count: 50 },
+        { id: 'subcategory-4', name: 'Giày đi bộ', count: 40 },
       ],
     },
-  ];
+    {
+      id: 'category-6',
+      name: 'Giày chạy',
+      subcategories: [
+        { id: 'subcategory-1', name: 'Giày chạy bộ', count: 80 },
+        { id: 'subcategory-2', name: 'Giày chạy địa hình', count: 90 },
+        { id: 'subcategory-3', name: 'Giày chạy đường phố', count: 50 },
+        { id: 'subcategory-4', name: 'Giày chạy bền', count: 40 },
+      ],
+    },
+    {
+      id: 'category-7',
+      name: 'Dinh dưỡng',
+      subcategories: [
+        { id: 'subcategory-1', name: 'Bột protein', count: 80 },
+        { id: 'subcategory-2', name: 'Thực phẩm bổ sung', count: 90 },
+        { id: 'subcategory-3', name: 'Thức uống thể thao', count: 50 },
+        { id: 'subcategory-4', name: 'Vitamin và khoáng chất', count: 40 },
+      ],
+    },
+];
+
 
   // Hàm để mở/đóng danh mục cha
   const toggleCategory = (id) => {

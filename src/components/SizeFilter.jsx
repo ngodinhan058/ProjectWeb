@@ -19,7 +19,10 @@ const SizeFilter = ({ isLoading, selectedSizes, onSelectSizes }) => {
   return (
     <div className="aside">
       <h3 className="aside-title">Size</h3>
-      <div className="checkbox-filter">
+      <div
+        className="checkbox-filter"
+        style={{ maxHeight: 140, overflowY: 'scroll' }}
+      >
         {sizes.map((brand) =>
           isLoading ? (
             <Skeleton height={20} />

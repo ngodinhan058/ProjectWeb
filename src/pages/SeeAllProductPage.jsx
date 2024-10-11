@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Product from '../components/Product'; // Import component Product đã tạo trước đó
-
-
+import BrandFilter from '../components/BrandFilter'; // Import component Product đã tạo trước đó
+import PriceFilter from '../components/PriceFilter'; // Import component Product đã tạo trước đó
 const Store = () => {
     // Dữ liệu giả sản phẩm
     const products = [
@@ -68,8 +68,10 @@ const Store = () => {
 
         <div className="section">
             <div className="container">
-                <div id="aside" className="col-md-3"></div>
-
+                <div id="aside" className="col-md-3">
+                  <BrandFilter />
+                  <PriceFilter />
+                </div>
                 <div id="store" className="col-md-9">
                     {/* Store top filter */}
                     <div className="store-filter clearfix">

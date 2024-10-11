@@ -1,139 +1,142 @@
-import React, { useEffect, useState } from 'react';
-import Product from '../components/Product'; // Import component Product đã tạo trước đó
-import BrandFilter from '../components/BrandFilter';
-import SizeFilter from '../components/SizeFilter';
+import React, { useEffect, useState } from "react";
+import Product from "../components/Product"; // Import component Product đã tạo trước đó
+import BrandFilter from "../components/BrandFilter";
+import SizeFilter from "../components/SizeFilter";
+import PriceFilter from "../components/PriceFilter";
+import CategoryFilter from "../components/CategoryFilter";
 import SortAndShow from '../components/SortAndShow';
+
 
 const products = [
   {
     id: 1,
-    img1: './img/20230304_9yEIrUoAkjIxrmbe.jpeg',
-    img2: './img/20230304_rkzwbDstkLriSEhu.jpeg',
-    category: 'Category',
-    name: 'Product 1',
+    img1: "./img/20230304_9yEIrUoAkjIxrmbe.jpeg",
+    img2: "./img/20230304_rkzwbDstkLriSEhu.jpeg",
+    category: "Category",
+    name: "Product 1",
     price: 980.0,
     oldPrice: 990.0,
     rating: 1,
     isNew: false,
     sale: null,
-    brandId: 'brand-1',
+    brandId: "brand-1",
   },
   {
     id: 2,
-    img1: './img/product02.png',
-    img2: './img/product03.png',
-    category: 'Category',
-    name: 'Product 2',
+    img1: "./img/product02.png",
+    img2: "./img/product03.png",
+    category: "Category",
+    name: "Product 2",
     price: 980.0,
     oldPrice: 990.0,
     rating: 2,
     isNew: false,
     sale: 50,
-    brandId: 'brand-2',
+    brandId: "brand-2",
   },
   {
     id: 3,
-    img1: './img/product03.png',
-    img2: './img/product04.png',
-    category: 'Category',
-    name: 'Product 3',
+    img1: "./img/product03.png",
+    img2: "./img/product04.png",
+    category: "Category",
+    name: "Product 3",
     price: 980.0,
     oldPrice: 990.0,
     rating: 3,
     isNew: true,
     sale: null,
-    brandId: 'brand-3',
+    brandId: "brand-3",
   },
   {
     id: 4,
-    img1: './img/20230520_4Yf4WmBs11.jpeg',
-    img2: './img/20230427_igl1jUu9wv.png',
-    category: 'Category',
-    name: 'Product 4',
+    img1: "./img/20230520_4Yf4WmBs11.jpeg",
+    img2: "./img/20230427_igl1jUu9wv.png",
+    category: "Category",
+    name: "Product 4",
     price: 980.0,
     oldPrice: 990.0,
     rating: 5,
     isNew: true,
     sale: 30,
-    brandId: 'brand-1',
+    brandId: "brand-1",
   },
   {
     id: 5,
-    img1: './img/product05.png',
-    img2: './img/product06.png',
-    category: 'Category',
-    name: 'Product 5',
+    img1: "./img/product05.png",
+    img2: "./img/product06.png",
+    category: "Category",
+    name: "Product 5",
     price: 980.0,
     oldPrice: 990.0,
     rating: 1,
     isNew: false,
     sale: null,
-    brandId: 'brand-2',
+    brandId: "brand-2",
   },
   {
     id: 6,
-    img1: './img/20230424_fwmnvLxZKl.jpeg',
-    img2: './img/20230525_OzpmexkNIq.jpeg',
-    category: 'Category',
-    name: 'Product 6',
+    img1: "./img/20230424_fwmnvLxZKl.jpeg",
+    img2: "./img/20230525_OzpmexkNIq.jpeg",
+    category: "Category",
+    name: "Product 6",
     price: 980.0,
     oldPrice: 990.0,
     rating: 0,
     isNew: true,
     sale: 30,
-    brandId: 'brand-3',
+    brandId: "brand-3",
   },
   {
     id: 7,
-    img1: './img/product07.png',
-    img2: './img/product08.png',
-    category: 'Category',
-    name: 'Product 7',
+    img1: "./img/product07.png",
+    img2: "./img/product08.png",
+    category: "Category",
+    name: "Product 7",
     price: 980.0,
     oldPrice: 990.0,
     rating: 1,
     isNew: true,
     sale: 70,
-    brandId: 'brand-1',
+    brandId: "brand-1",
   },
   {
     id: 8,
-    img1: './img/product08.png',
-    img2: './img/product09.png',
-    category: 'Category',
-    name: 'Product 8',
+    img1: "./img/product08.png",
+    img2: "./img/product09.png",
+    category: "Category",
+    name: "Product 8",
     price: 980.0,
     oldPrice: 990.0,
     rating: 5,
     isNew: false,
     sale: 30,
-    brandId: 'brand-2',
+    brandId: "brand-2",
   },
   {
     id: 9,
-    img1: './img/product09.png',
-    img2: './img/product10.png',
-    category: 'Category',
-    name: 'Product 1',
+    img1: "./img/product09.png",
+    img2: "./img/product10.png",
+    category: "Category",
+    name: "Product 1",
     price: 980.0,
     oldPrice: 990.0,
     rating: 1,
     isNew: false,
     sale: null,
-    brandId: 'brand-3',
+    brandId: "brand-3",
   },
   {
     id: 10,
-    img1: './img/product10.png',
-    img2: './img/product11.png',
-    category: 'Category',
-    name: 'Product 2',
+    img1: "./img/product10.png",
+    img2: "./img/product11.png",
+    category: "Category",
+    name: "Product 2",
     price: 980.0,
     oldPrice: 990.0,
     rating: 2,
     isNew: false,
     sale: 50,
-    brandId: 'brand-1',
+    brandId: "brand-1",
   },
 ];
 
@@ -194,6 +197,9 @@ const Store = () => {
     <div className="section">
       <div className="container">
         <div id="aside" className="col-md-3">
+          <CategoryFilter isLoading={isLoading} />
+          <PriceFilter isLoading={isLoading} />
+
           <BrandFilter
             isLoading={isLoading}
             onSelectBrands={setSelectedBrands}
@@ -230,7 +236,7 @@ const Store = () => {
             <div className="store-filter clearfix">
               <span className="store-qty">
                 Showing {indexOfFirstProduct + 1}-
-                {Math.min(indexOfLastProduct, products.length)} of{' '}
+                {Math.min(indexOfLastProduct, products.length)} of{" "}
                 {products.length} products
               </span>
               <ul className="store-pagination">
@@ -240,7 +246,7 @@ const Store = () => {
                     <a
                       href="#!"
                       onClick={() => handlePageChange(1)}
-                      style={{ color: '#000' }}
+                      style={{ color: "#000" }}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -269,7 +275,7 @@ const Store = () => {
                     <a
                       href="#!"
                       onClick={() => handlePageChange(currentPage - 1)}
-                      style={{ color: '#000' }}
+                      style={{ color: "#000" }}
                     >
                       <i className="fa fa-chevron-left"></i>
                     </a>
@@ -280,15 +286,15 @@ const Store = () => {
                 {[...Array(totalPages).keys()].map((page) => (
                   <li
                     key={page}
-                    className={currentPage === page + 1 ? 'active' : ''}
+                    className={currentPage === page + 1 ? "active" : ""}
                   >
                     <a
                       href="#!"
                       onClick={() => handlePageChange(page + 1)}
                       style={{
-                        color: currentPage === page + 1 ? '#fff' : 'red',
+                        color: currentPage === page + 1 ? "#fff" : "red",
                         pointerEvents:
-                          currentPage === page + 1 ? 'none' : 'auto',
+                          currentPage === page + 1 ? "none" : "auto",
                       }}
                     >
                       {page + 1}
@@ -302,7 +308,7 @@ const Store = () => {
                     <a
                       href="#!"
                       onClick={() => handlePageChange(currentPage + 1)}
-                      style={{ color: '#000' }}
+                      style={{ color: "#000" }}
                     >
                       <i className="fa fa-chevron-right"></i>
                     </a>
@@ -315,7 +321,7 @@ const Store = () => {
                     <a
                       href="#!"
                       onClick={() => handlePageChange(totalPages)}
-                      style={{ color: '#000' }}
+                      style={{ color: "#000" }}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"

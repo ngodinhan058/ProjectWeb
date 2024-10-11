@@ -51,19 +51,12 @@ const Store = () => {
 
     // State quản lý trang hiện tại và số sản phẩm trên mỗi trang
     const [currentPage, setCurrentPage] = useState(1);
-    const productsPerPage = 20;
-
-    // State giá trị mặc định bộ lọc giá 
-    const [minPrice, setMinPrice] = useState(5);
-    const [maxPrice, setMaxPrice] = useState(1000);
-
-    // Lọc sản phẩm theo giá
-    const filteredProducts = products.filter(product => product.price >= minPrice && product.price <= maxPrice);
+    const productsPerPage = 20;    
 
     // Tính toán các sản phẩm cần hiển thị dựa trên trang hiện tại
     const indexOfLastProduct = currentPage * productsPerPage;
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-    const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+    const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
 
     const [isLoading, setIsLoading] = useState(true); // Trạng thái loading
     // Giả lập việc tải dữ liệu trong 2 giây
@@ -76,22 +69,17 @@ const Store = () => {
     }, []);
 
     // Tạo mảng số trang
-    const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+    const totalPages = Math.ceil(products.length / productsPerPage);
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
-    };
-
-    const handlePriceChange = (min, max) => {
-        setMinPrice(min);
-        setMaxPrice(max);
     };
     return (
         <div className="section">
             <div className="container">
                 <div id="aside" className="col-md-3">
                     <CategoryFilter />
-                    <PriceFilter onPriceChange={handlePriceChange} />
+                    <PriceFilter />
                 </div>
                 <div id="store" className="col-md-9">
                     {/* Store top filter */}

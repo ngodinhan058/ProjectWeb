@@ -1,6 +1,6 @@
 import React, { useState , useEffect } from "react";
 
-const PriceRangeSlider = ({ onPriceChange }) => {
+const PriceRangeSlider = () => {
   const [minPrice, setMinPrice] = useState(5); 
   const [maxPrice, setMaxPrice] = useState(1000); 
   const priceGap = 10; 
@@ -44,13 +44,7 @@ const PriceRangeSlider = ({ onPriceChange }) => {
     } else if (type === "max" && maxPrice - 10 >= minPrice && maxPrice - 10 >= 5) {
       setMaxPrice((prev) => prev - 10);
     }
-  };
-
-   // Gọi callback khi giá thay đổi
-   useEffect(() => {
-    onPriceChange(minPrice, maxPrice);
-  }, [minPrice, maxPrice, onPriceChange]);
-  
+  };  
   return (
     <div className="aside">
       <h3 className="aside-title">Price</h3>

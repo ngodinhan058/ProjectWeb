@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Product from '../components/Product'; // Import component Product đã tạo trước đó
-import BrandFilter from '../components/BrandFilter'; // Import component Product đã tạo trước đó
+import CategoryFilter from '../components/CategoryFilter'; // Import component Product đã tạo trước đó
 import PriceFilter from '../components/PriceFilter'; // Import component Product đã tạo trước đó
 const Store = () => {
     const products = [
@@ -46,16 +46,24 @@ const Store = () => {
         { id: 40, img1: '../img/product12.png',img2: '../img/product01.png', category: 'Category', name: 'Product 8', price: 980.00, oldPrice: 990.00, rating: 5, isNew: false, sale: 30 },
         { id: 41, img1: '../img/product12.png',img2: '../img/product01.png', category: 'Category', name: 'Product 8', price: 980.00, oldPrice: 990.00, rating: 5, isNew: false, sale: 30 },
         { id: 42, img1: '../img/product12.png',img2: '../img/product01.png', category: 'Category', name: 'Product 8', price: 980.00, oldPrice: 990.00, rating: 5, isNew: false, sale: 30 },
+        { id: 42, img1: '../img/product12.png',img2: '../img/product01.png', category: 'Category', name: 'Product 8', price: 500.00, oldPrice: 990.00, rating: 5, isNew: false, sale: 30 },
     ];
 
     // State quản lý trang hiện tại và số sản phẩm trên mỗi trang
     const [currentPage, setCurrentPage] = useState(1);
     const productsPerPage = 20;
 
+    // State giá trị mặc định bộ lọc giá 
+    const [minPrice, setMinPrice] = useState(5);
+    const [maxPrice, setMaxPrice] = useState(1000);
+
+    // Lọc sản phẩm theo giá
+    const filteredProducts = products.filter(product => product.price >= minPrice && product.price <= maxPrice);
+
     // Tính toán các sản phẩm cần hiển thị dựa trên trang hiện tại
     const indexOfLastProduct = currentPage * productsPerPage;
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-    const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
+    const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
 
     const [isLoading, setIsLoading] = useState(true); // Trạng thái loading
     // Giả lập việc tải dữ liệu trong 2 giây
@@ -66,17 +74,25 @@ const Store = () => {
 
         return () => clearTimeout(timer); // Dọn dẹp bộ đếm thời gian
     }, []);
+
     // Tạo mảng số trang
-    const totalPages = Math.ceil(products.length / productsPerPage);
+    const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
+
+    const handlePriceChange = (min, max) => {
+        setMinPrice(min);
+        setMaxPrice(max);
+    };
     return (
         <div className="section">
             <div className="container">
-                <div id="aside" className="col-md-3"></div>
-
+                <div id="aside" className="col-md-3">
+                    <CategoryFilter />
+                    <PriceFilter onPriceChange={handlePriceChange} />
+                </div>
                 <div id="store" className="col-md-9">
                     {/* Store top filter */}
                     <div className="store-filter clearfix">
@@ -111,7 +127,7 @@ const Store = () => {
                                 <Product key={product.id} {...product} isLoading={isLoading} />
                             ))
                         ) : (
-                            <div className="no-products">
+                            <div className="no-products">   
                                 <h3>Không tìm thấy sản phẩm</h3>
                             </div>
                         )}

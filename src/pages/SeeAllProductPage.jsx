@@ -16,13 +16,6 @@ const products = [
     isNew: false,
     sale: null,
     brandId: 'brand-1',
-    sizes: [
-      { id: 'size-1', name: 'S', count: 10 },
-      { id: 'size-2', name: 'M', count: 20 },
-      { id: 'size-3', name: 'L', count: 15 },
-      { id: 'size-4', name: 'XL', count: 5 },
-      { id: 'size-5', name: 'XXL', count: 2 },
-    ],
   },
   {
     id: 2,
@@ -36,13 +29,6 @@ const products = [
     isNew: false,
     sale: 50,
     brandId: 'brand-2',
-    sizes: [
-      { id: 'size-1', name: 'S', count: 12 },
-      { id: 'size-2', name: 'M', count: 18 },
-      { id: 'size-3', name: 'L', count: 0 },
-      { id: 'size-4', name: 'XL', count: 6 },
-      { id: 'size-5', name: 'XXL', count: 1 },
-    ],
   },
   {
     id: 3,
@@ -56,13 +42,6 @@ const products = [
     isNew: true,
     sale: null,
     brandId: 'brand-3',
-    sizes: [
-      { id: 'size-1', name: 'S', count: 5 },
-      { id: 'size-2', name: 'M', count: 10 },
-      { id: 'size-3', name: 'L', count: 8 },
-      { id: 'size-4', name: 'XL', count: 4 },
-      { id: 'size-5', name: 'XXL', count: 0 },
-    ],
   },
   {
     id: 4,
@@ -76,13 +55,6 @@ const products = [
     isNew: true,
     sale: 30,
     brandId: 'brand-1',
-    sizes: [
-      { id: 'size-1', name: 'S', count: 0 },
-      { id: 'size-2', name: 'M', count: 12 },
-      { id: 'size-3', name: 'L', count: 18 },
-      { id: 'size-4', name: 'XL', count: 10 },
-      { id: 'size-5', name: 'XXL', count: 3 },
-    ],
   },
   {
     id: 5,
@@ -96,13 +68,6 @@ const products = [
     isNew: false,
     sale: null,
     brandId: 'brand-2',
-    sizes: [
-      { id: 'size-1', name: 'S', count: 8 },
-      { id: 'size-2', name: 'M', count: 10 },
-      { id: 'size-3', name: 'L', count: 5 },
-      { id: 'size-4', name: 'XL', count: 2 },
-      { id: 'size-5', name: 'XXL', count: 1 },
-    ],
   },
   {
     id: 6,
@@ -116,13 +81,6 @@ const products = [
     isNew: true,
     sale: 30,
     brandId: 'brand-3',
-    sizes: [
-      { id: 'size-1', name: 'S', count: 4 },
-      { id: 'size-2', name: 'M', count: 7 },
-      { id: 'size-3', name: 'L', count: 3 },
-      { id: 'size-4', name: 'XL', count: 1 },
-      { id: 'size-5', name: 'XXL', count: 0 },
-    ],
   },
   {
     id: 7,
@@ -136,13 +94,6 @@ const products = [
     isNew: true,
     sale: 70,
     brandId: 'brand-1',
-    sizes: [
-      { id: 'size-1', name: 'S', count: 5 },
-      { id: 'size-2', name: 'M', count: 5 },
-      { id: 'size-3', name: 'L', count: 10 },
-      { id: 'size-4', name: 'XL', count: 4 },
-      { id: 'size-5', name: 'XXL', count: 2 },
-    ],
   },
   {
     id: 8,
@@ -156,13 +107,6 @@ const products = [
     isNew: false,
     sale: 30,
     brandId: 'brand-2',
-    sizes: [
-      { id: 'size-1', name: 'S', count: 6 },
-      { id: 'size-2', name: 'M', count: 2 },
-      { id: 'size-3', name: 'L', count: 0 },
-      { id: 'size-4', name: 'XL', count: 8 },
-      { id: 'size-5', name: 'XXL', count: 1 },
-    ],
   },
   {
     id: 9,
@@ -176,13 +120,6 @@ const products = [
     isNew: false,
     sale: null,
     brandId: 'brand-3',
-    sizes: [
-      { id: 'size-1', name: 'S', count: 2 },
-      { id: 'size-2', name: 'M', count: 4 },
-      { id: 'size-3', name: 'L', count: 8 },
-      { id: 'size-4', name: 'XL', count: 3 },
-      { id: 'size-5', name: 'XXL', count: 1 },
-    ],
   },
   {
     id: 10,
@@ -196,13 +133,6 @@ const products = [
     isNew: false,
     sale: 50,
     brandId: 'brand-1',
-    sizes: [
-      { id: 'size-1', name: 'S', count: 3 },
-      { id: 'size-2', name: 'M', count: 5 },
-      { id: 'size-3', name: 'L', count: 7 },
-      { id: 'size-4', name: 'XL', count: 2 },
-      { id: 'size-5', name: 'XXL', count: 0 },
-    ],
   },
 ];
 
@@ -226,6 +156,16 @@ const Store = () => {
     indexOfLastProduct
   );
 
+  const [isLoading, setIsLoading] = useState(true); // Trạng thái loading
+  // Giả lập việc tải dữ liệu trong 2 giây
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000); // Thời gian chờ 2 giây
+
+    return () => clearTimeout(timer); // Dọn dẹp bộ đếm thời gian
+  }, []);
+
   // Tạo mảng số trang
   const totalPages = Math.ceil(products.length / productsPerPage);
 
@@ -248,19 +188,20 @@ const Store = () => {
 
     setProductsState(filteredProducts);
   }, [selectedBrands, selectedSizes]);
+
   return (
     <div className="section">
       <div className="container">
         <div id="aside" className="col-md-3">
           <BrandFilter
-            isLoading={false}
-            selectedBrands={selectedBrands}
+            isLoading={isLoading}
             onSelectBrands={setSelectedBrands}
+            selectedBrands={selectedBrands}
           />
           <SizeFilter
-            isLoading={false}
-            selectedSizes={selectedSizes}
+            isLoading={isLoading}
             onSelectSizes={setSelectedSizes}
+            selectedSizes={selectedSizes}
           />
         </div>
 
@@ -284,130 +225,150 @@ const Store = () => {
                 </select>
               </label>
             </div>
+            <ul className="store-grid">
+              <li className="active">
+                <i className="fa fa-th"></i>
+              </li>
+              <li>
+                <a href="#">
+                  <i className="fa fa-th-list"></i>
+                </a>
+              </li>
+            </ul>
           </div>
           {/* /store top filter */}
 
           {/* Store products */}
           <div className="row">
-            {productsState.map((product) => (
-              <Product key={product.id} {...product} />
-            ))}
+            {currentProducts.length > 0 ? (
+              currentProducts.map((product) => (
+                <Product key={product.id} {...product} isLoading={isLoading} />
+              ))
+            ) : (
+              <div className="no-products">
+                <h3>Không tìm thấy sản phẩm</h3>
+              </div>
+            )}
           </div>
           {/* /store products */}
 
           {/* Store bottom filter */}
-          <div className="store-filter clearfix">
-            <span className="store-qty">
-              Showing {indexOfFirstProduct + 1}-
-              {Math.min(indexOfLastProduct, products.length)} of{' '}
-              {products.length} products
-            </span>
-            <ul className="store-pagination">
-              {/* Nút về trang đầu (ẩn khi ở trang đầu) */}
-              {currentPage !== 1 && (
-                <li>
-                  <a
-                    href="#!"
-                    onClick={() => handlePageChange(1)}
-                    style={{ color: '#000' }}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="14"
-                      height="14"
-                      fill="currentColor"
-                      class="bi bi-chevron-double-left"
-                      viewBox="0 0 14 14"
+          {currentProducts.length > 0 ? (
+            <div className="store-filter clearfix">
+              <span className="store-qty">
+                Showing {indexOfFirstProduct + 1}-
+                {Math.min(indexOfLastProduct, products.length)} of{' '}
+                {products.length} products
+              </span>
+              <ul className="store-pagination">
+                {/* Nút về trang đầu (ẩn khi ở trang đầu) */}
+                {currentPage !== 1 && (
+                  <li>
+                    <a
+                      href="#!"
+                      onClick={() => handlePageChange(1)}
+                      style={{ color: '#000' }}
                     >
-                      <path
-                        fill-rule="evenodd"
-                        d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"
-                      />
-                      <path
-                        fill-rule="evenodd"
-                        d="M12.354 1.646a.5.5 0 0 1 0 .708L6.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"
-                      />
-                    </svg>
-                  </a>
-                </li>
-              )}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="14"
+                        height="14"
+                        fill="currentColor"
+                        className="bi bi-chevron-double-left"
+                        viewBox="0 0 14 14"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"
+                        />
+                        <path
+                          fillRule="evenodd"
+                          d="M12.354 1.646a.5.5 0 0 1 0 .708L6.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"
+                        />
+                      </svg>
+                    </a>
+                  </li>
+                )}
 
-              {/* Nút trang trước (ẩn khi ở trang đầu) */}
-              {currentPage !== 1 && (
-                <li>
-                  <a
-                    href="#!"
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    style={{ color: '#000' }}
-                  >
-                    <i className="fa fa-chevron-left"></i>
-                  </a>
-                </li>
-              )}
-
-              {/* Nút số trang */}
-              {[...Array(totalPages).keys()].map((page) => (
-                <li
-                  key={page}
-                  className={currentPage === page + 1 ? 'active' : ''}
-                >
-                  <a
-                    href="#!"
-                    onClick={() => handlePageChange(page + 1)}
-                    style={{
-                      color: currentPage === page + 1 ? '#fff' : 'red',
-                      pointerEvents: currentPage === page + 1 ? 'none' : 'auto',
-                    }}
-                  >
-                    {page + 1}
-                  </a>
-                </li>
-              ))}
-
-              {/* Nút trang kế tiếp (ẩn khi ở trang cuối) */}
-              {currentPage !== totalPages && (
-                <li>
-                  <a
-                    href="#!"
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    style={{ color: '#000' }}
-                  >
-                    <i className="fa fa-chevron-right"></i>
-                  </a>
-                </li>
-              )}
-
-              {/* Nút tới trang cuối (ẩn khi ở trang cuối) */}
-              {currentPage !== totalPages && (
-                <li>
-                  <a
-                    href="#!"
-                    onClick={() => handlePageChange(totalPages)}
-                    style={{ color: '#000' }}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="14"
-                      height="14"
-                      fill="currentColor"
-                      class="bi bi-chevron-double-right"
-                      viewBox="0 0 14 14"
+                {/* Nút trang trước (ẩn khi ở trang đầu) */}
+                {currentPage !== 1 && (
+                  <li>
+                    <a
+                      href="#!"
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      style={{ color: '#000' }}
                     >
-                      <path
-                        fill-rule="evenodd"
-                        d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708"
-                      />
-                      <path
-                        fill-rule="evenodd"
-                        d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708"
-                      />
-                    </svg>
-                  </a>
-                </li>
-              )}
-            </ul>
-          </div>
+                      <i className="fa fa-chevron-left"></i>
+                    </a>
+                  </li>
+                )}
 
+                {/* Nút số trang */}
+                {[...Array(totalPages).keys()].map((page) => (
+                  <li
+                    key={page}
+                    className={currentPage === page + 1 ? 'active' : ''}
+                  >
+                    <a
+                      href="#!"
+                      onClick={() => handlePageChange(page + 1)}
+                      style={{
+                        color: currentPage === page + 1 ? '#fff' : 'red',
+                        pointerEvents:
+                          currentPage === page + 1 ? 'none' : 'auto',
+                      }}
+                    >
+                      {page + 1}
+                    </a>
+                  </li>
+                ))}
+
+                {/* Nút trang kế tiếp (ẩn khi ở trang cuối) */}
+                {currentPage !== totalPages && (
+                  <li>
+                    <a
+                      href="#!"
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      style={{ color: '#000' }}
+                    >
+                      <i className="fa fa-chevron-right"></i>
+                    </a>
+                  </li>
+                )}
+
+                {/* Nút tới trang cuối (ẩn khi ở trang cuối) */}
+                {currentPage !== totalPages && (
+                  <li>
+                    <a
+                      href="#!"
+                      onClick={() => handlePageChange(totalPages)}
+                      style={{ color: '#000' }}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="14"
+                        height="14"
+                        fill="currentColor"
+                        className="bi bi-chevron-double-right"
+                        viewBox="0 0 14 14"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708"
+                        />
+                        <path
+                          fillRule="evenodd"
+                          d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708"
+                        />
+                      </svg>
+                    </a>
+                  </li>
+                )}
+              </ul>
+            </div>
+          ) : (
+            <div className="store-filter clearfix"></div>
+          )}
           {/* /store bottom filter */}
         </div>
       </div>

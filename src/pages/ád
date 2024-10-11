@@ -1,0 +1,74 @@
+ {/* Store bottom filter */}
+          {currentProducts.length > 0 && (
+            <div className="store-filter clearfix">
+              <span className="store-qty">
+                Showing {indexOfFirstProduct + 1}-
+                {Math.min(indexOfLastProduct, productsState.length)} of{' '}
+                {productsState.length} products
+              </span>
+              <ul className="store-pagination">
+                {/* First page button */}
+                {currentPage !== 1 && (
+                  <li>
+                    <a href="#!" onClick={() => handlePageChange(1)} style={{ color: '#000' }}>
+                      <svg width="14" height="14" fill="currentColor" viewBox="0 0 14 14">
+                        <path d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+                        <path d="M12.354 1.646a.5.5 0 0 1 0 .708L6.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+                      </svg>
+                    </a>
+                  </li>
+                )}
+
+                {/* Previous page button */}
+                {currentPage !== 1 && (
+                  <li>
+                    <a href="#!" onClick={() => handlePageChange(currentPage - 1)} style={{ color: '#000' }}>
+                      <i className="fa fa-chevron-left"></i>
+                    </a>
+                  </li>
+                )}
+
+                {/* Page numbers */}
+                {[...Array(totalPages).keys()].map((page) => (
+                  <li key={page} className={currentPage === page + 1 ? 'active' : ''}>
+                    <a
+                      href="#!"
+                      onClick={() => handlePageChange(page + 1)}
+                      style={{
+                        color: currentPage === page + 1 ? '#fff' : '#000',
+                        pointerEvents: currentPage === page + 1 ? 'none' : 'auto',
+                      }}
+                    >
+                      {page + 1}
+                    </a>
+                  </li>
+                ))}
+
+                {/* Next page button */}
+                {currentPage !== totalPages && (
+                  <li>
+                    <a href="#!" onClick={() => handlePageChange(currentPage + 1)} style={{ color: '#000' }}>
+                      <i className="fa fa-chevron-right"></i>
+                    </a>
+                  </li>
+                )}
+
+                {/* Last page button */}
+                {currentPage !== totalPages && (
+                  <li>
+                    <a href="#!" onClick={() => handlePageChange(totalPages)} style={{ color: '#000' }}>
+                      <svg width="14" height="14" fill="currentColor" viewBox="0 0 14 14">
+                        <path d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708"/>
+                        <path d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708"/>
+                      </svg>
+                    </a>
+                  </li>
+                )}
+              </ul>
+            </div>
+          )}
+          {/* /store bottom filter */}
+
+
+          
+  

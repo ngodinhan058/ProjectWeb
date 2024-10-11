@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
-const Product = ({ id, img1, img2, name, category, price, oldPrice, rating, sale, isNew, isLoading }) => {
-  
+const Product = ({ id, images, name, category, price, oldPrice, rating, sale, isNew, isLoading }) => {
+
   const renderRating = () => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
@@ -18,19 +18,24 @@ const Product = ({ id, img1, img2, name, category, price, oldPrice, rating, sale
     return stars;
   };
 
+  const img1 = [images]
+
+  // console.log(img1)
+
+
   const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
 
   const handleClick = () => {
     navigate(`/${id}`, {
-      state: { id, img1, img2, name, category, price, oldPrice, rating, sale, isNew },
+      state: { id, images, name, category, price, oldPrice, rating, sale, isNew },
     });
   };
 
   return (
     <div className="col-md-3 col-xs-6">
-      <div 
-        key={id} 
+      <div
+        key={id}
         className="product"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -42,9 +47,16 @@ const Product = ({ id, img1, img2, name, category, price, oldPrice, rating, sale
           {isLoading ? (
             <Skeleton height={300} />
           ) : (
-            <img src={isHovered ? img2 : img1} alt={name} />
+            <img
+              src={isHovered
+                ? img1[0][1]?.['product-image-path'] || img1[0][0]['product-image-path'] // Sử dụng ảnh thứ hai nếu không null, ngược lại sử dụng ảnh mặc định
+                : img1[0][0]?.['product-image-path'] || img1[0][1]['product-image-path'] // Tương tự cho ảnh đầu tiên
+              }
+              alt={img1[0][0]?.['product-image-alt'] || 'Default Alt Text'} // Giá trị alt, nếu không có thì dùng văn bản mặc định
+            />
+
           )}
-         <div className="product-label">
+          <div className="product-label">
             {/* Thêm skeleton loading cho sale và isNew */}
             {isLoading ? (
               <Skeleton width={50} />
@@ -66,7 +78,7 @@ const Product = ({ id, img1, img2, name, category, price, oldPrice, rating, sale
               <Skeleton width={100} />
             ) : (
               <>
-                ${price.toFixed(2)} <del className="product-old-price">${oldPrice.toFixed(2)}</del>
+                ${price.toFixed(2)} <del className="product-old-price">${price.toFixed(2)}</del>
               </>
             )}
           </h4>

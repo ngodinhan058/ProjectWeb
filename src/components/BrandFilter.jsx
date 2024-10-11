@@ -3,12 +3,10 @@ import 'react-loading-skeleton/dist/skeleton.css';
 
 const BrandFilter = ({ isLoading, selectedBrands, onSelectBrands }) => {
   const brands = [
-    { id: 'brand-1', name: 'SAMSUNG', count: 578 },
-    { id: 'brand-2', name: 'LG', count: 125 },
-    { id: 'brand-3', name: 'SONY', count: 755 },
-    { id: 'brand-4', name: 'SAMSUNG', count: 578 },
-    { id: 'brand-5', name: 'LG', count: 125 },
-    { id: 'brand-6', name: 'SONY', count: 755 },
+    { id: 'brand-1', name: 'Adidas', count: 578 },
+    { id: 'brand-2', name: 'Coros', count: 125 },
+    { id: 'brand-3', name: 'Black Diamon', count: 755 },
+    { id: 'brand-4', name: 'KOO', count: 578 },
   ];
 
   const handleCheckboxChange = (id) => {

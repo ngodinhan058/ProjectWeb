@@ -75,4 +75,14 @@
     color: #888;
     margin-left: 10px;
   }
+
+  .input-min .error {
+    border: 200px solid red; 
+    background-color: #ffe6e6; 
+  }
+  
+  .input-max .error {
+    border: 2px solid red; 
+    background-color: #ffe6e6; 
+  } 
   

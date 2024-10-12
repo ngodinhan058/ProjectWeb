@@ -17,20 +17,21 @@ const Store = () => {
     const [pageSize, setPageSize] = useState(20); // Kích thước trang (số sản phẩm mỗi trang)
     const [sort, setSort] = useState(''); // Kích thước trang (số sản phẩm mỗi trang)
     const [direction, setDirection] = useState(''); // Kích thước trang (số sản phẩm mỗi trang)
-    const [priceRange, setPriceRange] = useState({ minPrice: 5, maxPrice: 1000 });
+
+    const [minPrice, setMinPrice] = useState(0);
+    const [maxPrice, setMaxPrice] = useState(2000000);
+
+
+
     const [selectedBrands, setSelectedBrands] = useState([]);
     const [selectedSizes, setSelectedSizes] = useState([]);
 
-    const handlePriceChange = (range) => {
-        setPriceRange(range); // Update the price range state
-    };
 
-    // Fetch product data từ API khi trang hiện tại thay đổi
     useEffect(() => {
         setIsLoading(true); // Bắt đầu trạng thái loading
 
         axios.get(
-            `http://192.168.1.11:8080/api/v1/products?page=${currentPage}&size=${pageSize}&sort=${sort}&direction=${direction}`
+            `http://192.168.136.135:8080/api/v1/products?page=${currentPage}&size=${pageSize}&sort=${sort}&direction=${direction}&minPrice=${minPrice}&maxPrice=${maxPrice}`
         )
             .then(response => {
                 const { content } = response.data.data; // Lấy dữ liệu sản phẩm
@@ -41,23 +42,21 @@ const Store = () => {
                 setPageSize(size); // Lưu số lượng sản phẩm mỗi trang
                 setTotalElements(totalElements); // Lưu tổng số sản phẩm
                 setIsLoading(false); // Dừng trạng thái loading
+
+                // Lọc sản phẩm theo khoảng giá sau khi dữ liệu được lấy
+                const filtered = content.filter(product =>
+                    product['product-price'] >= minPrice && product['product-price'] <= maxPrice
+                );
+                setFilteredProducts(filtered); // Lưu các sản phẩm đã lọc vào state
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
                 setIsLoading(false);
             });
-    }, [currentPage, pageSize, sort, direction]); // Cập nhật khi currentPage hoặc pageSize thay đổi
-    
+    }, [currentPage, pageSize, sort, direction, minPrice, maxPrice]); // Cập nhật khi currentPage hoặc pageSize thay đổi
 
-    // Filter products based on price range
-    useEffect(() => {
-        const filtered = productsState.filter(
-            (product) =>
-                product['product-price'] >= priceRange.minPrice && product['product-price'] <= priceRange.maxPrice
-        );
-        setFilteredProducts(filtered); // Update the filtered product list
-    }, [priceRange, productsState]); // Trigger filtering when price range or productsState changes
-
+    console.log(minPrice)
+    console.log(maxPrice)
     // Chuyển trang
     const handlePageChange = (pageNumber) => {
         if (pageNumber >= 0 && pageNumber < totalPages) {
@@ -70,7 +69,11 @@ const Store = () => {
         setSort(value[0]); // Cập nhật state với giá trị được chọn
         // console.log(sort, direction)
     };
-
+    // Handle price range change
+    const handlePriceChange = ({ minPrice, maxPrice }) => {
+        setMinPrice(minPrice);
+        setMaxPrice(maxPrice);
+    };
 
 
     return (
@@ -97,18 +100,11 @@ const Store = () => {
                             Sort By:
                             <select className="input-select" value={`${sort}|${direction}`} onChange={handleSelectChange}>
                                 <option value="">All</option>
-                                <option value="price|asc">1</option>
-                                <option value="price|desc">2</option>
+                                <option value="price|asc">Tăng Dần (Giá)</option>
+                                <option value="price|desc">Giảm Dần (Giá)</option>
                             </select>
                         </label>
 
-                        <label>
-                            Show:
-                            <select className="input-select">
-                                <option value="0">20</option>
-                                <option value="1">50</option>
-                            </select>
-                        </label>
                     </div>
                     {/* Store products */}
                     <div className="row">
@@ -125,17 +121,10 @@ const Store = () => {
                                 />
                             ))
                         ) : (
-                            productsState.map((product) => (
-                                <Product
-                                    key={product['product-id']}
-                                    id={product['product-id']}
-                                    name={product['product-name']}
-                                    price={product['product-price']}
-                                    images={product['product-images']}
-                                    rating={product['product-rating']}
-                                    isLoading={isLoading}
-                                />
-                            ))
+
+                            <div>
+                                <h3>Không có sản phẩm</h3>
+                            </div>
                         )}
                     </div>
                     {/* /store products */}

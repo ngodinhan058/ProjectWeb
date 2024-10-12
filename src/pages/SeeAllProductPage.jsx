@@ -208,7 +208,7 @@ const Store = () => {
 
         <div id="store" className="col-md-9">
           {/* Store top filter */}
-          <SortAndShow />
+          <SortAndShow setCurrentPage={setCurrentPage} />
           {/* /store top filter */}
 
           {/* Store products */}

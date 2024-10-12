@@ -1,24 +1,26 @@
-
 import React from 'react';
 
-const SortAndShow = () => {
+const SortAndShow = ({ setCurrentPage }) => {
+  // Hàm xử lý khi thay đổi giá trị Sort hoặc Show
+  const handleSortOrShowChange = () => {
+    setCurrentPage(1); // Quay về trang đầu tiên khi thay đổi giá trị
+  };
+
   return (
     <div className="store-filter clearfix">
       <div className="store-sort">
         <label>
           Sort By:
-          <select className="input-select">
+          <select className="input-select" onChange={handleSortOrShowChange}>
             <option value="0">Giá (giảm dần)</option>
             <option value="1">Giá (tăng dần)</option>
-            <option value="2">Đánh giá (giảm dần)</option>
-            <option value="3">Đánh giá (tăng dần)</option>
-            <option value="4">Ưu đãi (giảm dần)</option>
+            <option value="2">Mức ưu đãi (giảm dần)</option>
           </select>
         </label>
 
         <label>
           Show:
-          <select className="input-select">
+          <select className="input-select" onChange={handleSortOrShowChange}>
             <option value="0">20</option>
             <option value="1">50</option>
             <option value="all">All products</option>
@@ -30,7 +32,7 @@ const SortAndShow = () => {
           <i className="fa fa-th"></i>
         </li>
         <li>
-          <a href="#">
+          <a href="#!">
             <i className="fa fa-th-list"></i>
           </a>
         </li>
@@ -40,3 +42,4 @@ const SortAndShow = () => {
 };
 
 export default SortAndShow;
+  

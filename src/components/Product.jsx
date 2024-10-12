@@ -17,7 +17,7 @@ const Product = ({ id, images, name, category, price, oldPrice, rating, sale, is
     }
     return stars;
   };
-
+const calcuSale =  price - (price * (sale/100));
   const img1 = [images]
 
   // console.log(img1)
@@ -62,7 +62,7 @@ const Product = ({ id, images, name, category, price, oldPrice, rating, sale, is
               <Skeleton width={50} />
             ) : (
               <>
-                {sale !== null && <span className="sale">-{sale}%</span>}
+                {sale !== 0 && <span className="sale">-{sale}%</span>}
                 {isNew && <span className="new" style={{ marginLeft: 5 }}>NEW</span>}
               </>
             )}
@@ -78,7 +78,7 @@ const Product = ({ id, images, name, category, price, oldPrice, rating, sale, is
               <Skeleton width={100} />
             ) : (
               <>
-                ${price.toFixed(2)} <del className="product-old-price">${price.toFixed(2)}</del>
+                {calcuSale.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })} <br></br> {sale !== 0 && <del className="product-old-price">{price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</del>}
               </>
             )}
           </h4>

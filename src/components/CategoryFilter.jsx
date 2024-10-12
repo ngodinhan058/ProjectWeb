@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const CategoryFilter = () => {
+const CategoryFilter = ({ onCategoryChange }) => {
   const [categories, setCategories] = useState([]); // Lưu dữ liệu danh mục từ API
   const [openCategoryId, setOpenCategoryId] = useState(null); // Theo dõi danh mục cha nào đang mở
   const [selectedSubcategories, setSelectedSubcategories] = useState([]); // Theo dõi nhiều danh mục con được chọn
@@ -11,7 +11,7 @@ const CategoryFilter = () => {
   useEffect(() => {
     setIsLoading(true); // Bắt đầu trạng thái loading
 
-    axios.get('http://192.168.136.135:8080/api/v1/tree')
+    axios.get('http://192.168.1.11:8080/api/v1/tree')
       .then(response => {
         setCategories(response.data.data || []); // Lưu dữ liệu từ API vào state
         setIsLoading(false); // Tắt trạng thái loading sau khi nhận dữ liệu
@@ -21,6 +21,10 @@ const CategoryFilter = () => {
         setIsLoading(false); // Tắt trạng thái loading nếu có lỗi xảy ra
       });
   }, []); // [] đảm bảo chỉ gọi API khi component mount lần đầu
+
+  useEffect(() => {
+    onCategoryChange(selectedSubcategories);
+  }, [selectedSubcategories]);
 
   // Hàm để mở/đóng danh mục cha
   const toggleCategory = (id) => {

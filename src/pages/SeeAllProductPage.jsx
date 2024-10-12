@@ -15,8 +15,9 @@ const Store = () => {
     const [totalPages, setTotalPages] = useState(1); // Tổng số trang (theo API)
     const [totalElements, setTotalElements] = useState(1); // Tổng số sản phẩm
     const [pageSize, setPageSize] = useState(20); // Kích thước trang (số sản phẩm mỗi trang)
-    const [sort, setSort] = useState(''); // Kích thước trang (số sản phẩm mỗi trang)
+    const [sort, setSort] = useState('id'); // Kích thước trang (số sản phẩm mỗi trang)
     const [direction, setDirection] = useState(''); // Kích thước trang (số sản phẩm mỗi trang)
+    const [selectedCategories, setSelectedCategories] = useState([]);
 
     const [minPrice, setMinPrice] = useState(0);
     const [maxPrice, setMaxPrice] = useState(2000000);
@@ -28,35 +29,49 @@ const Store = () => {
 
 
     useEffect(() => {
-        setIsLoading(true); // Bắt đầu trạng thái loading
+       
+        let apiUrl = 'http://192.168.1.11:8080/api/v1/products/filters?';
 
-        axios.get(
-            `http://192.168.136.135:8080/api/v1/products?page=${currentPage}&size=${pageSize}&sort=${sort}&direction=${direction}&minPrice=${minPrice}&maxPrice=${maxPrice}`
-        )
+        // Khởi tạo danh sách query params
+        const queryParams = [];
+        if (currentPage !== null && currentPage !== undefined) queryParams.push(`page=${currentPage}`); // Thêm tham số page
+        if (pageSize) queryParams.push(`size=${pageSize}`);
+        if (direction && direction !== "") queryParams.push(`direction=${direction}`);
+        if (minPrice !== null && minPrice !== undefined) queryParams.push(`minPrice=${minPrice}`);
+        if (maxPrice !== null && maxPrice !== undefined) queryParams.push(`maxPrice=${maxPrice}`);
+
+        if (selectedCategories.length > 0) {
+            const categoryIds = selectedCategories.map(cat => cat['category-id']).join(','); // Ghép các `category-id` thành chuỗi
+            queryParams.push(`category_id=${categoryIds}`);
+        }
+
+
+
+        apiUrl += queryParams.join('&');
+
+        console.log(apiUrl);
+
+        axios.get(apiUrl)
             .then(response => {
-                const { content } = response.data.data; // Lấy dữ liệu sản phẩm
-                const { totalPages, number, size, totalElements } = response.data.data.page; // Lấy thông tin trang
-                setProductsState(content); // Lưu sản phẩm vào state
-                setTotalPages(totalPages); // Lưu tổng số trang
-                setCurrentPage(number); // Lưu số trang hiện tại (number từ API bắt đầu từ 0)
-                setPageSize(size); // Lưu số lượng sản phẩm mỗi trang
-                setTotalElements(totalElements); // Lưu tổng số sản phẩm
-                setIsLoading(false); // Dừng trạng thái loading
+                const { content } = response.data.data;
+                const { totalPages, number, size, totalElements } = response.data.data.page;
+                setProductsState(content);
+                setTotalPages(totalPages);
+                setCurrentPage(number);
+                setPageSize(size);
+                setTotalElements(totalElements);
+                setIsLoading(false);
 
-                // Lọc sản phẩm theo khoảng giá sau khi dữ liệu được lấy
                 const filtered = content.filter(product =>
                     product['product-price'] >= minPrice && product['product-price'] <= maxPrice
                 );
-                setFilteredProducts(filtered); // Lưu các sản phẩm đã lọc vào state
+                setFilteredProducts(filtered);
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
                 setIsLoading(false);
             });
-    }, [currentPage, pageSize, sort, direction, minPrice, maxPrice]); // Cập nhật khi currentPage hoặc pageSize thay đổi
-
-    console.log(minPrice)
-    console.log(maxPrice)
+    }, [currentPage, pageSize, sort, direction, minPrice, maxPrice, selectedCategories]);
     // Chuyển trang
     const handlePageChange = (pageNumber) => {
         if (pageNumber >= 0 && pageNumber < totalPages) {
@@ -74,13 +89,16 @@ const Store = () => {
         setMinPrice(minPrice);
         setMaxPrice(maxPrice);
     };
-
+    // Hàm xử lý khi thay đổi danh mục
+    const handleCategoryChange = (selectedSubcategories) => {
+        setSelectedCategories(selectedSubcategories); // Cập nhật danh mục được chọn
+    };
 
     return (
         <div className="section">
             <div className="container">
                 <div id="aside" className="col-md-3">
-                    <CategoryFilter isLoading={isLoading} />
+                    <CategoryFilter isLoading={isLoading} onCategoryChange={handleCategoryChange} />
                     <PriceFilter isLoading={isLoading} onPriceChange={handlePriceChange} />
 
                     <BrandFilter
@@ -117,6 +135,7 @@ const Store = () => {
                                     price={product['product-price']}
                                     images={product['product-images']}
                                     rating={product['product-rating']}
+                                    sale={product['product-sale']}
                                     isLoading={isLoading}
                                 />
                             ))
@@ -131,7 +150,7 @@ const Store = () => {
 
                     {/* Store bottom filter */}
 
-                    
+
                     {!isLoading && filteredProducts.length > 0 ? (
                         <div className="store-filter clearfix">
                             <span className="store-qty">
@@ -141,25 +160,35 @@ const Store = () => {
                             </span>
                             <ul className="store-pagination">
                                 {/* First page button */}
-                                {currentPage > 0 && (
-                                    <li>
-                                        <a href="#!" onClick={() => handlePageChange(0)} style={{ color: '#000' }}>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-chevron-double-left" viewBox="0 0 14 14">
-                                                <path fill-rule="evenodd" d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0" />
-                                                <path fill-rule="evenodd" d="M12.354 1.646a.5.5 0 0 1 0 .708L6.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0" />
-                                            </svg>
-                                        </a>
-                                    </li>
-                                )}
+                                <li>
+                                    <a
+                                        href="#!"
+                                        onClick={() => handlePageChange(0)}
+                                        style={{
+                                            color: currentPage > 0 ? '#000' : '#ccc',
+                                            pointerEvents: currentPage > 0 ? 'auto' : 'none'
+                                        }}
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" className="bi bi-chevron-double-left" viewBox="0 0 14 14">
+                                            <path fillRule="evenodd" d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0" />
+                                            <path fillRule="evenodd" d="M12.354 1.646a.5.5 0 0 1 0 .708L6.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0" />
+                                        </svg>
+                                    </a>
+                                </li>
 
                                 {/* Previous page button */}
-                                {currentPage > 0 && (
-                                    <li>
-                                        <a href="#!" onClick={() => handlePageChange(currentPage - 1)} style={{ color: '#000' }}>
-                                            <i className="fa fa-chevron-left"></i>
-                                        </a>
-                                    </li>
-                                )}
+                                <li>
+                                    <a
+                                        href="#!"
+                                        onClick={() => handlePageChange(currentPage - 1)}
+                                        style={{
+                                            color: currentPage > 0 ? '#000' : '#ccc',
+                                            pointerEvents: currentPage > 0 ? 'auto' : 'none'
+                                        }}
+                                    >
+                                        <i className="fa fa-chevron-left"></i>
+                                    </a>
+                                </li>
 
                                 {/* Page numbers */}
                                 {[...Array(totalPages).keys()].map((page) => (
@@ -178,30 +207,41 @@ const Store = () => {
                                 ))}
 
                                 {/* Next page button */}
-                                {currentPage < totalPages - 1 && (
-                                    <li>
-                                        <a href="#!" onClick={() => handlePageChange(currentPage + 1)} style={{ color: '#000' }}>
-                                            <i className="fa fa-chevron-right"></i>
-                                        </a>
-                                    </li>
-                                )}
+                                <li>
+                                    <a
+                                        href="#!"
+                                        onClick={() => handlePageChange(currentPage + 1)}
+                                        style={{
+                                            color: currentPage < totalPages - 1 ? '#000' : '#ccc',
+                                            pointerEvents: currentPage < totalPages - 1 ? 'auto' : 'none'
+                                        }}
+                                    >
+                                        <i className="fa fa-chevron-right"></i>
+                                    </a>
+                                </li>
 
                                 {/* Last page button */}
-                                {currentPage < totalPages - 1 && (
-                                    <li>
-                                        <a href="#!" onClick={() => handlePageChange(totalPages - 1)} style={{ color: '#000' }}>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-chevron-double-right" viewBox="0 0 14 14">
-                                                <path fill-rule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708" />
-                                                <path fill-rule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708" />
-                                            </svg>
-                                        </a>
-                                    </li>
-                                )}
+                                <li>
+                                    <a
+                                        href="#!"
+                                        onClick={() => handlePageChange(totalPages - 1)}
+                                        style={{
+                                            color: currentPage < totalPages - 1 ? '#000' : '#ccc',
+                                            pointerEvents: currentPage < totalPages - 1 ? 'auto' : 'none'
+                                        }}
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" className="bi bi-chevron-double-right" viewBox="0 0 14 14">
+                                            <path fillRule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708" />
+                                            <path fillRule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708" />
+                                        </svg>
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     ) : (
                         <></>
                     )}
+
                     {/* /store bottom filter */}
                 </div>
             </div>

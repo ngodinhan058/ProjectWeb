@@ -29,7 +29,7 @@ const Store = () => {
 
 
     useEffect(() => {
-       
+
         let apiUrl = 'http://192.168.1.11:8080/api/v1/products/filters?';
 
         // Khởi tạo danh sách query params
@@ -126,24 +126,34 @@ const Store = () => {
                     </div>
                     {/* Store products */}
                     <div className="row">
-                        {!isLoading && filteredProducts.length > 0 ? (
-                            filteredProducts.map((product) => (
+                        {isLoading ? (
+                            // Render các Skeleton
+                            Array(20).fill().map((_, index) => (
                                 <Product
-                                    key={product['product-id']}
-                                    id={product['product-id']}
-                                    name={product['product-name']}
-                                    price={product['product-price']}
-                                    images={product['product-images']}
-                                    rating={product['product-rating']}
-                                    sale={product['product-sale']}
-                                    isLoading={isLoading}
+                                    key={index}
+                                    isLoading={true}
                                 />
                             ))
                         ) : (
-
-                            <div>
-                                <h3>Không có sản phẩm</h3>
-                            </div>
+                            filteredProducts.length > 0 ? (
+                                filteredProducts.map((product) => (
+                                    <Product
+                                        key={product['product-id']}
+                                        id={product['product-id']}
+                                        name={product['product-name']}
+                                        price={product['product-price']}
+                                        images={product['product-images']}
+                                        rating={product['product-rating']}
+                                        sale={product['product-sale']}
+                                        isNew={product['product-new']}
+                                        isLoading={false}  // Đặt isLoading là false khi không tải
+                                    />
+                                ))
+                            ) : (
+                                <div>
+                                    <h3>Không có sản phẩm</h3>
+                                </div>
+                            )
                         )}
                     </div>
                     {/* /store products */}

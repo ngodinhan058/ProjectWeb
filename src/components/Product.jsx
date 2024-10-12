@@ -17,7 +17,7 @@ const Product = ({ id, images, name, category, price, oldPrice, rating, sale, is
     }
     return stars;
   };
-const calcuSale =  price - (price * (sale/100));
+  const calcuSale = price - (price * (sale / 100));
   const img1 = [images]
 
   // console.log(img1)
@@ -78,7 +78,19 @@ const calcuSale =  price - (price * (sale/100));
               <Skeleton width={100} />
             ) : (
               <>
-                {calcuSale.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })} <br></br> {sale !== 0 && <del className="product-old-price">{price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</del>}
+                <div>
+                  {calcuSale.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                </div>
+                {sale !== 0 ? (
+                  <del className="product-old-price">
+                    {price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                  </del>
+                ) : (
+                  <del className="product-old-price" style={{ color: '#fff' }}>
+                    {price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                  </del>
+                )}
+
               </>
             )}
           </h4>

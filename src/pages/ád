@@ -1,0 +1,8 @@
+ // // Filter products based on price range
+    // useEffect(() => {
+    //     const filtered = productsState.filter(
+    //         (product) =>
+    //             product['product-price'] >= priceRange.minPrice && product['product-price'] <= priceRange.maxPrice
+    //     );
+    //     setFilteredProducts(filtered); // Update the filtered product list
+    // }, [priceRange, productsState]); // Trigger filtering when price range or productsState changes

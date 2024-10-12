@@ -61,7 +61,7 @@ const CategoryFilter = () => {
             <div key={category['category-id']}>
               <h4 onClick={() => toggleCategory(category['category-id'])}>
                 {category['category-name']}
-                {openCategoryId === category['category-id'] ? ' ▲' : ' ▼'}
+                <span>{openCategoryId === category['category-id'] ? ' ▲' : ' ▼'}</span>
               </h4>
 
               {/* Hiển thị danh mục con nếu danh mục cha đang mở */}

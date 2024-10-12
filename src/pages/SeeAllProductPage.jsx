@@ -130,7 +130,9 @@ const Store = () => {
                     {/* /store products */}
 
                     {/* Store bottom filter */}
-                    {!isLoading && (
+
+                    
+                    {!isLoading && filteredProducts.length > 0 ? (
                         <div className="store-filter clearfix">
                             <span className="store-qty">
                                 Showing {currentPage * pageSize + 1}-
@@ -197,6 +199,8 @@ const Store = () => {
                                 )}
                             </ul>
                         </div>
+                    ) : (
+                        <></>
                     )}
                     {/* /store bottom filter */}
                 </div>

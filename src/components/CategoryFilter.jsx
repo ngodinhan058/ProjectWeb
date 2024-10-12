@@ -7,7 +7,7 @@ const CategoryFilter = () => {
   const [selectedSubcategory, setSelectedSubcategory] = useState(null); // Theo dõi danh mục con được chọn
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true); // Loading state
-  
+
   // Dữ liệu mẫu với danh mục cha và con
   useEffect(() => {
     const fetchCategories = async () => {
@@ -15,7 +15,6 @@ const CategoryFilter = () => {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       setCategories([
         // Sample category data
-
         {
           id: 'category-1',
           name: 'Đồng hồ',

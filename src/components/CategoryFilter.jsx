@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
-const CategoryFilter = () => {
+const CategoryFilter = ({ onCategoryChange }) => {
   const [openCategoryId, setOpenCategoryId] = useState(null); // Theo dõi danh mục cha nào đang mở
   const [selectedSubcategories, setSelectedSubcategories] = useState([]); // Theo dõi nhiều danh mục con được chọn
   const [categories, setCategories] = useState([]); // Lưu dữ liệu danh mục từ API
@@ -13,6 +13,7 @@ const CategoryFilter = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       setIsLoading(true); // Bắt đầu trạng thái loading
+
 
       try {
         // Thay thế bằng dữ liệu giả
@@ -90,7 +91,6 @@ const CategoryFilter = () => {
             ],
           },
         ]);
-      } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
         setIsLoading(false); // Tắt trạng thái loading sau khi nhận dữ liệu
@@ -99,6 +99,10 @@ const CategoryFilter = () => {
 
     fetchCategories();
   }, []); // [] đảm bảo chỉ gọi API khi component mount lần đầu
+
+  useEffect(() => {
+    onCategoryChange(selectedSubcategories);
+  }, [selectedSubcategories]);
 
   // Hàm để mở/đóng danh mục cha
   const toggleCategory = (id) => {

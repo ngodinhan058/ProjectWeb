@@ -9,39 +9,41 @@ const PriceRangeSlider = ({ onPriceChange }) => {
   const validatePrices = (min, max) => {
     if (min > max) {
       setError("Giá tối thiểu không được lớn hơn giá tối đa!");
-      return false; // Giá không hợp lệ
+      return false;
     }
-    setError(""); // Xóa thông báo lỗi
-    return true; // Giá hợp lệ
+    setError("");
+    return true;
   };
 
   const handleMinInputChange = (e) => {
     const value = parseInt(e.target.value);
-    if (value >= 0 && value <= maxPrice) { // Kiểm tra trong khoảng hợp lệ
-      setMinPrice(value); // Cập nhật giá min
-      validatePrices(value, maxPrice); // Kiểm tra giá
+    if (value >= 0) {
+      setMinPrice(value);
+      validatePrices(value, maxPrice);
     }
   };
 
   const handleMaxInputChange = (e) => {
     const value = parseInt(e.target.value);
-    if (value >= minPrice && value <= 2000000) { // Kiểm tra trong khoảng hợp lệ
-      setMaxPrice(value); // Cập nhật giá max
-      validatePrices(minPrice, value); // Kiểm tra giá
+    if (value <= 2000000) {
+      setMaxPrice(value);
+      validatePrices(minPrice, value);
     }
   };
 
   const handleRangeInputChange = (e, type) => {
     const value = parseInt(e.target.value);
-    if (type === "min" && value >= 0 && value <= maxPrice && validatePrices(value, maxPrice)) {
-      setMinPrice(value); // Cập nhật giá min nếu hợp lệ
-    } else if (type === "max" && value >= minPrice && value <= 2000000 && validatePrices(minPrice, value)) {
-      setMaxPrice(value); // Cập nhật giá max nếu hợp lệ
+    if (type === "min" && value >= 0) {
+      setMinPrice(value);
+      validatePrices(value, maxPrice);
+    } else if (type === "max" && value <= 2000000) {
+      setMaxPrice(value);
+      validatePrices(minPrice, value);
     }
   };
 
   const handleQtyUp = (type) => {
-    if (type === "min" && minPrice + priceGap <= maxPrice && minPrice + priceGap <= 2000000) {
+    if (type === "min" && minPrice + priceGap <= 2000000) {
       setMinPrice((prev) => {
         const newMin = prev + priceGap;
         validatePrices(newMin, maxPrice);
@@ -63,7 +65,7 @@ const PriceRangeSlider = ({ onPriceChange }) => {
         validatePrices(newMin, maxPrice);
         return newMin;
       });
-    } else if (type === "max" && maxPrice - priceGap >= minPrice) {
+    } else if (type === "max" && maxPrice - priceGap >= 0) {
       setMaxPrice((prev) => {
         const newMax = prev - priceGap;
         validatePrices(minPrice, newMax);
@@ -75,7 +77,7 @@ const PriceRangeSlider = ({ onPriceChange }) => {
   useEffect(() => {
     const debounce = setTimeout(() => {
       onPriceChange({ minPrice, maxPrice });
-    }, 1000); // Delay filtering by 1 second
+    }, 1000);
     return () => clearTimeout(debounce);
   }, [minPrice, maxPrice, onPriceChange]);
 
@@ -100,7 +102,6 @@ const PriceRangeSlider = ({ onPriceChange }) => {
           value={minPrice}
           step="10000"
           onChange={(e) => handleRangeInputChange(e, "min")}
-          disabled={minPrice > maxPrice} // Vô hiệu hóa khi min > max
         />
         <input
           type="range"
@@ -110,7 +111,6 @@ const PriceRangeSlider = ({ onPriceChange }) => {
           value={maxPrice}
           step="10000"
           onChange={(e) => handleRangeInputChange(e, "max")}
-          disabled={maxPrice < minPrice} // Vô hiệu hóa khi max < min
         />
       </div>
       <div className="price-input">

@@ -4,11 +4,12 @@ import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
 const CategoryFilter = () => {
+<<<<<<< HEAD
   const [openCategory, setOpenCategory] = useState(null); // Theo dõi danh mục nào đang mở
   const [selectedSubcategory, setSelectedSubcategory] = useState(null); // Theo dõi danh mục con được chọn
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true); // Loading state
-  
+
   // Dữ liệu mẫu với danh mục cha và con
   useEffect(() => {
     const fetchCategories = async () => {
@@ -16,7 +17,6 @@ const CategoryFilter = () => {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       setCategories([
         // Sample category data
-
         {
           id: 'category-1',
           name: 'Đồng hồ',
@@ -90,7 +90,28 @@ const CategoryFilter = () => {
         },
       ]);
       setLoading(false); // Set loading to false after fetching
+=======
+  const [categories, setCategories] = useState([]); // Lưu dữ liệu danh mục từ API
+  const [openCategoryId, setOpenCategoryId] = useState(null); // Theo dõi danh mục cha nào đang mở
+  const [selectedSubcategories, setSelectedSubcategories] = useState([]); // Theo dõi nhiều danh mục con được chọn
+  const [isLoading, setIsLoading] = useState(true); // Trạng thái loading
+
+  // Fetch dữ liệu từ API khi component được mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      setIsLoading(true); // Bắt đầu trạng thái loading
+
+      try {
+        const response = await axios.get('http://192.168.136.135:8080/api/v1/tree');
+        setCategories(response.data.data || []); // Lưu dữ liệu từ API vào state
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setIsLoading(false); // Tắt trạng thái loading sau khi nhận dữ liệu
+      }
+>>>>>>> d26fa692e386deef82b6f9b0943367f20a460497
     };
+
     fetchCategories();
   }, []); // [] đảm bảo chỉ gọi API khi component mount lần đầu
 

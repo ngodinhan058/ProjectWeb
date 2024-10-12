@@ -13,7 +13,11 @@ function App() {
   return (
     <Router>
       <Header />
-      <ScrollToTop/>
+
+    
+
+      <ScrollToTop />
+
       <Routes>
         <Route path="/" element={<SeeAllProductPage />} />
         <Route path="/:id" element={<ProductDetails />} />

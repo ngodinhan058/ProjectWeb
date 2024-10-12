@@ -1,17 +1,6 @@
 /* Scroll to Top */
 
-.store-pagination li.active a {
-  background-color: #333;
-  color: white;
-  cursor: not-allowed;
-}
-.store-pagination a {
-  padding: 5px 10px;
-  border: 1px solid #ddd;
-  margin: 0 5px;
-  cursor: pointer;
-  text-decoration: none;
-}
+
 
 .scroll-to-top-btn {
   position: fixed;

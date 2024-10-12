@@ -1,4 +1,5 @@
-import React, { useState , useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
@@ -7,7 +8,7 @@ const CategoryFilter = () => {
   const [selectedSubcategory, setSelectedSubcategory] = useState(null); // Theo dõi danh mục con được chọn
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true); // Loading state
-
+  
   // Dữ liệu mẫu với danh mục cha và con
   useEffect(() => {
     const fetchCategories = async () => {
@@ -15,6 +16,7 @@ const CategoryFilter = () => {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       setCategories([
         // Sample category data
+
         {
           id: 'category-1',
           name: 'Đồng hồ',
@@ -90,56 +92,76 @@ const CategoryFilter = () => {
       setLoading(false); // Set loading to false after fetching
     };
     fetchCategories();
-  }, []);
-
+  }, []); // [] đảm bảo chỉ gọi API khi component mount lần đầu
 
   // Hàm để mở/đóng danh mục cha
   const toggleCategory = (id) => {
-    if (openCategory === id) {
-      setOpenCategory(null); // Đóng nếu đã mở
-    } else {
-      setOpenCategory(id); // Mở nếu chưa mở
-    }
+    setOpenCategoryId((prevId) => (prevId === id ? null : id)); // Đóng nếu đã mở, mở nếu chưa mở
   };
 
-  // Hàm xử lý khi nhấn vào danh mục con
+  // Hàm xử lý khi nhấn vào danh mục con (cho phép chọn nhiều danh mục con)
   const handleCategorySelect = (subcategory) => {
-    setSelectedSubcategory(subcategory);
-    console.log(`Selected subcategory: ${subcategory.name}`); // Xử lý logic khi chọn danh mục con
-    // Ví dụ: gọi API để load lại danh sách sản phẩm theo subcategory.id
+    setSelectedSubcategories((prevSelected) => {
+      if (prevSelected.find((item) => item['category-id'] === subcategory['category-id'])) {
+        // Bỏ chọn nếu danh mục con đã được chọn trước đó
+        return prevSelected.filter((item) => item['category-id'] !== subcategory['category-id']);
+      } else {
+        // Thêm danh mục con nếu chưa được chọn
+        return [...prevSelected, subcategory];
+      }
+    });
   };
+
+  // Kiểm tra xem danh mục con có đang được chọn không
+  const isSubcategorySelected = (subcategory) => {
+    return selectedSubcategories.find((item) => item['category-id'] === subcategory['category-id']);
+  };
+
+  // Hiển thị loading nếu dữ liệu chưa tải xong
+  if (isLoading) {
+    return (
+      <div className="aside">
+        <h3 className="aside-title">Category</h3>
+        <div className="checkbox-filter">
+          {Array.from({ length: 5 }).map((_, index) => (
+            <Skeleton key={index} height={30} style={{ marginBottom: '10px' }} />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="aside">
       <h3 className="aside-title">Category</h3>
       <div className="checkbox-filter">
-        {loading ? (
-          // Show skeleton while loading
-          Array.from({ length: 5 }).map((_, index) => (
-            <Skeleton key={index} height={30} style={{ marginBottom: '10px' }} />
-          ))
+        {categories.length === 0 ? (
+          <div>No categories available</div> // Hiển thị nếu không có danh mục nào
         ) : (
           categories.map((category) => (
-            <div key={category.id}>
-              <h4 onClick={() => toggleCategory(category.id)}>
-                {category.name}
-                {openCategory === category.id ? ' ▲' : ' ▼'}
+            <div key={category['category-id']}>
+              <h4 onClick={() => toggleCategory(category['category-id'])}>
+                {category['category-name']}
+                <span>{openCategoryId === category['category-id'] ? ' ▲' : ' ▼'}</span>
               </h4>
 
-              {openCategory === category.id && (
+              {/* Hiển thị danh mục con nếu danh mục cha đang mở */}
+              {openCategoryId === category['category-id'] && category.childrens && category.childrens.length > 0 ? (
                 <div className="subcategory">
-                  {category.subcategories.map((subcategory) => (
+                  {category.childrens.map((subcategory) => (
                     <div
-                      key={subcategory.id}
-                      className={`subcategory-item ${selectedSubcategory?.id === subcategory.id ? 'selected' : ''}`}
+                      key={`${category['category-id']}-${subcategory['category-slug']}`} // Sử dụng tổ hợp ID để tránh trùng lặp
+                      className={`subcategory-item ${isSubcategorySelected(subcategory) ? 'selected' : ''}`}
                       onClick={() => handleCategorySelect(subcategory)}
                     >
-                      {subcategory.name}
-                      <small> ({subcategory.count})</small>
+                      {subcategory['category-name']}
+                      <small> ({subcategory.count || 0})</small>
                     </div>
                   ))}
                 </div>
-              )}
+              ) : openCategoryId === category['category-id'] && (!category.childrens || category.childrens.length === 0) ? (
+                <div>No subcategories available</div> // Hiển thị nếu không có danh mục con
+              ) : null}
             </div>
           ))
         )}
@@ -147,6 +169,5 @@ const CategoryFilter = () => {
     </div>
   );
 };
-
 
 export default CategoryFilter;

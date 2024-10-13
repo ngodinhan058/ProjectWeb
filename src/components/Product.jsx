@@ -17,7 +17,7 @@ const Product = ({ id, images, name, category, price, oldPrice, rating, sale, is
     }
     return stars;
   };
-  const calcuSale = price - (price * (sale / 100));
+ 
   const img1 = [images]
 
   // console.log(img1)
@@ -49,10 +49,10 @@ const Product = ({ id, images, name, category, price, oldPrice, rating, sale, is
           ) : (
             <img
               src={isHovered
-                ? img1[0][1]?.['product-image-path'] || img1[0][0]['product-image-path'] // Sử dụng ảnh thứ hai nếu không null, ngược lại sử dụng ảnh mặc định
-                : img1[0][0]?.['product-image-path'] || img1[0][1]['product-image-path'] // Tương tự cho ảnh đầu tiên
+                ? img1[0][1]?.['productImagePath'] || img1[0][0]['productImagePath'] // Sử dụng ảnh thứ hai nếu không null, ngược lại sử dụng ảnh mặc định
+                : img1[0][0]?.['productImagePath'] || img1[0][1]['productImagePath'] // Tương tự cho ảnh đầu tiên
               }
-              alt={img1[0][0]?.['product-image-alt'] || 'Default Alt Text'} // Giá trị alt, nếu không có thì dùng văn bản mặc định
+              alt={img1[0][0]?.['productImageAlt'] || 'Default Alt Text'} // Giá trị alt, nếu không có thì dùng văn bản mặc định
             />
 
           )}
@@ -79,15 +79,15 @@ const Product = ({ id, images, name, category, price, oldPrice, rating, sale, is
             ) : (
               <>
                 <div>
-                  {calcuSale.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                  {price}
                 </div>
                 {sale !== 0 ? (
                   <del className="product-old-price">
-                    {price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                    {oldPrice}
                   </del>
                 ) : (
                   <del className="product-old-price" style={{ color: '#fff' }}>
-                    {price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                    {price}
                   </del>
                 )}
 
@@ -118,15 +118,16 @@ const Product = ({ id, images, name, category, price, oldPrice, rating, sale, is
             )}
           </div>
         </div>
-        <div className="add-to-cart">
-          {isLoading ? (
-            <Skeleton width={150} height={40} />
-          ) : (
+
+        {isLoading ? (
+          <></>
+        ) : (
+          <div className="add-to-cart">
             <button className="add-to-cart-btn">
               <i className="fa fa-shopping-cart"></i> add to cart
             </button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

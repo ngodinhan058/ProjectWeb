@@ -9,7 +9,6 @@ import axios from 'axios';
 
 const Store = () => {
     const [productsState, setProductsState] = useState([]); // Dữ liệu sản phẩm
-    const [filteredProducts, setFilteredProducts] = useState([]); // Filtered products
     const [isLoading, setIsLoading] = useState(true); // Trạng thái loading
     const [currentPage, setCurrentPage] = useState(0); // Trang hiện tại (theo API)
     const [totalPages, setTotalPages] = useState(1); // Tổng số trang (theo API)
@@ -31,22 +30,20 @@ const Store = () => {
 
     useEffect(() => {
 
-        let apiUrl = 'http://localhost:8080/api/v1/products/filters?';
+        let apiUrl = 'http://192.168.136.135:8080/api/v1/products/filters?';
 
         // Khởi tạo danh sách query params
         const queryParams = [];
         if (currentPage !== null && currentPage !== undefined) queryParams.push(`page=${currentPage}`); // Thêm tham số page
         if (pageSize) queryParams.push(`size=${pageSize}`);
         if (direction && direction !== "") queryParams.push(`direction=${direction}`);
-        
+        // if (sort && sort != "") queryParams.push(`sort=${sort}`);
         if (minPrice !== null && minPrice !== undefined) queryParams.push(`minPrice=${minPrice}`);
         if (maxPrice !== null && maxPrice !== undefined) queryParams.push(`maxPrice=${maxPrice}`);
         if (categoryId !== null && categoryId !== "") queryParams.push(`categoryId=${categoryId}`);
 
 
         apiUrl += queryParams.join('&');
-
-        console.log(apiUrl);
 
         axios.get(apiUrl)
             .then(response => {
@@ -58,11 +55,11 @@ const Store = () => {
                 setPageSize(size);
                 setTotalElements(totalElements);
                 setIsLoading(false);
-
-                const filtered = content.filter(product =>
-                    product['product-price'] >= minPrice && product['product-price'] <= maxPrice
-                );
-                setFilteredProducts(filtered);
+               
+                // const filtered = content.filter(product =>
+                //     product['productPrice'] >= minPrice && product['productPrice'] <= maxPrice
+                // );
+               
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
@@ -88,7 +85,6 @@ const Store = () => {
     };
     // Hàm xử lý khi thay đổi danh mục
     const handleCategoryChange = (selectedSubcCategory) => {
-        console.log("test", selectedSubcCategory)
         if (selectedSubcCategory != null) {
             setCategoryId(selectedSubcCategory);
         }
@@ -137,17 +133,19 @@ const Store = () => {
                                 />
                             ))
                         ) : (
-                            filteredProducts.length > 0 ? (
-                                filteredProducts.map((product) => (
+                            productsState.length > 0 ? (
+                                productsState.map((product) => (
                                     <Product
-                                        key={product['product-id']}
-                                        id={product['product-id']}
-                                        name={product['product-name']}
-                                        price={product['product-price']}
-                                        images={product['product-images']}
-                                        rating={product['product-rating']}
-                                        sale={product['product-sale']}
-                                        isNew={product['product-new']}
+                                        key={product['productId']}
+                                        id={product['productId']}
+                                        name={product['productName']}
+                                        price={product['productPriceSale']}
+                                        oldPrice={product['productPrice']}
+                                        
+                                        images={product['productImages']}
+                                        rating={product['productRating']}
+                                        sale={product['productSale']}
+                                        
                                         isLoading={false}  // Đặt isLoading là false khi không tải
                                     />
                                 ))
@@ -163,7 +161,98 @@ const Store = () => {
                     {/* Store bottom filter */}
 
 
-                    {!isLoading && filteredProducts.length > 0 ? (
+                    {!isLoading && productsState.length > 0 ? (
+                        <div className="store-filter clearfix">
+                        <span className="store-qty">
+                            Showing {currentPage * pageSize + 1}-
+                            {Math.min((currentPage + 1) * pageSize, totalElements)} of{' '}
+                            {totalElements} products
+                        </span>
+                        <ul className="store-pagination">
+                            {/* First page button */}
+                            <li>
+                                <a
+                                    href="#!"
+                                    onClick={() => handlePageChange(0)}
+                                    style={{
+                                        color: currentPage > 0 ? '#000' : '#ccc',
+                                        pointerEvents: currentPage > 0 ? 'auto' : 'auto'
+                                    }}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" className="bi bi-chevron-double-left" viewBox="0 0 14 14">
+                                        <path fillRule="evenodd" d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0" />
+                                        <path fillRule="evenodd" d="M12.354 1.646a.5.5 0 0 1 0 .708L6.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0" />
+                                    </svg>
+                                </a>
+                            </li>
+
+                            {/* Previous page button */}
+                            <li>
+                                <a
+                                    href="#!"
+                                    onClick={() => handlePageChange(currentPage - 1)}
+                                    style={{
+                                        color: currentPage > 0 ? '#000' : '#ccc',
+                                        pointerEvents: currentPage > 0 ? 'auto' : 'auto'
+                                    }}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0" />
+                                    </svg>
+                                </a>
+                            </li>
+
+                            {/* Page numbers */}
+                            {[...Array(totalPages).keys()].map((page) => (
+                                <li key={page} className={currentPage === page ? 'active' : ''}>
+                                    <a
+                                        href="#!"
+                                        onClick={() => handlePageChange(page)}
+                                        style={{
+                                            color: currentPage === page ? '#fff' : '#000',
+                                            pointerEvents: currentPage === page ? 'none' : 'auto',
+                                        }}
+                                    >
+                                        {page + 1}
+                                    </a>
+                                </li>
+                            ))}
+
+                            {/* Next page button */}
+                            <li>
+                                <a
+                                    href="#!"
+                                    onClick={() => handlePageChange(currentPage + 1)}
+                                    style={{
+                                        color: currentPage < totalPages - 1 ? '#000' : '#ccc',
+                                        pointerEvents: currentPage < totalPages - 1 ? 'auto' : 'none'
+                                    }}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708" />
+                                    </svg>
+                                </a>
+                            </li>
+
+                            {/* Last page button */}
+                            <li>
+                                <a
+                                    href="#!"
+                                    onClick={() => handlePageChange(totalPages - 1)}
+                                    style={{
+                                        color: currentPage < totalPages - 1 ? '#000' : '#ccc',
+                                        pointerEvents: currentPage < totalPages - 1 ? 'auto' : 'none'
+                                    }}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" className="bi bi-chevron-double-right" viewBox="0 0 14 14">
+                                        <path fillRule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708" />
+                                        <path fillRule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708" />
+                                    </svg>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    ) : (
                         <div className="store-filter clearfix">
                             <span className="store-qty">
                                 Showing {currentPage * pageSize + 1}-
@@ -178,7 +267,7 @@ const Store = () => {
                                         onClick={() => handlePageChange(0)}
                                         style={{
                                             color: currentPage > 0 ? '#000' : '#ccc',
-                                            pointerEvents: currentPage > 0 ? 'auto' : 'none'
+                                            pointerEvents: currentPage > 0 ? 'auto' : 'auto'
                                         }}
                                     >
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" className="bi bi-chevron-double-left" viewBox="0 0 14 14">
@@ -195,10 +284,12 @@ const Store = () => {
                                         onClick={() => handlePageChange(currentPage - 1)}
                                         style={{
                                             color: currentPage > 0 ? '#000' : '#ccc',
-                                            pointerEvents: currentPage > 0 ? 'auto' : 'none'
+                                            pointerEvents: currentPage > 0 ? 'auto' : 'auto'
                                         }}
                                     >
-                                        <i className="fa fa-chevron-left"></i>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0" />
+                                        </svg>
                                     </a>
                                 </li>
 
@@ -228,7 +319,9 @@ const Store = () => {
                                             pointerEvents: currentPage < totalPages - 1 ? 'auto' : 'none'
                                         }}
                                     >
-                                        <i className="fa fa-chevron-right"></i>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708" />
+                                        </svg>
                                     </a>
                                 </li>
 
@@ -250,8 +343,6 @@ const Store = () => {
                                 </li>
                             </ul>
                         </div>
-                    ) : (
-                        <></>
                     )}
 
                     {/* /store bottom filter */}

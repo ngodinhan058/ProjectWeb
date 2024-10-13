@@ -14,7 +14,7 @@ const SizeFilter = ({ isLoading, selectedSizes, onSelectSizes }) => {
   // ];
   // Fetch dữ liệu từ API khi component được mount
   useEffect(() => {
-    axios.get('http://192.168.1.11:8080/api/v1/product-sizes?productIds=9b083144-cf72-4701-a8fd-bf013bbec402&gidzl=kQP8OcrJBXcpi4zZPqKf5xUuIcD_Ho9D_EmNDIqJSK7px1KuTqCWHwJjGp9o4d9BeEP7D3dcpL1DRLWX5W')
+    axios.get('http://localhost:8080/api/v1/product-sizes?productIds=9b083144-cf72-4701-a8fd-bf013bbec402&gidzl=kQP8OcrJBXcpi4zZPqKf5xUuIcD_Ho9D_EmNDIqJSK7px1KuTqCWHwJjGp9o4d9BeEP7D3dcpL1DRLWX5W')
       .then(response => {
         setSizes(response.data.data || []); // Lưu dữ liệu từ API vào state
         

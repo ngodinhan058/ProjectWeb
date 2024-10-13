@@ -17,7 +17,8 @@ const Store = () => {
     const [pageSize, setPageSize] = useState(20); // Kích thước trang (số sản phẩm mỗi trang)
     const [sort, setSort] = useState('id'); // Kích thước trang (số sản phẩm mỗi trang)
     const [direction, setDirection] = useState(''); // Kích thước trang (số sản phẩm mỗi trang)
-    const [selectedCategories, setSelectedCategories] = useState([]);
+    const [categoryId, setCategoryId] = useState([]);
+
 
     const [minPrice, setMinPrice] = useState(0);
     const [maxPrice, setMaxPrice] = useState(2000000);
@@ -30,21 +31,17 @@ const Store = () => {
 
     useEffect(() => {
 
-        let apiUrl = 'http://192.168.1.11:8080/api/v1/products/filters?';
+        let apiUrl = 'http://localhost:8080/api/v1/products/filters?';
 
         // Khởi tạo danh sách query params
         const queryParams = [];
         if (currentPage !== null && currentPage !== undefined) queryParams.push(`page=${currentPage}`); // Thêm tham số page
         if (pageSize) queryParams.push(`size=${pageSize}`);
         if (direction && direction !== "") queryParams.push(`direction=${direction}`);
+        
         if (minPrice !== null && minPrice !== undefined) queryParams.push(`minPrice=${minPrice}`);
         if (maxPrice !== null && maxPrice !== undefined) queryParams.push(`maxPrice=${maxPrice}`);
-
-        if (selectedCategories.length > 0) {
-            const categoryIds = selectedCategories.map(cat => cat['category-id']).join(','); // Ghép các `category-id` thành chuỗi
-            queryParams.push(`category_id=${categoryIds}`);
-        }
-
+        if (categoryId !== null && categoryId !== "") queryParams.push(`categoryId=${categoryId}`);
 
 
         apiUrl += queryParams.join('&');
@@ -71,7 +68,7 @@ const Store = () => {
                 console.error('Error fetching data:', error);
                 setIsLoading(false);
             });
-    }, [currentPage, pageSize, sort, direction, minPrice, maxPrice, selectedCategories]);
+    }, [currentPage, pageSize, sort, direction, minPrice, maxPrice, categoryId]);
     // Chuyển trang
     const handlePageChange = (pageNumber) => {
         if (pageNumber >= 0 && pageNumber < totalPages) {
@@ -90,8 +87,13 @@ const Store = () => {
         setMaxPrice(maxPrice);
     };
     // Hàm xử lý khi thay đổi danh mục
-    const handleCategoryChange = (selectedSubcategories) => {
-        setSelectedCategories(selectedSubcategories); // Cập nhật danh mục được chọn
+    const handleCategoryChange = (selectedSubcCategory) => {
+        console.log("test", selectedSubcCategory)
+        if (selectedSubcCategory != null) {
+            setCategoryId(selectedSubcCategory);
+        }
+
+        // Cập nhật danh mục được chọn
     };
 
     return (

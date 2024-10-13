@@ -59,7 +59,7 @@ const Product = ({ id, images, name, category, price, oldPrice, rating, sale, is
           <div className="product-label">
             {/* Thêm skeleton loading cho sale và isNew */}
             {isLoading ? (
-              <Skeleton width={50} />
+              <></>
             ) : (
               <>
                 {sale !== 0 && <span className="sale">-{sale}%</span>}

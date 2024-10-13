@@ -15,7 +15,7 @@ const CategoryFilter = ({ onCategoryChange }) => {
  useEffect(() => {
   setIsLoading(true); // Bắt đầu trạng thái loading
 
-  axios.get('http://localhost:8080/api/v1/tree')
+  axios.get('http://192.168.136.135:8080/api/v1/tree')
     .then(response => {
       setCategories(response.data.data || []); // Lưu dữ liệu từ API vào state
       setIsLoading(false); // Tắt trạng thái loading sau khi nhận dữ liệu
@@ -44,7 +44,7 @@ const CategoryFilter = ({ onCategoryChange }) => {
 
   // Kiểm tra xem danh mục con có đang được chọn không
   const isSubcategorySelected = (subcategory) => {
-    return selectedSubcategories.find((item) => item['category-id'] === subcategory['category-id']);
+    return selectedSubcategories.find((item) => item['categoryId'] === subcategory['categoryId']);
   };
 
   // Hiển thị loading nếu dữ liệu chưa tải xong
@@ -69,34 +69,34 @@ const CategoryFilter = ({ onCategoryChange }) => {
           <div>No categories available</div> // Hiển thị nếu không có danh mục nào
         ) : (
           categories.map((category) => (
-             <div key={category['category-id']} style={{ position: 'relative', }}>
+             <div key={category['categoryId']} style={{ position: 'relative', }}>
               <div style={{ position: 'absolute', top: 10, right: '5%' }} onClick={() => {
-                toggleCategory(category['category-id']);
-              }}><span style={{ cursor: 'pointer' }} >{openCategoryId === category['category-id'] ? ' ▲' : ' ▼'}</span></div>
+                toggleCategory(category['categoryId']);
+              }}><span style={{ cursor: 'pointer' }} >{openCategoryId === category['categoryId'] ? ' ▲' : ' ▼'}</span></div>
               <h4
                 onClick={() => {
 
-                  handleCategorySelect(category['category-id']); // Gọi để lưu id của danh mục cha khi nhấn vào
+                  handleCategorySelect(category['categoryId']); // Gọi để lưu id của danh mục cha khi nhấn vào
                 }}
               >
-                {category['category-name']}
+                {category['categoryName']}
 
               </h4>
               {/* Hiển thị danh mục con nếu danh mục cha đang mở */}
-              {openCategoryId === category['category-id'] && category.childrens && category.childrens.length > 0 ? (
+              {openCategoryId === category['categoryId'] && category.categoryChildren && category.categoryChildren.length > 0 ? (
                 <div className="subcategory">
-                  {category.childrens.map((subcategory) => (
+                  {category.categoryChildren.map((subcategory) => (
                     <div
-                      key={`${category['category-id']}-${subcategory['category-id']}`} // Sử dụng tổ hợp ID để tránh trùng lặp
+                      key={`${category['categoryId']}-${subcategory['categoryId']}`} // Sử dụng tổ hợp ID để tránh trùng lặp
                       className={`subcategory-item ${isSubcategorySelected(subcategory) ? 'selected' : ''}`}
                       onClick={() => handleCategorySelect(subcategory)}
                     >
-                      {subcategory['name']}
+                      {subcategory['categoryName']}
                       <small> ({subcategory.count || 0})</small>
                     </div>
                   ))}
                 </div>
-              ) : openCategoryId === category['category-id'] && (!category.childrens || category.childrens.length === 0) ? (
+              ) : openCategoryId === category['categoryId'] && (!category.categoryChildren || category.categoryChildren.length === 0) ? (
                 <div>No subcategories available</div> // Hiển thị nếu không có danh mục con
               ) : null}
             </div>

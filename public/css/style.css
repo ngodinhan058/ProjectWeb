@@ -145,7 +145,7 @@ textarea.input {
 
 /*-- Number input --*/
 
-.input-number {
+.input-number{
   position: relative;
 }
 
@@ -182,12 +182,13 @@ textarea.input {
 .input-number .qty-up {
   right: 0;
   top: 0;
-  border-bottom: 0px;
+  border-top-right-radius: 5px;
 }
 
 .input-number .qty-down {
   right: 0;
   bottom: 0;
+  border-bottom-right-radius: 5px;
 }
 
 .input-number .qty-up:hover, .input-number .qty-down:hover {
@@ -1046,6 +1047,7 @@ textarea.input {
   -webkit-transition: 0.2s all;
   transition: 0.2s all;
   z-index: 2;
+  font-size: 8sp;
 }
 
 .product:hover .add-to-cart {
@@ -1066,6 +1068,7 @@ textarea.input {
   border-radius: 40px;
   -webkit-transition: 0.2s all;
   transition: 0.2s all;
+  
 }
 
 .product .add-to-cart .add-to-cart-btn>i {

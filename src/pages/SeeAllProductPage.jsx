@@ -28,44 +28,43 @@ const Store = () => {
     const [selectedSizes, setSelectedSizes] = useState([]);
 
 
-    useEffect(() => {
+   useEffect(() => {
+    let apiUrl = 'https://cors-anywhere.herokuapp.com/https://74cd-2001-ee0-d700-d7f0-3cb7-32b6-92d8-b99c.ngrok-free.app/api/v1/products/filters?search=samsung&';
 
-        let apiUrl = 'http://192.168.136.135:8080/api/v1/products/filters?';
+    // Khởi tạo danh sách query params
+    const queryParams = [];
+    if (currentPage !== null && currentPage !== undefined) queryParams.push(`page=${currentPage}`); // Thêm tham số page
+    if (pageSize) queryParams.push(`size=${pageSize}`);
+    if (direction && direction !== "") queryParams.push(`direction=${direction}`);
+    // if (sort && sort != "") queryParams.push(`sort=${sort}`);
+    if (minPrice !== null && minPrice !== undefined) queryParams.push(`minPrice=${minPrice}`);
+    if (maxPrice !== null && maxPrice !== undefined) queryParams.push(`maxPrice=${maxPrice}`);
+    if (categoryId !== null && categoryId !== "") queryParams.push(`categoryId=${categoryId}`);
 
-        // Khởi tạo danh sách query params
-        const queryParams = [];
-        if (currentPage !== null && currentPage !== undefined) queryParams.push(`page=${currentPage}`); // Thêm tham số page
-        if (pageSize) queryParams.push(`size=${pageSize}`);
-        if (direction && direction !== "") queryParams.push(`direction=${direction}`);
-        // if (sort && sort != "") queryParams.push(`sort=${sort}`);
-        if (minPrice !== null && minPrice !== undefined) queryParams.push(`minPrice=${minPrice}`);
-        if (maxPrice !== null && maxPrice !== undefined) queryParams.push(`maxPrice=${maxPrice}`);
-        if (categoryId !== null && categoryId !== "") queryParams.push(`categoryId=${categoryId}`);
+    apiUrl += queryParams.join('&');
 
+    axios.get(apiUrl, {
+        headers: {
+            'ngrok-skip-browser-warning': 'true'
+        }
+    })
+    .then(response => {
+        const { content } = response.data.data;
+        const { totalPages, number, size, totalElements } = response.data.data.page;
+        console.log("conten",content)
+        setProductsState(content);
+        setTotalPages(totalPages);
+        setCurrentPage(number);
+        setPageSize(size);
+        setTotalElements(totalElements);
+        setIsLoading(false);
+    })
+    .catch(error => {
+        console.error('Error fetching data:', error);
+        setIsLoading(false);
+    });
+}, [currentPage, pageSize, sort, direction, minPrice, maxPrice, categoryId]);
 
-        apiUrl += queryParams.join('&');
-
-        axios.get(apiUrl)
-            .then(response => {
-                const { content } = response.data.data;
-                const { totalPages, number, size, totalElements } = response.data.data.page;
-                setProductsState(content);
-                setTotalPages(totalPages);
-                setCurrentPage(number);
-                setPageSize(size);
-                setTotalElements(totalElements);
-                setIsLoading(false);
-               
-                // const filtered = content.filter(product =>
-                //     product['productPrice'] >= minPrice && product['productPrice'] <= maxPrice
-                // );
-               
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-                setIsLoading(false);
-            });
-    }, [currentPage, pageSize, sort, direction, minPrice, maxPrice, categoryId]);
     // Chuyển trang
     const handlePageChange = (pageNumber) => {
         if (pageNumber >= 0 && pageNumber < totalPages) {

@@ -15,7 +15,7 @@ const CategoryFilter = ({ onCategoryChange }) => {
  useEffect(() => {
   setIsLoading(true); // Bắt đầu trạng thái loading
 
-  axios.get('http://192.168.136.135:8080/api/v1/tree')
+  axios.get('')
     .then(response => {
       setCategories(response.data.data || []); // Lưu dữ liệu từ API vào state
       setIsLoading(false); // Tắt trạng thái loading sau khi nhận dữ liệu

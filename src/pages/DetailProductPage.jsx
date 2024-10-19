@@ -1,16 +1,39 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from 'react';
 import Slider from "react-slick"; // Import react-slick
 import "slick-carousel/slick/slick.css"; // Import slick CSS
 import "slick-carousel/slick/slick-theme.css"; // Import slick theme CSS
 import { useLocation } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import Product from '../components/Product';
+import { BASE_URL } from '../components/api/config';
+import { axiosInstance } from '../components/api/axiosConfig';
 
-const ProductDetail = ({ categories }) => {
 
+const ProductDetail = () => {
     const location = useLocation();
-    const { img1, img2, name, category, price, oldPrice, rating, sale, isNew } = location.state || {};
-    const [selectedImage, setSelectedImage] = useState(img1);
+    const [productsState, setProductsState] = useState([]); // Dữ liệu sản phẩm
+    const { images, name, category, price, oldPrice, rating, sale, isNew } = location.state || {};
+    const [selectedImage, setSelectedImage] = useState(images[0]['productImagePath']); // Chọn hình ảnh đầu tiên làm mặc định
+    const [isLoading, setIsLoading] = useState(true); // Trạng thái loading
 
+
+    useEffect(() => {
+        let apiUrl = `${BASE_URL}products/filters?`;
+        // Khởi tạo danh sách query params
+        axiosInstance.get(apiUrl, {
+            headers: {
+                'ngrok-skip-browser-warning': 'true'
+            }
+        })
+            .then(response => {
+                const { content } = response.data.data;
+                console.log('de', content)
+                setProductsState(content);
+            })
+            .catch(error => {
+                console.error("Error fetching data:", error);
+            });
+    }, []);
 
 
     const renderRating = () => {
@@ -25,6 +48,7 @@ const ProductDetail = ({ categories }) => {
         }
         return stars;
     };
+
     const handleImageClick = (imgSrc) => {
         setSelectedImage(imgSrc);
     };
@@ -80,7 +104,7 @@ const ProductDetail = ({ categories }) => {
     const settings = {
         infinite: true,
         speed: 500,
-        slidesToShow: 2,
+        slidesToShow: 3,
         slidesToScroll: 1,
         vertical: true,
         verticalSwiping: true,
@@ -97,17 +121,11 @@ const ProductDetail = ({ categories }) => {
                     <div className="row">
                         <div className="col-md-12">
                             <ul className="breadcrumb-tree">
-                                <li><Link to="/">Home</Link></li>
-                                {/* Duyệt qua mảng categories để tạo các liên kết breadcrumb */}
-                                {categories && categories.map((category, index) => (
-                                    <li key={index}>
-                                        <Link to={`/category/${category.id}`}>
-                                            {category.name}
-                                        </Link>
-                                    </li>
-                                ))}
-                                {/* Hiển thị tên sản phẩm cuối cùng */}
-                                <li className="active">{name}</li>
+                                <li><a href="#">Home</a></li>
+                                <li><a href="#">All Categories</a></li>
+                                <li><a href="#">Accessories</a></li>
+                                <li><a href="#">Headphones</a></li>
+                                <li className="active">Product name goes here</li>
                             </ul>
                         </div>
                     </div>
@@ -129,17 +147,15 @@ const ProductDetail = ({ categories }) => {
                         <div className="col-md-2 col-md-pull-5">
                             <div id="product-imgs">
                                 <Slider {...settings}>
-                                    {[img1, img2].map(
-                                        (imgSrc, index) => (
-                                            <div
-                                                key={index}
-                                                className={`product-preview ${selectedImage === imgSrc ? "selected" : ""}`}
-                                                onClick={() => handleImageClick(imgSrc)}
-                                            >
-                                                <img src={imgSrc} alt={`Product ${index + 1}`} />
-                                            </div>
-                                        )
-                                    )}
+                                    {images.map((image, index) => (
+                                        <div
+                                            key={index}
+                                            className={`product-preview ${selectedImage === image.productImagePath ? "selected" : ""}`}
+                                            onClick={() => handleImageClick(image.productImagePath)}
+                                        >
+                                            <img src={image.productImagePath} alt={`Product ${index + 1}`} />
+                                        </div>
+                                    ))}
                                 </Slider>
                             </div>
                         </div>
@@ -264,10 +280,65 @@ const ProductDetail = ({ categories }) => {
                                         </a>
                                     </li>
                                 </ul>
+                                {/* product tab content */}
+                                <div className="tab-content">
+
+                                </div>
+                                {/* /product tab content  */}
                             </div>
                         </div>
                     </div>
+                    {/* row */}
                 </div>
+                {/* container */}
+            </div>
+            <div className="section">
+                {/* container */}
+                <div class="container">
+                    {/* row */}
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <div class="section-title text-center">
+                                <h3 class="title">Related Products</h3>
+                            </div>
+                        </div>
+
+                        {isLoading ? (
+                            // Render các Skeleton
+                            Array(4).fill().map((_, index) => (
+                                <Product
+                                    key={index}
+                                    isLoading={false}
+                                />
+                            ))
+                        ) : (
+                            productsState.length > 0 ? (
+                                productsState.map((product) => (
+
+                                    <Product
+                                        key={product['productId']}
+                                        id={product['productId']}
+                                        name={product['productName']}
+                                        price={product['productPriceSale']}
+                                        oldPrice={product['productPrice']}
+
+                                        images={product['productImages']}
+                                        rating={product['productRating']}
+                                        sale={product['productSale']}
+                                        isLoading={false}  // Đặt isLoading là false khi không tải
+                                    />
+                                ))
+                            ) : (
+                                <div>
+                                    <h3>Không có sản phẩm</h3>
+                                </div>
+                            )
+                        )}
+                    </div>
+                    {/* /row */}
+                </div>
+                {/* /container */}
             </div>
         </>
     );

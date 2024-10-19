@@ -52,8 +52,8 @@ const Store = () => {
             .then(response => {
                 const { content } = response.data.data;
                 const { totalPages, number, size, totalElements } = response.data.data.page;
-                console.log("conten", content)
                 setProductsState(content);
+                
                 setTotalPages(totalPages);
                 setCurrentPage(number);
                 setPageSize(size);
@@ -94,9 +94,8 @@ const Store = () => {
             setCategoryId(selectedSubcCategory);
         }
 
-        // Cập nhật danh mục được chọn
+        // Cập nhật danh mục được chọnz
     };
-
     return (
         <div className="section">
             <div className="container">
@@ -120,9 +119,8 @@ const Store = () => {
                         <label>
                             Sort By:
                             <select className="input-select" value={`${sort}|${direction}`} onChange={handleSelectChange}>
-                                <option value="">All</option>
-                                <option value="price|asc">Tăng Dần (Giá)</option>
                                 <option value="price|desc">Giảm Dần (Giá)</option>
+                                <option value="price|asc">Tăng Dần (Giá)</option>
                             </select>
                         </label>
 
@@ -140,13 +138,14 @@ const Store = () => {
                         ) : (
                             productsState.length > 0 ? (
                                 productsState.map((product) => (
+                                    
                                     <Product
                                         key={product['productId']}
                                         id={product['productId']}
                                         name={product['productName']}
                                         price={product['productPriceSale']}
                                         oldPrice={product['productPrice']}
-
+                                       
                                         images={product['productImages']}
                                         rating={product['productRating']}
                                         sale={product['productSale']}
@@ -201,8 +200,8 @@ const Store = () => {
                                             pointerEvents: currentPage > 0 ? 'auto' : 'auto'
                                         }}
                                     >
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
-                                            <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" className="bi bi-chevron-left" viewBox="0 0 16 16">
+                                            <path fillRule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0" />
                                         </svg>
                                     </a>
                                 </li>
@@ -233,8 +232,8 @@ const Store = () => {
                                             pointerEvents: currentPage < totalPages - 1 ? 'auto' : 'none'
                                         }}
                                     >
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
-                                            <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" className="bi bi-chevron-right" viewBox="0 0 16 16">
+                                            <path fillRule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708" />
                                         </svg>
                                     </a>
                                 </li>
@@ -292,8 +291,8 @@ const Store = () => {
                                             pointerEvents: currentPage > 0 ? 'auto' : 'auto'
                                         }}
                                     >
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
-                                            <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" className="bi bi-chevron-left" viewBox="0 0 16 16">
+                                            <path fillRule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0" />
                                         </svg>
                                     </a>
                                 </li>
@@ -324,8 +323,8 @@ const Store = () => {
                                             pointerEvents: currentPage < totalPages - 1 ? 'auto' : 'none'
                                         }}
                                     >
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
-                                            <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" className="bi bi-chevron-right" viewBox="0 0 16 16">
+                                            <path fillRule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708" />
                                         </svg>
                                     </a>
                                 </li>

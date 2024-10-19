@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import axios from 'axios';
+import { BASE_URL } from './api/config';
 
 const CategoryFilter = ({ onCategoryChange }) => {
   const [openCategoryId, setOpenCategoryId] = useState(null); // Theo dõi danh mục cha nào đang mở
@@ -11,21 +12,24 @@ const CategoryFilter = ({ onCategoryChange }) => {
   const [isLoading, setIsLoading] = useState(true); // Trạng thái loading
 
   // Fetch dữ liệu từ API khi component được mount
- // Fetch dữ liệu từ API khi component được mount
- useEffect(() => {
-  setIsLoading(true); // Bắt đầu trạng thái loading
-
-  axios.get('')
-    .then(response => {
-      setCategories(response.data.data || []); // Lưu dữ liệu từ API vào state
-      setIsLoading(false); // Tắt trạng thái loading sau khi nhận dữ liệu
-    })
-    .catch(error => {
-      console.error('Error fetching data:', error);
-      setIsLoading(false); // Tắt trạng thái loading nếu có lỗi xảy ra
-    });
-}, []); // [] đảm bảo chỉ gọi API khi component mount lần đầu
-
+useEffect(() => {
+  let apiUrl = `${BASE_URL}categories`;
+  axios.get(apiUrl, {
+      headers: {
+          'ngrok-skip-browser-warning': 'true'
+      }
+  })
+      .then(response => {
+          const { data } = response.data;
+          console.log("danh muc", data)
+          setCategories(data);
+          setIsLoading(false)
+      })
+      .catch(error => {
+          console.error('Error fetching data:', error);
+          setIsLoading(false);
+      });
+}, []);
 
   useEffect(() => {
     onCategoryChange(selectedSubcategories);
@@ -36,31 +40,24 @@ const CategoryFilter = ({ onCategoryChange }) => {
     setOpenCategoryId((prevId) => (prevId === id ? null : id)); // Đóng nếu đã mở, mở nếu chưa mở
   };
 
-  const handleCategorySelect = (category) => {
-    setSelectedSubcategories([category] != null ? [category] : []);
+  const handleCategorySelect = (categoryId) => {
+    // Kiểm tra xem danh mục đã được chọn chưa
+    if (selectedSubcategories.includes(categoryId)) {
+      // Nếu đã được chọn, thì bỏ chọn
+      setSelectedSubcategories((prevSelected) =>
+        prevSelected.filter((id) => id !== categoryId)
+      );
+    } else {
+      // Nếu chưa được chọn, thì chọn nó
+      setSelectedSubcategories((prevSelected) => [...prevSelected, categoryId]);
+    }
   };
-
-
-
+  
   // Kiểm tra xem danh mục con có đang được chọn không
-  const isSubcategorySelected = (subcategory) => {
-    return selectedSubcategories.find((item) => item['categoryId'] === subcategory['categoryId']);
+  const isSubcategorySelected = (subcategoryId) => {
+    return selectedSubcategories.includes(subcategoryId);
   };
-
-  // Hiển thị loading nếu dữ liệu chưa tải xong
-  if (isLoading) {
-    return (
-      <div className="aside">
-        <h3 className="aside-title">Category</h3>
-        <div className="checkbox-filter">
-          {Array.from({ length: 5 }).map((_, index) => (
-            <Skeleton key={index} height={30} style={{ marginBottom: '10px' }} />
-          ))}
-        </div>
-      </div>
-    );
-  }
-
+  
   return (
     <div className="aside">
       <h3 className="aside-title">Category</h3>
@@ -69,18 +66,23 @@ const CategoryFilter = ({ onCategoryChange }) => {
           <div>No categories available</div> // Hiển thị nếu không có danh mục nào
         ) : (
           categories.map((category) => (
-             <div key={category['categoryId']} style={{ position: 'relative', }}>
-              <div style={{ position: 'absolute', top: 10, right: '5%' }} onClick={() => {
-                toggleCategory(category['categoryId']);
-              }}><span style={{ cursor: 'pointer' }} >{openCategoryId === category['categoryId'] ? ' ▲' : ' ▼'}</span></div>
+            <div key={category['categoryId']} style={{ position: 'relative' }}>
+              <div
+                style={{ position: 'absolute', top: 10, right: '5%' }}
+                onClick={() => {
+                  toggleCategory(category['categoryId']);
+                }}
+              >
+                <span style={{ cursor: 'pointer' }}>
+                  {openCategoryId === category['categoryId'] ? ' ▲' : ' ▼'}
+                </span>
+              </div>
               <h4
                 onClick={() => {
-
                   handleCategorySelect(category['categoryId']); // Gọi để lưu id của danh mục cha khi nhấn vào
                 }}
               >
                 {category['categoryName']}
-
               </h4>
               {/* Hiển thị danh mục con nếu danh mục cha đang mở */}
               {openCategoryId === category['categoryId'] && category.categoryChildren && category.categoryChildren.length > 0 ? (
@@ -88,8 +90,8 @@ const CategoryFilter = ({ onCategoryChange }) => {
                   {category.categoryChildren.map((subcategory) => (
                     <div
                       key={`${category['categoryId']}-${subcategory['categoryId']}`} // Sử dụng tổ hợp ID để tránh trùng lặp
-                      className={`subcategory-item ${isSubcategorySelected(subcategory) ? 'selected' : ''}`}
-                      onClick={() => handleCategorySelect(subcategory)}
+                      className={`subcategory-item ${isSubcategorySelected(subcategory['categoryId']) ? 'selected' : ''}`}
+                      onClick={() => handleCategorySelect(subcategory['categoryId'])}
                     >
                       {subcategory['categoryName']}
                       <small> ({subcategory.count || 0})</small>
@@ -104,7 +106,7 @@ const CategoryFilter = ({ onCategoryChange }) => {
         )}
       </div>
     </div>
-  );
+  );  
 };
 
 export default CategoryFilter;

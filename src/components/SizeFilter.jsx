@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
+import { BASE_URL } from './api/config';
+
 const SizeFilter = ({ isLoading, selectedSizes, onSelectSizes }) => {
   const [sizes, setSizes] = useState([]); // Lưu dữ liệu danh mục từ API
   // const sizes = [
@@ -13,18 +15,19 @@ const SizeFilter = ({ isLoading, selectedSizes, onSelectSizes }) => {
   //   { id: 'size-6', name: 'XXXL', count: 755 },
   // ];
   // Fetch dữ liệu từ API khi component được mount
-  useEffect(() => {
-    axios.get('')
-      .then(response => {
-        setSizes(response.data.data || []); // Lưu dữ liệu từ API vào state
+  // useEffect(() => {
+  //   let apiUrl = `${BASE_URL}/size`;
+  //   axios.get(apiUrl)
+  //     .then(response => {
+  //       setSizes(response.data.data || []); // Lưu dữ liệu từ API vào state
         
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
+  //     })
+  //     .catch(error => {
+  //       console.error('Error fetching data:', error);
         
-      });
-  }, []); // [] đảm bảo chỉ gọi API khi component mount lần đầu
-  console.log(sizes)
+  //     });
+  // }, []); // [] đảm bảo chỉ gọi API khi component mount lần đầu
+  // console.log(sizes)
 
   const handleCheckboxChange = (id) => {
     onSelectSizes((prev) =>
@@ -39,7 +42,7 @@ const SizeFilter = ({ isLoading, selectedSizes, onSelectSizes }) => {
         className="checkbox-filter"
         style={{ maxHeight: 140, overflowY: 'scroll' }}
       >
-        {sizes.map((size) =>
+        {/* {sizes.map((size) =>
           isLoading ? (
             <Skeleton height={20} />
           ) : (
@@ -57,7 +60,7 @@ const SizeFilter = ({ isLoading, selectedSizes, onSelectSizes }) => {
               </label>
             </div>
           )
-        )}
+        )} */}
       </div>
     </div>
   );

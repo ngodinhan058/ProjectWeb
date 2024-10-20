@@ -53,7 +53,7 @@ const Store = () => {
                 const { content } = response.data.data;
                 const { totalPages, number, size, totalElements } = response.data.data.page;
                 setProductsState(content);
-                
+
                 setTotalPages(totalPages);
                 setCurrentPage(number);
                 setPageSize(size);
@@ -67,7 +67,7 @@ const Store = () => {
                 } else {
                     console.error("Error fetching data:", error);
                 }
-                
+
             });
     }, [currentPage, pageSize, sort, direction, minPrice, maxPrice, categoryId]);
 
@@ -119,39 +119,43 @@ const Store = () => {
                         <label>
                             Sort By:
                             <select className="input-select" value={`${sort}|${direction}`} onChange={handleSelectChange}>
-                                <option value="price|desc">Giảm Dần (Giá)</option>
                                 <option value="price|asc">Tăng Dần (Giá)</option>
+                                <option value="price|desc">Giảm Dần (Giá)</option>
+                                <option value="sale|desc">Giảm Dần (Sale)</option>
+
                             </select>
                         </label>
 
                     </div>
                     {/* Store products */}
                     <div className="row">
+
                         {isLoading ? (
                             // Render các Skeleton
                             Array(20).fill().map((_, index) => (
                                 <Product
                                     key={index}
-                                    isLoading={true}
+                                    isLoading={isLoading}
                                 />
                             ))
                         ) : (
                             productsState.length > 0 ? (
                                 productsState.map((product) => (
-                                    
-                                    <Product
-                                        key={product['productId']}
-                                        id={product['productId']}
-                                        name={product['productName']}
-                                        price={product['productPriceSale']}
-                                        oldPrice={product['productPrice']}
-                                       
-                                        images={product['productImages']}
-                                        rating={product['productRating']}
-                                        sale={product['productSale']}
+                                    <div className="col-md-3 col-xs-6">
+                                        <Product
+                                            key={product['productId']}
+                                            id={product['productId']}
+                                            name={product['productName']}
+                                            price={product['productPriceSale']}
+                                            oldPrice={product['productPrice']}
 
-                                        isLoading={false}  // Đặt isLoading là false khi không tải
-                                    />
+                                            images={product['productImages']}
+                                            rating={product['productRating']}
+                                            sale={product['productSale']}
+
+                                            isLoading={false}  // Đặt isLoading là false khi không tải
+                                        />
+                                    </div>
                                 ))
                             ) : (
                                 <div>
@@ -160,6 +164,7 @@ const Store = () => {
                             )
                         )}
                     </div>
+
                     {/* /store products */}
 
                     {/* Store bottom filter */}

@@ -17,10 +17,10 @@ const Product = ({ id, images, name, category, price, oldPrice, rating, sale, is
     }
     return stars;
   };
- 
-  const img1 = [images]
 
-  // console.log(img1)
+  const image = [images]
+
+  // console.log(image)
 
 
   const navigate = useNavigate();
@@ -31,7 +31,6 @@ const Product = ({ id, images, name, category, price, oldPrice, rating, sale, is
       state: { id, images, name, category, price, oldPrice, rating, sale, isNew },
     });
   };
-
   return (
     <div className="col-md-3 col-xs-6">
       <div
@@ -48,14 +47,17 @@ const Product = ({ id, images, name, category, price, oldPrice, rating, sale, is
             <Skeleton height={300} />
           ) : (
             <img
-              src={isHovered
-                ? img1[0][1]?.['productImagePath'] || img1[0][0]['productImagePath'] // Sử dụng ảnh thứ hai nếu không null, ngược lại sử dụng ảnh mặc định
-                : img1[0][0]?.['productImagePath'] || img1[0][1]['productImagePath'] // Tương tự cho ảnh đầu tiên
+              src={
+                isHovered
+                  ? (image[0]?.[1]?.['productImagePath'] || image[0]?.[0]?.['productImagePath'])
+                  || 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/langvi-300px-No_image_available.svg.png' // Sử dụng ảnh thứ hai nếu không null, nếu không dùng ảnh mặc định
+                  : (image[0]?.[0]?.['productImagePath'] || image[0]?.[1]?.['productImagePath']) // Tương tự cho ảnh đầu tiên
+                  || 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/langvi-300px-No_image_available.svg.png' // Hình ảnh mặc định
               }
-              alt={img1[0][0]?.['productImageAlt'] || 'Default Alt Text'} // Giá trị alt, nếu không có thì dùng văn bản mặc định
+              alt={image[0]?.[0]?.['productImageAlt'] || 'Default Alt Text'} // Giá trị alt, nếu không có thì dùng văn bản mặc định
             />
-
           )}
+
           <div className="product-label">
             {/* Thêm skeleton loading cho sale và isNew */}
             {isLoading ? (

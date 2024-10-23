@@ -1,0 +1,51 @@
+.product-options {
+    margin: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.price-label {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.size-options {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.size-label {
+    margin-right: 10px;
+    font-size: 16px;
+}
+
+.size-button {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #ddd;
+    background-color: white;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.size-button:hover:not(.disabled) {
+    background-color: #f0f0f0;
+}
+
+.size-button.selected {
+    background-color: #007bff; /* Màu xanh khi chọn */
+    color: #fff;
+    border-color: #007bff; /* Đổi màu viền khi chọn */
+}
+
+.size-button.disabled {
+    background-color: #f9f9f9;
+    color: #bbb;
+    border-color: #ddd;
+    cursor: not-allowed;
+    text-decoration: line-through;
+}

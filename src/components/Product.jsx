@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
-const Product = ({ id, images, name, category, price, oldPrice, rating, sale, isNew, isLoading }) => {
+const Product = ({ id, images, name, category, price, brand, oldPrice, supplier, rating, sale, isNew, isLoading }) => {
 
   const renderRating = () => {
     const stars = [];
@@ -28,7 +28,7 @@ const Product = ({ id, images, name, category, price, oldPrice, rating, sale, is
 
   const handleClick = () => {
     navigate(`/${id}`, {
-      state: { id, images, name, category, price, oldPrice, rating, sale, isNew },
+      state: { id, images, name, category, price, brand, oldPrice, supplier, rating, sale, isNew },
     });
   };
   return (

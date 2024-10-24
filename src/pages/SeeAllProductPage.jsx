@@ -148,7 +148,7 @@ const Store = () => {
                                             name={product['productName']}
                                             price={product['productPriceSale']}
                                             oldPrice={product['productPrice']}
-
+                                            supplier={product['productSupplier']['productSupplierName']}
                                             images={product['productImages']}
                                             rating={product['productRating']}
                                             sale={product['productSale']}

@@ -81,7 +81,6 @@ const Store = () => {
         const value = event.target.value.split('|')
         setDirection(value[1])
         setSort(value[0]); // Cập nhật state với giá trị được chọn
-        // console.log(sort, direction)
     };
     // Handle price range change
     const handlePriceChange = ({ minPrice, maxPrice }) => {
@@ -95,30 +94,6 @@ const Store = () => {
         }
 
         // Cập nhật danh mục được chọnz
-    };
-    const getCategoryNames = (category) => {
-        let categoryNames = [category.categoryName];
-        
-        // Nếu có danh mục con, tiếp tục duyệt qua
-        if (category.categoryChildren && category.categoryChildren.length > 0) {
-            category.categoryChildren.forEach(child => {
-                categoryNames.push(getCategoryNames(child));
-            });
-        }
-
-        return categoryNames.join('|');
-    };
-    const getCategoryIds = (category) => {
-        let categoryIds = [category.categoryId];
-        
-        // Nếu có danh mục con, tiếp tục duyệt qua
-        if (category.categoryChildren && category.categoryChildren.length > 0) {
-            category.categoryChildren.forEach(child => {
-                categoryIds.push(getCategoryIds(child));
-            });
-        }
-
-        return categoryIds.join('|');
     };
     return (
         <div className="section">
@@ -167,10 +142,8 @@ const Store = () => {
                         ) : (
                             productsState.length > 0 ? (
                                 productsState.map((product) => {
-                                    // const nameCategories = product.categories.map(category => getCategoryNames(category)).join('|');
-                                    // const idCategories = product.categories.map(category => getCategoryIds(category)).join('|');
                                     return (
-                                        <div className="col-md-3 col-xs-6">
+                                        <div className="col-md-3 col-xs-6" key={product['productId']}>
                                             <Product
                                                 key={product['productId']}
                                                 id={product['productId']}
@@ -178,7 +151,6 @@ const Store = () => {
                                                 price={product['productPriceSale']}
                                                 oldPrice={product['productPrice']}
                                                 categories={product['categories']}
-                                                // categoriesId={idCategories}
                                                 images={product['productImages']}
                                                 rating={product['productRating']}
                                                 sale={product['productSale']}

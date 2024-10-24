@@ -58,7 +58,7 @@ const ProductDetail = () => {
     );
 
     const [isLoading, setIsLoading] = useState(false); // Trạng thái loading
-    
+
     useEffect(() => {
         if (categories && categories.length > 0) {
             setCategoryIdss(categories[0].categoryId); // Lấy categoryId của danh mục đầu tiên, nếu có
@@ -170,28 +170,6 @@ const ProductDetail = () => {
         arrows: false,
     };
     const isDesktop = useMediaQuery({ minWidth: 481 });
-    const getCategoryList = (categories, categoriesId) => {
-        // Kiểm tra nếu chuỗi chứa dấu |
-        if (categories.includes('|') && categoriesId.includes('|')) {
-            // Nếu có dấu |, cắt chuỗi và tạo các phần tử <li>
-            const categoryIds = categoriesId.split('|'); // Tách chuỗi categoriesId thành mảng
-
-            return categories.split('|').map((category, index) => (
-                <li key={index}>
-                    <a href={`#${categoryIds[index]}`}>{category}</a> {/* Dùng dấu ngoặc móc {} để truyền động giá trị */}
-                </li>
-            ));
-        } else {
-
-            // Nếu không có dấu |, chỉ hiển thị một <li>
-            return (
-                <li>
-                    <a href={`#${categoriesId}`}>{categories}</a> {/* Truyền động giá trị categoriesId */}
-                </li>
-            );
-        }
-    };
-
     return (
         <>
             <div id="breadcrumb" className="section">

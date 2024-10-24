@@ -32,12 +32,12 @@ const ProductDetail = () => {
     // Size
     const [sizes, setSizes] = useState([]);
     const [selectedSize, setSelectedSize] = useState(null);
-    const sizes = [
+    const staticSizes = [
         { size: '4', available: true },
         { size: '6', available: true },
         { size: '8', available: false },
         { size: '10', available: true }
-      ];
+    ];
 
 
       const handleSizeClick = (item) => {
@@ -310,7 +310,7 @@ const ProductDetail = () => {
                                 <div className="product-options">
                                     <div className="size-options">
                                         <span className="size-label">Chọn size: </span>
-                                        {sizes.map((item) => (
+                                        {staticSizes.map((item) => (
                                             <button
                                                 key={item.size}
                                                 className={`size-button ${item.available ? '' : 'disabled'} ${selectedSize === item.size ? 'selected' : ''}`}

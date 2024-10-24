@@ -18,19 +18,62 @@ import ProductTabs from '../components/ProductTabs';
 const ProductDetail = () => {
     const location = useLocation();
     const [productsState, setProductsState] = useState([]); // Dữ liệu sản phẩm
-    const { images, name, category, price, oldPrice, rating, sale, isNew } = location.state || {};
+    const { images, name, price, oldPrice, categories, rating, sale, isNew, } = location.state || {};
+    const [categoryIdss, setCategoryIdss] = useState(); // Dữ liệu sản phẩm
+
+
+    const getCategoryItems = (categories) => {
+        // Kiểm tra xem categories có phải là một mảng không
+        if (!Array.isArray(categories)) {
+            return null; // hoặc return []; nếu bạn muốn trả về một mảng rỗng
+        }
+
+        // Khởi tạo danh sách để lưu trữ các mục danh mục
+        let categoryItems = [];
+
+        // Duyệt qua từng danh mục trong mảng categories
+        categories.forEach(category => {
+            // Kiểm tra nếu category có giá trị hợp lệ
+            if (category && category.categoryId) {
+                // Thêm danh mục hiện tại vào danh sách
+                categoryItems.push(
+                    <li key={category.categoryId}>
+                        <a href={`#${category.categoryId}`}>{category.categoryName}</a>
+                    </li>
+                );
+
+                // Nếu có danh mục con, thêm danh sách các danh mục con vào
+                if (category.categoryChildren && category.categoryChildren.length > 0) {
+                    const childItems = getCategoryItems(category.categoryChildren); // Đệ quy để lấy danh mục con
+                    // Duyệt qua từng danh mục con và thêm vào danh sách
+                    categoryItems = categoryItems.concat(childItems);
+                }
+            }
+        });
+
+        return categoryItems;
+    };
+
+
+
     const [selectedImage, setSelectedImage] = useState(
         images && images.length > 0
             ? images[0]?.['productImagePath'] // Nếu có hình ảnh, sử dụng tấm đầu tiên
             : 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/langvi-300px-No_image_available.svg.png' // Nếu không có hình ảnh, sử dụng ảnh mặc định
     );
-    const [isLoading, setIsLoading] = useState(false); // Trạng thái loading
 
-
+    const [isLoading, setIsLoading] = useState(true); // Trạng thái loading
+    useEffect(() => {
+        if (categories && categories.length > 0) {
+            setCategoryIdss(categories[0].categoryId); // Lấy categoryId của danh mục đầu tiên, nếu có
+        }
+    }, [categories]);
 
     useEffect(() => {
-        setIsLoading(true); // Bắt đầu tải
-        let apiUrl = `${BASE_URL}products/filters?`;
+        let apiUrl = `${BASE_URL}products/${categoryIdss}`;
+        console.log(apiUrl);
+
+        // Khởi tạo danh sách query params
         axiosInstance.get(apiUrl, {
             headers: {
                 'ngrok-skip-browser-warning': 'true'
@@ -42,11 +85,11 @@ const ProductDetail = () => {
                 setIsLoading(false); // Kết thúc tải
             })
             .catch(error => {
+
                 console.error("Error fetching data:", error);
                 setIsLoading(false); // Kết thúc tải dù có lỗi
             });
-    }, []);
-
+    }, [categoryIdss]);
 
     const renderRating = () => {
         const stars = [];
@@ -67,8 +110,6 @@ const ProductDetail = () => {
 
     const [isHoveredUp, setIsHoveredUp] = useState(false);
     const [isHoveredDown, setIsHoveredDown] = useState(false);
-    const [isHoveredLeft, setIsHoveredLeft] = useState(false);
-    const [isHoveredRight, setIsHoveredRight] = useState(false);
 
     const DownArrow = ({ className, style, onClick }) => (
         <div
@@ -112,51 +153,7 @@ const ProductDetail = () => {
         >
             <i className="fa fa-chevron-down" style={{ fontSize: 20, position: 'absolute', right: '22%', top: '20%' }}></i>
         </div>
-    );
-    const RightArrow = ({ className, style, onClick }) => (
-        <div
-            className={className}
-            style={{
-                ...style,
 
-                display: 'block',
-                background: isHoveredRight ? '#ef233c' : '#000',
-                border: '1px solid #e4e7ed',
-                color: isHoveredRight ? '#fff' : '#000',
-                textAlign: 'center',
-                transition: 'background 0.3s, color 0.3s',
-                marginRight: 20,
-
-            }}
-            onClick={onClick}
-            onMouseEnter={() => setIsHoveredRight(true)}
-            onMouseLeave={() => setIsHoveredRight(false)}
-        >
-
-        </div>
-    );
-
-    const LeftArrow = ({ className, style, onClick }) => (
-        <div
-            className={className}
-            style={{
-                ...style,
-                width: 40,
-                height: 40,
-                display: 'block',
-                background: isHoveredLeft ? '#ef233c' : '#fff',
-                border: '1px solid #e4e7ed',
-                color: isHoveredLeft ? '#fff' : '#000',
-                textAlign: 'center',
-                transition: 'background-color 0.3s ease, color 0.3s ease',
-                marginLeft: 20,
-            }}
-            onClick={onClick}
-            onMouseEnter={() => setIsHoveredLeft(true)}
-            onMouseLeave={() => setIsHoveredLeft(false)}
-        >
-            <i className="fa fa-chevron-left" style={{ fontSize: 20, position: 'absolute', right: '33%', top: '25%' }}></i>
-        </div>
     );
     const settings = {
         infinite: true,
@@ -174,7 +171,7 @@ const ProductDetail = () => {
     const sliderSettings = {
         infinite: true,
         speed: 100,
-        slidesToShow: 6, // Hiển thị 4 sản phẩm trên desktop
+        slidesToShow: 4, // Hiển thị 4 sản phẩm trên desktop
         slidesToScroll: 1,
         autoplay: true, // Tự động chạy
         autoplaySpeed: 2000, // Chuyển mỗi 2 giây
@@ -341,17 +338,13 @@ const ProductDetail = () => {
                                         </>
                                     )}
                                 </ul>
-
-
                                 <ul className="product-links">
                                     {isLoading ? (
                                         <Skeleton width={100} height={30} />
                                     ) : (
                                         <>
                                             <li>Category:</li>
-                                            <li>
-                                                <a href="#">{category}</a>
-                                            </li>
+                                            {getCategoryItems(categories)}
                                         </>
                                     )}
                                 </ul>
@@ -398,12 +391,12 @@ const ProductDetail = () => {
             </div>
             <div>
                 {/* container */}
-                <div class="container">
+                <div className="container">
                     {/* row */}
-                    <div class="row">
+                    <div className="row">
 
-                        <div class="section-title text-center">
-                            <h3 class="title">Related Products</h3>
+                        <div className="section-title text-center">
+                            <h3 className="title">Related Products</h3>
                         </div>
                         {isLoading ? (
                             // Hiển thị các skeleton trong khi đang tải
@@ -422,13 +415,14 @@ const ProductDetail = () => {
                                         </button>
                                         <Slider ref={sliderRef} {...sliderSettings}>
                                             {productsState.map((product) => (
-                                                <div className="col-md-2 col-xs-6 marginBottom">
+                                                <div className="col-md-4 col-xs-6 marginBottom" key={product['productId']}>
                                                     <Product
                                                         key={product['productId']}
                                                         id={product['productId']}
                                                         name={product['productName']}
                                                         price={product['productPriceSale']}
                                                         oldPrice={product['productPrice']}
+                                                        categories={product['categories']}
                                                         images={product['productImages']}
                                                         rating={product['productRating']}
                                                         sale={product['productSale']}

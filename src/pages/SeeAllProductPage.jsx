@@ -16,7 +16,7 @@ const Store = () => {
     const [totalPages, setTotalPages] = useState(1); // Tổng số trang (theo API)
     const [totalElements, setTotalElements] = useState(1); // Tổng số sản phẩm
     const [pageSize, setPageSize] = useState(20); // Kích thước trang (số sản phẩm mỗi trang)
-    const [sort, setSort] = useState('id'); // Kích thước trang (số sản phẩm mỗi trang)
+    const [sort, setSort] = useState(''); // Kích thước trang (số sản phẩm mỗi trang)
     const [direction, setDirection] = useState(''); // Kích thước trang (số sản phẩm mỗi trang)
     const [categoryId, setCategoryId] = useState([]);
 
@@ -37,13 +37,13 @@ const Store = () => {
         if (currentPage !== null && currentPage !== undefined) queryParams.push(`page=${currentPage}`); // Thêm tham số page
         if (pageSize) queryParams.push(`size=${pageSize}`);
         if (direction && direction !== "") queryParams.push(`direction=${direction}`);
-        // if (sort && sort != "") queryParams.push(`sort=${sort}`);
+        if (sort && sort != "") queryParams.push(`sort=${sort}`);
         if (minPrice !== null && minPrice !== undefined) queryParams.push(`minPrice=${minPrice}`);
         if (maxPrice !== null && maxPrice !== undefined) queryParams.push(`maxPrice=${maxPrice}`);
         if (categoryId !== null && categoryId !== "") queryParams.push(`categoryId=${categoryId}`);
 
         apiUrl += queryParams.join('&');
-
+        console.log(apiUrl)
         axiosInstance.get(apiUrl, {
             headers: {
                 'ngrok-skip-browser-warning': 'true'
@@ -81,7 +81,6 @@ const Store = () => {
         const value = event.target.value.split('|')
         setDirection(value[1])
         setSort(value[0]); // Cập nhật state với giá trị được chọn
-        // console.log(sort, direction)
     };
     // Handle price range change
     const handlePriceChange = ({ minPrice, maxPrice }) => {
@@ -119,9 +118,9 @@ const Store = () => {
                         <label>
                             Sort By:
                             <select className="input-select" value={`${sort}|${direction}`} onChange={handleSelectChange}>
-                                <option value="price|asc">Tăng Dần (Giá)</option>
-                                <option value="price|desc">Giảm Dần (Giá)</option>
-                                <option value="sale|desc">Giảm Dần (Sale)</option>
+                                <option value="productPrice|asc">Tăng Dần (Giá)</option>
+                                <option value="productPrice|desc">Giảm Dần (Giá)</option>
+                                <option value="productSale|desc">Giảm Dần (Sale)</option>
 
                             </select>
                         </label>
@@ -133,30 +132,34 @@ const Store = () => {
                         {isLoading ? (
                             // Render các Skeleton
                             Array(20).fill().map((_, index) => (
-                                <Product
-                                    key={index}
-                                    isLoading={isLoading}
-                                />
+                                <div className="col-md-3 col-xs-6">
+                                    <Product
+                                        key={index}
+                                        isLoading={isLoading}
+                                    />
+                                </div>
                             ))
                         ) : (
                             productsState.length > 0 ? (
-                                productsState.map((product) => (
-                                    <div className="col-md-3 col-xs-6">
-                                        <Product
-                                            key={product['productId']}
-                                            id={product['productId']}
-                                            name={product['productName']}
-                                            price={product['productPriceSale']}
-                                            oldPrice={product['productPrice']}
+                                productsState.map((product) => {
+                                    return (
+                                        <div className="col-md-3 col-xs-6" key={product['productId']}>
+                                            <Product
+                                                key={product['productId']}
+                                                id={product['productId']}
+                                                name={product['productName']}
+                                                price={product['productPriceSale']}
+                                                oldPrice={product['productPrice']}
+                                                categories={product['categories']}
+                                                images={product['productImages']}
+                                                rating={product['productRating']}
+                                                sale={product['productSale']}
 
-                                            images={product['productImages']}
-                                            rating={product['productRating']}
-                                            sale={product['productSale']}
-
-                                            isLoading={false}  // Đặt isLoading là false khi không tải
-                                        />
-                                    </div>
-                                ))
+                                                isLoading={false}  // Đặt isLoading là false khi không tải
+                                            />
+                                        </div>
+                                    );
+                                })
                             ) : (
                                 <div>
                                     <h3>Không có sản phẩm</h3>

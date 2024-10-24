@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
-const Product = ({ id, images, name, category, price, brand, oldPrice, supplier, rating, sale, isNew, isLoading }) => {
-
+const Product = ({ id, images, name, categories, price, oldPrice, rating, sale, isNew, isLoading }) => {
   const renderRating = () => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
@@ -20,7 +19,7 @@ const Product = ({ id, images, name, category, price, brand, oldPrice, supplier,
 
   const image = [images]
 
-  // console.log(image)
+
 
 
   const navigate = useNavigate();
@@ -28,7 +27,7 @@ const Product = ({ id, images, name, category, price, brand, oldPrice, supplier,
 
   const handleClick = () => {
     navigate(`/${id}`, {
-      state: { id, images, name, category, price, brand, oldPrice, supplier, rating, sale, isNew },
+      state: { id, images, name, categories, price, oldPrice, rating, sale, isNew },
     });
   };
   return (
@@ -71,7 +70,7 @@ const Product = ({ id, images, name, category, price, brand, oldPrice, supplier,
         </div>
       </div>
       <div className="product-body">
-        <p className="product-category">{isLoading ? <Skeleton width={80} /> : category}</p>
+        {/* <p className="product-category">{isLoading ? <Skeleton width={80} /> : categories}</p> */}
         <h3 className="product-name">
           {isLoading ? <Skeleton width={150} /> : <a href="#">{name}</a>}
         </h3>

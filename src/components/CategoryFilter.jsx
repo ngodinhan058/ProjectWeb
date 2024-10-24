@@ -21,7 +21,6 @@ useEffect(() => {
   })
       .then(response => {
           const { data } = response.data;
-          console.log("danh muc", data)
           setCategories(data);
           setIsLoading(false)
       })
@@ -63,7 +62,10 @@ useEffect(() => {
       <h3 className="aside-title">Category</h3>
       <div className="checkbox-filter">
         {categories.length === 0 ? (
-          <div>No categories available</div> // Hiển thị nếu không có danh mục nào
+          Array(5).fill().map((_, index) => (
+            <Skeleton height={30} />
+        ))
+          // Hiển thị nếu không có danh mục nào
         ) : (
           categories.map((category) => (
             <div key={category['categoryId']} style={{ position: 'relative' }}>

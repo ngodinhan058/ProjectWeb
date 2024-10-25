@@ -8,6 +8,8 @@ import { Link } from "react-router-dom";
 import Product from "../components/Product";
 import { BASE_URL } from "../components/api/config";
 import { axiosInstance } from "../components/api/axiosConfig";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const ProductDetail = () => {
     const location = useLocation();
@@ -28,23 +30,22 @@ const ProductDetail = () => {
             ? images[0]?.["productImagePath"] // Nếu có hình ảnh, sử dụng tấm đầu tiên
             : "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/langvi-300px-No_image_available.svg.png" // Nếu không có hình ảnh, sử dụng ảnh mặc định
     );
-    const [isLoading, setIsLoading] = useState(false); // Trạng thái loading
+    const [isLoading, setIsLoading] = useState(true); // Trạng thái loading
     // Size
     const [sizes, setSizes] = useState([]);
     const [selectedSize, setSelectedSize] = useState(null);
     const staticSizes = [
-        { size: '4', available: true },
-        { size: '6', available: true },
-        { size: '8', available: false },
-        { size: '10', available: true }
+        { size: "4", available: true },
+        { size: "6", available: true },
+        { size: "8", available: false },
+        { size: "10", available: true },
     ];
 
-
-      const handleSizeClick = (item) => {
+    const handleSizeClick = (item) => {
         setSelectedSize(item.size);
-      };
+    };
 
-      useEffect(() => {
+    useEffect(() => {
         let apiUrl = `${BASE_URL}products/filters?`;
         // Khởi tạo danh sách query params
         axiosInstance
@@ -57,7 +58,7 @@ const ProductDetail = () => {
                 const { content } = response.data.data;
                 console.log("de", content);
                 setProductsState(content);
-    
+
                 // Kiểm tra nếu size là mảng
                 const sizeData = response.data.sizes;
                 if (Array.isArray(sizeData)) {
@@ -67,14 +68,13 @@ const ProductDetail = () => {
                     }));
                     setSizes(parsedSizes);
                 } else {
-                    console.error('Unexpected data format:', response.data);
+                    console.error("Unexpected data format:", response.data);
                 }
             })
             .catch((error) => {
                 console.error("Error fetching data:", error);
             });
     }, []);
-    
 
     const renderRating = () => {
         const stars = [];
@@ -245,7 +245,11 @@ const ProductDetail = () => {
                         <div className="col-md-5 col-md-push-2">
                             <div id="product-main-img">
                                 <div className="product-preview">
-                                    <img src={selectedImage} alt="Selected" />
+                                    {isLoading ? (
+                                        <Skeleton height={400} />
+                                    ) : (
+                                        <img src={selectedImage} alt="Selected" />
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -253,73 +257,95 @@ const ProductDetail = () => {
                         {/* Thumbnail Images */}
                         <div className="col-md-2 col-md-pull-5">
                             <div id="product-imgs">
-                                {images && Array.isArray(images) && images.length > 0 ? (
-                                    <Slider {...settings}>
-                                        {images.map((image, index) => (
-                                            <div
-                                                key={index}
-                                                className={`product-preview ${selectedImage === image.productImagePath
-                                                    ? "selected"
-                                                    : ""
-                                                    }`}
-                                                onClick={() => handleImageClick(image.productImagePath)}
-                                            >
-                                                <img
-                                                    src={image.productImagePath}
-                                                    alt={`Product ${index + 1}`}
-                                                />
-                                            </div>
-                                        ))}
-                                    </Slider>
-                                ) : null}
+                                {isLoading ? (
+                                    <Skeleton height={100} count={3} />
+                                ) : (
+                                    images &&
+                                    Array.isArray(images) &&
+                                    images.length > 0 && (
+                                        <Slider {...settings}>
+                                            {images.map((image, index) => (
+                                                <div
+                                                    key={index}
+                                                    className={`product-preview ${selectedImage === image.productImagePath
+                                                        ? "selected"
+                                                        : ""
+                                                        }`}
+                                                    onClick={() =>
+                                                        handleImageClick(image.productImagePath)
+                                                    }
+                                                >
+                                                    <img
+                                                        src={image.productImagePath}
+                                                        alt={`Product ${index + 1}`}
+                                                    />
+                                                </div>
+                                            ))}
+                                        </Slider>
+                                    )
+                                )}
                             </div>
                         </div>
 
                         {/* Product Details */}
                         <div className="col-md-5">
                             <div className="product-details">
-                                <h2 className="product-name">{name}</h2>
+                                <h2 className="product-name">
+                                    {isLoading ? <Skeleton width={200} /> : name}
+                                </h2>
                                 <div>
-                                    <div className="product-rating">{renderRating()}</div>
+                                    <div className="product-rating">
+                                        {isLoading ? <Skeleton width={100} /> : renderRating()}
+                                    </div>
                                     <a className="review-link" href="#">
-                                        5 Review(s) | Add your review
+                                        {isLoading ? (
+                                            <Skeleton width={100} />
+                                        ) : (
+                                            "5 Review(s) | Add your review"
+                                        )}
                                     </a>
                                 </div>
                                 <div>
                                     <h3 className="product-price">
-                                        {sale === 0 ? (
-                                            oldPrice // Hiển thị giá cũ nếu không có giảm giá
+                                        {isLoading ? (
+                                            <Skeleton width={100} />
+                                        ) : sale === 0 ? (
+                                            oldPrice
                                         ) : (
                                             <>
                                                 {price}{" "}
-                                                <del className="product-old-price">{oldPrice}</del> {/* Hiển thị giá cũ với dấu gạch ngang */}
+                                                <del className="product-old-price">{oldPrice}</del>
                                                 <span className="product-available">In Stock</span>
                                             </>
                                         )}
                                     </h3>
-
-                                    
                                 </div>
                                 <p>
-                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
-                                    do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                                    Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                                    laboris nisi ut aliquip ex ea commodo consequat.
+                                    {isLoading ? (
+                                        <Skeleton count={3} />
+                                    ) : (
+                                        "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+                                    )}
                                 </p>
 
                                 <div className="product-options">
                                     <div className="size-options">
                                         <span className="size-label">Chọn size: </span>
-                                        {staticSizes.map((item) => (
-                                            <button
-                                                key={item.size}
-                                                className={`size-button ${item.available ? '' : 'disabled'} ${selectedSize === item.size ? 'selected' : ''}`}
-                                                onClick={() => handleSizeClick(item)}
-                                                disabled={!item.available}
-                                            >
-                                                {item.size}
-                                            </button>
-                                        ))}
+                                        {isLoading ? (
+                                            <Skeleton width={200} height={30} />
+                                        ) : (
+                                            staticSizes.map((item) => (
+                                                <button
+                                                    key={item.size}
+                                                    className={`size-button ${item.available ? "" : "disabled"
+                                                        } ${selectedSize === item.size ? "selected" : ""}`}
+                                                    onClick={() => handleSizeClick(item)}
+                                                    disabled={!item.available}
+                                                >
+                                                    {item.size}
+                                                </button>
+                                            ))
+                                        )}
                                     </div>
                                 </div>
 
@@ -327,63 +353,97 @@ const ProductDetail = () => {
                                     <div className="qty-label">
                                         Qty
                                         <div className="input-number">
-                                            <input type="number" />
-                                            <span className="qty-up">+</span>
-                                            <span className="qty-down">-</span>
+                                            {isLoading ? (
+                                                <Skeleton width={80} height={30} />
+                                            ) : (
+                                                <>
+                                                    <input type="number" />
+                                                    <span className="qty-up">+</span>
+                                                    <span className="qty-down">-</span>
+                                                </>
+                                            )}
                                         </div>
                                     </div>
-                                    <button className="add-to-cart-btn">
-                                        <i className="fa fa-shopping-cart"></i> add to cart
-                                    </button>
+                                    {isLoading ? (
+                                        <Skeleton width={150} height={40} />
+                                    ) : (
+                                        <button className="add-to-cart-btn">
+                                            <i className="fa fa-shopping-cart"></i> add to cart
+                                        </button>
+                                    )}
                                 </div>
 
                                 <ul className="product-btns">
-                                    <li>
-                                        <a href="#">
-                                            <i className="fa fa-heart-o"></i> add to wishlist
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i className="fa fa-exchange"></i> add to compare
-                                        </a>
-                                    </li>
+                                    {isLoading ? (
+                                        <Skeleton width={200} count={2} />
+                                    ) : (
+                                        <>
+                                            <li>
+                                                <a href="#">
+                                                    <i className="fa fa-heart-o"></i> add to wishlist
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="#">
+                                                    <i className="fa fa-exchange"></i> add to compare
+                                                </a>
+                                            </li>
+                                        </>
+                                    )}
                                 </ul>
 
                                 <ul className="product-links">
-                                    <li>Category:</li>
-                                    <li>
-                                        <a href="#">{category}</a>
-                                    </li>
+                                    {isLoading ? (
+                                        <Skeleton width={200} />
+                                    ) : (
+                                        <>
+                                            <li>Category:</li>
+                                            <li>
+                                                <a href="#">{category}</a>
+                                            </li>
+                                        </>
+                                    )}
                                 </ul>
                                 <ul className="product-links">
-                                    <li>Brand:</li>
-                                    <li>
-                                        <a href="#">{supplier}</a>
-                                    </li>
+                                    {isLoading ? (
+                                        <Skeleton width={200} />
+                                    ) : (
+                                        <>
+                                            <li>Brand:</li>
+                                            <li>
+                                                <a href="#">{supplier}</a>
+                                            </li>
+                                        </>
+                                    )}
                                 </ul>
                                 <ul className="product-links">
-                                    <li>Share:</li>
-                                    <li>
-                                        <a href="#">
-                                            <i className="fa fa-facebook"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i className="fa fa-twitter"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i className="fa fa-google-plus"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i className="fa fa-envelope"></i>
-                                        </a>
-                                    </li>
+                                    {isLoading ? (
+                                        <Skeleton width={200} />
+                                    ) : (
+                                        <>
+                                            <li>Share:</li>
+                                            <li>
+                                                <a href="#">
+                                                    <i className="fa fa-facebook"></i>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="#">
+                                                    <i className="fa fa-twitter"></i>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="#">
+                                                    <i className="fa fa-google-plus"></i>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="#">
+                                                    <i className="fa fa-envelope"></i>
+                                                </a>
+                                            </li>
+                                        </>
+                                    )}
                                 </ul>
                             </div>
                         </div>
@@ -422,78 +482,80 @@ const ProductDetail = () => {
                 {/* container */}
                 <div class="container">
                     {/* row */}
-                    <div class="row">
-                        <div class="section-title text-center">
-                            <h3 class="title">Related Products</h3>
+                    <div className='row'>
+                        <div className='section-title text-center'>
+                            <h3 className='title'>Related Products</h3>
                         </div>
 
                         {
                             isLoading ? (
                                 // Hiển thị các skeleton trong khi đang tải
-                                Array(6)
-                                    .fill()
-                                    .map((_, index) => (
-                                        <Product key={index} isLoading={isLoading} />
-                                    ))
+                                Array(6).fill().map((_, index) => (
+                                    <div className='col-md-2 col-xs-6 marginBottom' key={index}>
+                                        <div className='skeleton-product'>
+                                            <Skeleton height={200} width='100%' className='skeleton-image' />
+                                            <Skeleton height={20} width='60%' className='skeleton-text' />
+                                            <Skeleton height={20} width='40%' className='skeleton-text' />
+                                        </div>
+                                    </div>
+                                ))
                             ) : productsState.length > 0 ? (
                                 isDesktop ? (
-                                    <div className="slider-container">
+                                    <div className='slider-container'>
                                         <button
-                                            className="custom-prev-btn"
+                                            className='custom-prev-btn'
                                             onClick={() => sliderRef.current.slickPrev()}
                                         >
                                             <i
-                                                className="fa fa-chevron-left"
+                                                className='fa fa-chevron-left'
                                                 style={{ fontSize: 20, marginRight: 3 }}
                                             ></i>
                                         </button>
                                         <Slider ref={sliderRef} {...sliderSettings}>
                                             {productsState.map((product) => (
-                                                <div className="col-md-2 col-xs-6 marginBottom">
+                                                <div className='col-md-2 col-xs-6 marginBottom' key={product['productId']}>
                                                     <Product
-                                                        key={product["productId"]}
-                                                        id={product["productId"]}
-                                                        name={product["productName"]}
-                                                        price={product["productPriceSale"]}
-                                                        oldPrice={product["productPrice"]}
-                                                        images={product["productImages"]}
-                                                        rating={product["productRating"]}
-                                                        sale={product["productSale"]}
+                                                        id={product['productId']}
+                                                        name={product['productName']}
+                                                        price={product['productPriceSale']}
+                                                        oldPrice={product['productPrice']}
+                                                        images={product['productImages']}
+                                                        rating={product['productRating']}
+                                                        sale={product['productSale']}
                                                         isLoading={false}
                                                     />
                                                 </div>
                                             ))}
                                         </Slider>
                                         <button
-                                            className="custom-next-btn"
+                                            className='custom-next-btn'
                                             onClick={() => sliderRef.current.slickNext()}
                                         >
                                             <i
-                                                className="fa fa-chevron-right"
+                                                className='fa fa-chevron-right'
                                                 style={{ fontSize: 20, marginLeft: 5 }}
                                             ></i>
                                         </button>
                                     </div>
                                 ) : (
-                                    <div className="product-grid">
+                                    <div className='product-grid'>
                                         {productsState.map((product) => (
-                                            <div className="product-item" key={product["productId"]}>
+                                            <div className='product-item' key={product['productId']}>
                                                 <Product
-                                                    key={product["productId"]}
-                                                    id={product["productId"]}
-                                                    name={product["productName"]}
-                                                    price={product["productPriceSale"]}
-                                                    oldPrice={product["productPrice"]}
-                                                    images={product["productImages"]}
-                                                    rating={product["productRating"]}
-                                                    sale={product["productSale"]}
+                                                    id={product['productId']}
+                                                    name={product['productName']}
+                                                    price={product['productPriceSale']}
+                                                    oldPrice={product['productPrice']}
+                                                    images={product['productImages']}
+                                                    rating={product['productRating']}
+                                                    sale={product['productSale']}
                                                     isLoading={false}
                                                 />
                                             </div>
                                         ))}
                                     </div>
                                 )
-                            ) : null // Khi không có sản phẩm
+                            ) : null
                         }
                     </div>
                     {/* /row */}

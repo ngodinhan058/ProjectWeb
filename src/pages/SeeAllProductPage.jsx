@@ -5,6 +5,7 @@ import BrandFilter from '../components/BrandFilter';
 import PriceFilter from '../components/PriceFilter';
 import CategoryFilter from '../components/CategoryFilter';
 import SizeFilter from '../components/SizeFilter';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { BASE_URL } from '../components/api/config';
 import { axiosInstance } from '../components/api/axiosConfig';
@@ -24,13 +25,13 @@ const Store = () => {
     const [minPrice, setMinPrice] = useState(0);
     const [maxPrice, setMaxPrice] = useState(2000000);
 
-
+    const { categoryIdFromLink } = useParams(); // Lấy categoryId từ URL
 
     const [selectedBrands, setSelectedBrands] = useState([]);
     const [selectedSizes, setSelectedSizes] = useState([]);
 
-
     useEffect(() => {
+
         let apiUrl = `${BASE_URL}products/filters?`;
         // Khởi tạo danh sách query params
         const queryParams = [];
@@ -40,7 +41,12 @@ const Store = () => {
         if (sort && sort != "") queryParams.push(`sort=${sort}`);
         if (minPrice !== null && minPrice !== undefined) queryParams.push(`minPrice=${minPrice}`);
         if (maxPrice !== null && maxPrice !== undefined) queryParams.push(`maxPrice=${maxPrice}`);
-        if (categoryId !== null && categoryId !== "") queryParams.push(`categoryId=${categoryId}`);
+        // Chỉ thêm categoryId hoặc categoryIdFromLink, không cả hai
+        if (categoryIdFromLink) {
+            queryParams.push(`categoryId=${categoryIdFromLink}`);
+        } else if (categoryId) {
+            queryParams.push(`categoryId=${categoryId}`);
+        }
 
         apiUrl += queryParams.join('&');
         console.log(apiUrl)
@@ -69,12 +75,13 @@ const Store = () => {
                 }
 
             });
-    }, [currentPage, pageSize, sort, direction, minPrice, maxPrice, categoryId]);
+    }, [currentPage, pageSize, sort, direction, minPrice, maxPrice, categoryId, categoryIdFromLink]);
 
     // Chuyển trang
     const handlePageChange = (pageNumber) => {
         if (pageNumber >= 0 && pageNumber < totalPages) {
             setCurrentPage(pageNumber);
+            window.scrollTo(0, 0);
         }
     };
     const handleSelectChange = (event) => {

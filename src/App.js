@@ -20,7 +20,8 @@ function App() {
 
       <Routes>
         <Route path="/" element={<SeeAllProductPage />} />
-        <Route path="/:id" element={<ProductDetails />} />
+        <Route path="/:categoryIdFromLink" element={<SeeAllProductPage />} />
+        <Route path="chi-tiet/:id" element={<ProductDetails />} />
       </Routes>
       <Footer />
     </Router>

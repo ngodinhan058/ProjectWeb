@@ -26,9 +26,11 @@ const Product = ({ id, images, name, categories, price, oldPrice, rating, sale, 
   const [isHovered, setIsHovered] = useState(false);
 
   const handleClick = () => {
-    navigate(`/${id}`, {
+    navigate(`/chi-tiet/${id}`, {
       state: { id, images, name, categories, price, oldPrice, rating, sale, isNew },
+      
     });
+    window.scrollTo(0, 0);
   };
   return (
 
@@ -46,13 +48,11 @@ const Product = ({ id, images, name, categories, price, oldPrice, rating, sale, 
           <Skeleton height={300} />
         ) : (
           <img
-            src={
-              isHovered
-                ? (image[0]?.[1]?.['productImagePath'] || image[0]?.[0]?.['productImagePath'])
-                || 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/langvi-300px-No_image_available.svg.png' // Sử dụng ảnh thứ hai nếu không null, nếu không dùng ảnh mặc định
-                : (image[0]?.[0]?.['productImagePath'] || image[0]?.[1]?.['productImagePath']) // Tương tự cho ảnh đầu tiên
-                || 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/langvi-300px-No_image_available.svg.png' // Hình ảnh mặc định
-            }
+          src={
+            isHovered
+              ? `../${image[0]?.[1]?.['productImagePath'] || image[0]?.[0]?.['productImagePath'] || 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/langvi-300px-No_image_available.svg.png'}`
+              : `../${image[0]?.[0]?.['productImagePath'] || image[0]?.[1]?.['productImagePath'] || 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/langvi-300px-No_image_available.svg.png'}`
+          }
             alt={image[0]?.[0]?.['productImageAlt'] || 'Default Alt Text'} // Giá trị alt, nếu không có thì dùng văn bản mặc định
           />
         )}

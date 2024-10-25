@@ -12,13 +12,14 @@ import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import ZoomEffect from '../components/ZoomEffect';
 import ProductTabs from '../components/ProductTabs';
+import Breadcrumb from '../components/Breadcrumb';
 
 
 
 const ProductDetail = () => {
     const location = useLocation();
     const [productsState, setProductsState] = useState([]); // Dữ liệu sản phẩm
-    const { images, name, price, oldPrice, categories, rating, sale, isNew, } = location.state || {};
+    const { id ,images, name, price, oldPrice, categories, rating, sale, isNew, } = location.state || {};
     const [categoryIdss, setCategoryIdss] = useState(); // Dữ liệu sản phẩm
 
 
@@ -56,13 +57,18 @@ const ProductDetail = () => {
 
 
 
-    const [selectedImage, setSelectedImage] = useState(
-        images && images.length > 0
-            ? images[0]?.['productImagePath'] // Nếu có hình ảnh, sử dụng tấm đầu tiên
-            : 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/langvi-300px-No_image_available.svg.png' // Nếu không có hình ảnh, sử dụng ảnh mặc định
-    );
+    const [selectedImage, setSelectedImage] = useState('');
 
     const [isLoading, setIsLoading] = useState(true); // Trạng thái loading
+
+    useEffect(() => {
+        if (images && images.length > 0) {
+            setSelectedImage(`../${images[0]?.['productImagePath']}`);
+        } else {
+            setSelectedImage('https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/langvi-300px-No_image_available.svg.png');
+        }
+    }, [images, id]);
+
     useEffect(() => {
         if (categories && categories.length > 0) {
             setCategoryIdss(categories[0].categoryId); // Lấy categoryId của danh mục đầu tiên, nếu có
@@ -105,7 +111,7 @@ const ProductDetail = () => {
     };
 
     const handleImageClick = (imgSrc) => {
-        setSelectedImage(imgSrc);
+        setSelectedImage(`../${imgSrc}`);
     };
 
     const [isHoveredUp, setIsHoveredUp] = useState(false);
@@ -183,15 +189,7 @@ const ProductDetail = () => {
             <div id="breadcrumb" className="section">
                 <div className="container">
                     <div className="row">
-                        <div className="col-md-12">
-                            <ul className="breadcrumb-tree">
-                                <li><a href="#">Home</a></li>
-                                <li><a href="#">All Categories</a></li>
-                                <li><a href="#">Accessories</a></li>
-                                <li><a href="#">Headphones</a></li>
-                                <li className="active">Product name goes here</li>
-                            </ul>
-                        </div>
+                        <Breadcrumb categories={categories} name={name} />
                     </div>
                 </div>
             </div>
@@ -231,7 +229,7 @@ const ProductDetail = () => {
                                                     className={`product-preview ${selectedImage === image.productImagePath ? "selected" : ""}`}
                                                     onClick={() => handleImageClick(image.productImagePath)}
                                                 >
-                                                    <img src={image.productImagePath} alt={`Product ${index + 1}`} />
+                                                    <img src={`../${image.productImagePath}`} alt={`Product ${index + 1}`} />
                                                 </div>
                                             ))}
                                         </Slider>

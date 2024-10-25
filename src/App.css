@@ -1,12 +1,8 @@
 /* Tab Product */
-.description-content {
-  display: -webkit-box;
-  -webkit-line-clamp: 4; /* Hiển thị tối đa 3 dòng */
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.description-content.collapsed {
+  max-height: 100px; /* Chiều cao tối đa cho nội dung rút gọn */
+  overflow: hidden; /* Ẩn phần nội dung vượt quá chiều cao tối đa */
 }
-
 .description-content.expanded {
   -webkit-line-clamp: none; /* Bỏ giới hạn dòng khi mở rộng */
 }

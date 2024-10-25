@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const Breadcrumb = ({ categories, name }) => {
     // Lấy danh mục cha và danh mục con
@@ -11,19 +12,19 @@ const Breadcrumb = ({ categories, name }) => {
     return (
         <div className="col-md-12">
             <ul className="breadcrumb-tree">
-                <li><a href="http://localhost:3000/" id="home-link">Home</a></li>
+                <li><Link to="/">Home</Link></li>
                 {parentCategoryName && (
                     <li>
-                        <a href={`#${parentCategoryId}`} id={`parent-category-${parentCategoryId}`}>
+                        <Link to={`/${parentCategoryId}`} id={`parent-category-${parentCategoryId}`}>
                             {parentCategoryName}
-                        </a>
+                        </Link>
                     </li>
                 )}
                 {childCategories.map((child) => (
                     <li key={child.categoryId}>
-                        <a href={`#${child.categoryId}`} id={`child-category-${child.categoryId}`}>
+                        <Link to={`/${child.categoryId}`} id={`child-category-${child.categoryId}`}>
                             {child.categoryName}
-                        </a>
+                        </Link>
                     </li>
                 ))}
                 <li className="active" id="product-name">{name}</li>

@@ -21,19 +21,31 @@ const ProductTabs = () => {
 
   // Nội dung mô tả bằng Markdown
   const descriptionMarkdown = `
+
 ### Description
 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliq.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 
+
+### Detail
+#### From : China
+#### Material : Polime
+#### Address : Xã Ninh Gia, Huyện Đức Trọng
+#### Aplace of production : CTTNHH Một thành viên
+
+
 ### Images
+![Product Image](/img/20200225_y0nRhnwGDyzKR7hOKlPIMuqN.jpg) 
+![Product Image](/img/20200225_y0nRhnwGDyzKR7hOKlPIMuqN.jpg) 
 
   `;
 
   // Hàm chuyển đổi Markdown thành HTML (do không sài được thư viện)
   const markdownToHtml = (markdown) => {
     return markdown
-      .replace(/!\[(.*?)\]\((.*?)\)/g, '<img alt="$1" src="$2" style="max-width: 100%; height: auto;" />') // Chuyển đổi cú pháp hình ảnh
+      .replace(/!\[(.*?)\]\((.*?)\)/g, '<img alt="$1" src="$2" style="width:300px; height:250px; display:inline-block;" />') // Chuyển đổi cú pháp hình ảnh
+      .replace(/#### (.*?)\n/g, '<h5>$1</h5>') // Chuyển đổi ### thành <h3>
       .replace(/### (.*?)\n/g, '<h3>$1</h3>') // Chuyển đổi ### thành <h3>
       .replace(/## (.*?)\n/g, '<h2>$1</h2>')   // Chuyển đổi ## thành <h2>
       .replace(/# (.*?)\n/g, '<h1>$1</h1>')     // Chuyển đổi # thành <h1>

@@ -30,8 +30,6 @@ const Breadcrumb = ({ categoryId, allCategories }) => {
         return buildBreadcrumbPath(category.categoryParent, path);
       }
     }
-    console.log(category);
-    
     return path;
   };
 

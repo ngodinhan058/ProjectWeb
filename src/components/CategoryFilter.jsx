@@ -5,10 +5,9 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import axios from 'axios';
 import { BASE_URL } from './api/config';
 import { Link, useParams } from 'react-router-dom';
-
 const CategoryFilter = ({ onCategoryChange }) => {
   const [openCategoryId, setOpenCategoryId] = useState(null); // Theo dõi danh mục cha nào đang mở
-  const [selectedSubcategories, setSelectedSubcategories] = useState([]); // Theo dõi nhiều danh mục con được chọn
+  const [selectedSubcategory, setSelectedSubcategory] = useState(null); // Chỉ theo dõi một danh mục con được chọn
   const [categories, setCategories] = useState([]); // Lưu dữ liệu danh mục từ API
   const [isLoading, setIsLoading] = useState(true); // Trạng thái loading
   const { categoryIdFromLink } = useParams();
@@ -24,7 +23,7 @@ const CategoryFilter = ({ onCategoryChange }) => {
       .then(response => {
         const { data } = response.data;
         setCategories(data);
-        setIsLoading(false)
+        setIsLoading(false);
       })
       .catch(error => {
         console.error('Error fetching data:', error);
@@ -33,8 +32,8 @@ const CategoryFilter = ({ onCategoryChange }) => {
   }, []);
 
   useEffect(() => {
-    onCategoryChange(selectedSubcategories);
-  }, [selectedSubcategories]);
+    onCategoryChange(selectedSubcategory); // Gửi ID đã chọn lên parent component
+  }, [selectedSubcategory]);
 
   // Hàm để mở/đóng danh mục cha
   const toggleCategory = (id) => {
@@ -42,13 +41,22 @@ const CategoryFilter = ({ onCategoryChange }) => {
   };
 
   const handleCategorySelect = (categoryId) => {
-    setSelectedSubcategories(categoryId)
+    // Nếu danh mục đã được chọn, bỏ chọn (đặt thành null)
+    if (selectedSubcategory === categoryId) {
+      setSelectedSubcategory(null); // Nếu đã chọn, đặt thành null để làm mất ID trên URL
 
+    } else {
+      // Nếu chưa chọn, cập nhật với categoryId mới
+      setSelectedSubcategory(categoryId);
+    }
   };
 
   // Kiểm tra xem danh mục con có đang được chọn không
   const isSubcategorySelected = (categoryId) => {
-    return selectedSubcategories && selectedSubcategories.includes(categoryId);
+    return selectedSubcategory === categoryId; // So sánh với categoryId
+  };
+  const isCategorySelected = (categoryId) => {
+    return selectedSubcategory === categoryId; // So sánh với categoryId
   };
 
   return (
@@ -57,16 +65,15 @@ const CategoryFilter = ({ onCategoryChange }) => {
       <div className="checkbox-filter">
         {categories.length === 0 ? (
           Array(5).fill().map((_, index) => (
-            <Skeleton height={30} />
+            <Skeleton height={30} key={index} />
           ))
-          // Hiển thị nếu không có danh mục nào
         ) : (
           categories.map((category) => (
             <div key={category['categoryId']} style={{ position: 'relative' }}>
               <Link
-                to={`/${category['categoryId']}`}
+                to={isCategorySelected(category['categoryId']) ? `/` : `/${category['categoryId']}`}
                 onClick={() => handleCategorySelect(category['categoryId'])}
-                className={`category-item ${isSubcategorySelected(category['categoryId']) ? 'selected' : ''}`}
+                className={`category-item ${isCategorySelected(category['categoryId']) ? 'selected' : ''}`}
               >
                 <h4>{category['categoryName']}</h4>
               </Link>
@@ -88,13 +95,11 @@ const CategoryFilter = ({ onCategoryChange }) => {
                 <div className="subcategory">
                   {category.categoryChildren.map((subcategory) => (
                     <Link
-                      to={`/${subcategory['categoryId']}`}
+                      to={isSubcategorySelected(subcategory['categoryId']) ? `/` : `/${subcategory['categoryId']}`}
+                      key={`${category['categoryId']}-${subcategory['categoryId']}`}
                       onClick={() => handleCategorySelect(subcategory['categoryId'])}
                     >
-                      <div
-                        key={`${category['categoryId']}-${subcategory['categoryId']}`}
-                        className={`subcategory-item ${isSubcategorySelected(subcategory['categoryId']) ? 'selected' : ''}`}
-                      >
+                      <div className={`subcategory-item ${isSubcategorySelected(subcategory['categoryId']) ? 'selected' : ''}`}>
                         {subcategory['categoryName']}
                       </div>
                     </Link>
@@ -110,5 +115,6 @@ const CategoryFilter = ({ onCategoryChange }) => {
     </div>
   );
 };
+
 
 export default CategoryFilter;

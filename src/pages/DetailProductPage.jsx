@@ -19,7 +19,7 @@ import Breadcrumb from '../components/Breadcrumb';
 const ProductDetail = () => {
     const location = useLocation();
     const [productsState, setProductsState] = useState([]); // Dữ liệu sản phẩm
-    const { id ,images, name, price, oldPrice, categories, rating, sale, isNew, } = location.state || {};
+    const { id ,images, name, price, oldPrice, categories, supplier, rating, sale, isNew, } = location.state || {};
     const [categoryIdss, setCategoryIdss] = useState(); // Dữ liệu sản phẩm
 
 
@@ -346,6 +346,16 @@ const ProductDetail = () => {
                                         <>
                                             <li>Category:</li>
                                             {getCategoryItems(categories)}
+                                        </>
+                                    )}
+                                </ul>
+                                <ul className="product-links">
+                                    {isLoading ? (
+                                        <Skeleton width={100} height={30} />
+                                    ) : (
+                                        <>
+                                            <li>Brand: </li>
+                                            {(supplier)}
                                         </>
                                     )}
                                 </ul>

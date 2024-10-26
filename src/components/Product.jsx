@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
-const Product = ({ id, images, name, categories, price, oldPrice, rating, sale, isNew, isLoading }) => {
+const Product = ({ id, images, name, categories, supplier, price, oldPrice, rating, sale, isNew, isLoading }) => {
   const renderRating = () => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
@@ -27,7 +27,7 @@ const Product = ({ id, images, name, categories, price, oldPrice, rating, sale, 
 
   const handleClick = () => {
     navigate(`/chi-tiet/${id}`, {
-      state: { id, images, name, categories, price, oldPrice, rating, sale, isNew },
+      state: { id, images, name, categories, supplier, price, oldPrice, rating, sale, isNew },
     });
     window.scrollTo(0, 0);
   };

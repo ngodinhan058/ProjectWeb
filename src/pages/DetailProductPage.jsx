@@ -56,7 +56,8 @@ const ProductDetail = () => {
     };
 
 
-
+    // Cài đặt cho slider (carousel) trên desktop
+    const sliderRef = useRef(null);
     const [selectedImage, setSelectedImage] = useState('');
 
     const [isLoading, setIsLoading] = useState(true); // Trạng thái loading
@@ -110,8 +111,9 @@ const ProductDetail = () => {
         return stars;
     };
 
-    const handleImageClick = (imgSrc) => {
+    const handleImageClick = (imgSrc, index) => {
         setSelectedImage(`../${imgSrc}`);
+        sliderRef.current.slickGoTo(index);
     };
 
     const [isHoveredUp, setIsHoveredUp] = useState(false);
@@ -172,8 +174,7 @@ const ProductDetail = () => {
         nextArrow: <UpArrow />, // Mũi tên xuống tùy chỉnh
         prevArrow: <DownArrow />, // Mũi tên lên tùy chỉnh
     };
-    // Cài đặt cho slider (carousel) trên desktop
-    const sliderRef = useRef(null);
+
     const sliderSettings = {
         infinite: true,
         speed: 100,
@@ -182,6 +183,7 @@ const ProductDetail = () => {
         autoplay: true, // Tự động chạy
         autoplaySpeed: 2000, // Chuyển mỗi 2 giây
         arrows: false,
+        
     };
     const isDesktop = useMediaQuery({ minWidth: 481 });
     return (
@@ -413,7 +415,7 @@ const ProductDetail = () => {
                                         </button>
                                         <Slider ref={sliderRef} {...sliderSettings}>
                                             {productsState.map((product) => (
-                                                <div className="col-md-4 col-xs-6 marginBottom" key={product['productId']}>
+                                                <div className="col-md-3 col-xs-6 marginBottom" key={product['productId']}>
                                                     <Product
                                                         key={product['productId']}
                                                         id={product['productId']}

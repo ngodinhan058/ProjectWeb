@@ -6,7 +6,6 @@ import PriceFilter from '../components/PriceFilter';
 import CategoryFilter from '../components/CategoryFilter';
 import SizeFilter from '../components/SizeFilter';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
 import { BASE_URL } from '../components/api/config';
 import { axiosInstance } from '../components/api/axiosConfig';
 
@@ -38,7 +37,7 @@ const Store = () => {
         if (currentPage !== null && currentPage !== undefined) queryParams.push(`page=${currentPage}`); // Thêm tham số page
         if (pageSize) queryParams.push(`size=${pageSize}`);
         if (direction && direction !== "") queryParams.push(`direction=${direction}`);
-        if (sort && sort != "") queryParams.push(`sort=${sort}`);
+        if (sort && sort !== "") queryParams.push(`sort=${sort}`);
         if (minPrice !== null && minPrice !== undefined) queryParams.push(`minPrice=${minPrice}`);
         if (maxPrice !== null && maxPrice !== undefined) queryParams.push(`maxPrice=${maxPrice}`);
         // Chỉ thêm categoryId hoặc categoryIdFromLink, không cả hai

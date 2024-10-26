@@ -23,6 +23,7 @@ const ProductDetail = () => {
     const [categoryIdss, setCategoryIdss] = useState(); // Dữ liệu sản phẩm
 
 
+
     const getCategoryItems = (categories) => {
         // Kiểm tra xem categories có phải là một mảng không
         if (!Array.isArray(categories)) {
@@ -54,7 +55,12 @@ const ProductDetail = () => {
 
         return categoryItems;
     };
-
+    // Mảng size 
+    const [selectedSize, setSelectedSize] = useState(null);
+    const sizes = ['S', 'M', 'L', 'XL']; // Các size mẫu
+    const handleSizeClick = (size) => {
+        setSelectedSize(size);
+    };
 
 
     const [selectedImage, setSelectedImage] = useState('');
@@ -272,25 +278,22 @@ const ProductDetail = () => {
 
                                 <div className="product-options">
                                     <label>
-                                        Size
+                                        Size :
                                         {isLoading ? (
                                             <Skeleton width={100} height={30} />
                                         ) : (
-                                            <select className="input-select">
-                                                <option value="0">X</option>
-                                            </select>
+                                            sizes.map((size) => (
+                                                <button
+                                                    key={size}
+                                                    className={`size-button ${selectedSize === size ? 'selected' : ''}`}
+                                                    onClick={() => handleSizeClick(size)}
+                                                >
+                                                    {size}
+                                                </button>
+                                            ))
                                         )}
                                     </label>
-                                    <label>
-                                        Color
-                                        {isLoading ? (
-                                            <Skeleton width={100} height={30} />
-                                        ) : (
-                                            <select className="input-select">
-                                                <option value="0">Red</option>
-                                            </select>
-                                        )}
-                                    </label>
+                                    
                                 </div>
 
                                 <div className="add-to-cart">

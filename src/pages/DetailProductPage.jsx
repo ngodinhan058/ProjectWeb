@@ -1,28 +1,35 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from "react";
 import Slider from "react-slick"; // Import react-slick
 import "slick-carousel/slick/slick.css"; // Import slick CSS
 import "slick-carousel/slick/slick-theme.css"; // Import slick theme CSS
-import { useLocation } from 'react-router-dom';
-import { useMediaQuery } from 'react-responsive';
-import { Link } from 'react-router-dom';
-import Product from '../components/Product';
-import { BASE_URL } from '../components/api/config';
-import { axiosInstance } from '../components/api/axiosConfig';
-import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
-import ZoomEffect from '../components/ZoomEffect';
-import ProductTabs from '../components/ProductTabs';
-import Breadcrumb from '../components/Breadcrumb';
-
-
+import { useLocation } from "react-router-dom";
+import { useMediaQuery } from "react-responsive";
+import { Link } from "react-router-dom";
+import Product from "../components/Product";
+import { BASE_URL } from "../components/api/config";
+import { axiosInstance } from "../components/api/axiosConfig";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import ZoomEffect from "../components/ZoomEffect";
+import ProductTabs from "../components/ProductTabs";
+import Breadcrumb from "../components/Breadcrumb";
 
 const ProductDetail = () => {
     const location = useLocation();
     const [productsState, setProductsState] = useState([]); // Dữ liệu sản phẩm
-    const { id ,images, name, price, oldPrice, categories, supplier, rating, sale, isNew, } = location.state || {};
+    const {
+        id,
+        images,
+        name,
+        price,
+        supplier,
+        oldPrice,
+        categories,
+        rating,
+        sale,
+        isNew,
+    } = location.state || {};
     const [categoryIdss, setCategoryIdss] = useState(); // Dữ liệu sản phẩm
-
-
 
     const getCategoryItems = (categories) => {
         // Kiểm tra xem categories có phải là một mảng không
@@ -34,7 +41,7 @@ const ProductDetail = () => {
         let categoryItems = [];
 
         // Duyệt qua từng danh mục trong mảng categories
-        categories.forEach(category => {
+        categories.forEach((category) => {
             // Kiểm tra nếu category có giá trị hợp lệ
             if (category && category.categoryId) {
                 // Thêm danh mục hiện tại vào danh sách
@@ -55,23 +62,24 @@ const ProductDetail = () => {
 
         return categoryItems;
     };
-    // Mảng size 
-    const [selectedSize, setSelectedSize] = useState(null);
-    const sizes = ['S', 'M', 'L', 'XL']; // Các size mẫu
-    const handleSizeClick = (size) => {
-        setSelectedSize(size);
-    };
+    // Mảng size
+    const [selectedSize, setSelectedSize] = useState('S'); // Thiết lập mặc định là 'S'
+    const sizes = ['S', 'M', 'L', 'XL']; // Mảng size giả
+    const quantity = 0; // Bạn cần lấy số lượng thực tế từ dữ liệu sản phẩm
 
+    const [hoveredSize, setHoveredSize] = useState(null);
 
-    const [selectedImage, setSelectedImage] = useState('');
+    const [selectedImage, setSelectedImage] = useState("");
 
     const [isLoading, setIsLoading] = useState(true); // Trạng thái loading
 
     useEffect(() => {
         if (images && images.length > 0) {
-            setSelectedImage(`../${images[0]?.['productImagePath']}`);
+            setSelectedImage(`../${images[0]?.["productImagePath"]}`);
         } else {
-            setSelectedImage('https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/langvi-300px-No_image_available.svg.png');
+            setSelectedImage(
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/langvi-300px-No_image_available.svg.png"
+            );
         }
     }, [images, id]);
 
@@ -86,18 +94,18 @@ const ProductDetail = () => {
         console.log(apiUrl);
 
         // Khởi tạo danh sách query params
-        axiosInstance.get(apiUrl, {
-            headers: {
-                'ngrok-skip-browser-warning': 'true'
-            }
-        })
-            .then(response => {
+        axiosInstance
+            .get(apiUrl, {
+                headers: {
+                    "ngrok-skip-browser-warning": "true",
+                },
+            })
+            .then((response) => {
                 const { content } = response.data.data;
                 setProductsState(content);
                 setIsLoading(false); // Kết thúc tải
             })
-            .catch(error => {
-
+            .catch((error) => {
                 console.error("Error fetching data:", error);
                 setIsLoading(false); // Kết thúc tải dù có lỗi
             });
@@ -107,10 +115,7 @@ const ProductDetail = () => {
         const stars = [];
         for (let i = 1; i <= 5; i++) {
             stars.push(
-                <i
-                    key={i}
-                    className={i <= rating ? 'fa fa-star' : 'fa fa-star-o'}
-                ></i>
+                <i key={i} className={i <= rating ? "fa fa-star" : "fa fa-star-o"}></i>
             );
         }
         return stars;
@@ -127,21 +132,25 @@ const ProductDetail = () => {
         <div
             className={className}
             style={{
-                ...style, width: 40,
+                ...style,
+                width: 40,
                 height: 40,
-                display: 'block',
-                background: isHoveredUp ? '#ef233c' : '#fff',
-                border: '1px solid #e4e7ed',
-                color: isHoveredUp ? '#fff' : '#000',
-                textAlign: 'center',
-                top: '-4%',
-                transition: 'background 0.3s, color 0.3s',
+                display: "block",
+                background: isHoveredUp ? "#ef233c" : "#fff",
+                border: "1px solid #e4e7ed",
+                color: isHoveredUp ? "#fff" : "#000",
+                textAlign: "center",
+                top: "-4%",
+                transition: "background 0.3s, color 0.3s",
             }}
             onClick={onClick}
             onMouseEnter={() => setIsHoveredUp(true)}
             onMouseLeave={() => setIsHoveredUp(false)}
         >
-            <i className="fa fa-chevron-up" style={{ fontSize: 20, position: 'absolute', right: '22%', top: '20%' }}></i>
+            <i
+                className="fa fa-chevron-up"
+                style={{ fontSize: 20, position: "absolute", right: "22%", top: "20%" }}
+            ></i>
         </div>
     );
 
@@ -152,20 +161,22 @@ const ProductDetail = () => {
                 ...style,
                 width: 40,
                 height: 40,
-                display: 'block',
-                background: isHoveredDown ? '#ef233c' : '#fff',
-                border: '1px solid #e4e7ed',
-                color: isHoveredDown ? '#fff' : '#000',
-                textAlign: 'center',
-                transition: 'background-color 0.3s ease, color 0.3s ease', // Đảm bảo cú pháp đúng
+                display: "block",
+                background: isHoveredDown ? "#ef233c" : "#fff",
+                border: "1px solid #e4e7ed",
+                color: isHoveredDown ? "#fff" : "#000",
+                textAlign: "center",
+                transition: "background-color 0.3s ease, color 0.3s ease", // Đảm bảo cú pháp đúng
             }}
             onClick={onClick}
             onMouseEnter={() => setIsHoveredDown(true)}
             onMouseLeave={() => setIsHoveredDown(false)}
         >
-            <i className="fa fa-chevron-down" style={{ fontSize: 20, position: 'absolute', right: '22%', top: '20%' }}></i>
+            <i
+                className="fa fa-chevron-down"
+                style={{ fontSize: 20, position: "absolute", right: "22%", top: "20%" }}
+            ></i>
         </div>
-
     );
     const settings = {
         infinite: true,
@@ -203,7 +214,10 @@ const ProductDetail = () => {
                 <div className="container">
                     <div className="row">
                         {/* Main Image */}
-                        <div className="col-md-5 col-md-push-2" style={{ position: 'relative' }}>
+                        <div
+                            className="col-md-5 col-md-push-2"
+                            style={{ position: "relative" }}
+                        >
                             <div id="product-main-img">
                                 <div className="product-preview">
                                     {isLoading ? (
@@ -212,7 +226,6 @@ const ProductDetail = () => {
                                         <ZoomEffect imageUrl={selectedImage} zoomLevel={2} />
                                     )}
                                 </div>
-
                             </div>
                         </div>
                         {/* Thumbnail Images */}
@@ -222,79 +235,114 @@ const ProductDetail = () => {
                                 {isLoading ? (
                                     <div>
                                         {/* Hiển thị skeleton cho 2 hình ảnh thumbnail */}
-                                        <Skeleton height={160} width={150} style={{ marginBottom: 10 }} />
-                                        <Skeleton height={160} width={150} style={{ marginBottom: 10 }} />
-                                        <Skeleton height={160} width={150} style={{ marginBottom: 10 }} />
+                                        <Skeleton
+                                            height={160}
+                                            width={150}
+                                            style={{ marginBottom: 10 }}
+                                        />
+                                        <Skeleton
+                                            height={160}
+                                            width={150}
+                                            style={{ marginBottom: 10 }}
+                                        />
+                                        <Skeleton
+                                            height={160}
+                                            width={150}
+                                            style={{ marginBottom: 10 }}
+                                        />
                                     </div>
-                                ) : (
-                                    images && Array.isArray(images) && images.length > 0 ? (
-                                        <Slider {...settings}>
-                                            {images.map((image, index) => (
-                                                <div
-                                                    key={index}
-                                                    className={`product-preview ${selectedImage === image.productImagePath ? "selected" : ""}`}
-                                                    onClick={() => handleImageClick(image.productImagePath)}
-                                                >
-                                                    <img src={`../${image.productImagePath}`} alt={`Product ${index + 1}`} />
-                                                </div>
-                                            ))}
-                                        </Slider>
-                                    ) : (
-                                        null
-                                    )
-                                )}
+                                ) : images && Array.isArray(images) && images.length > 0 ? (
+                                    <Slider {...settings}>
+                                        {images.map((image, index) => (
+                                            <div
+                                                key={index}
+                                                className={`product-preview ${selectedImage === image.productImagePath
+                                                    ? "selected"
+                                                    : ""
+                                                    }`}
+                                                onClick={() => handleImageClick(image.productImagePath)}
+                                            >
+                                                <img
+                                                    src={`../${image.productImagePath}`}
+                                                    alt={`Product ${index + 1}`}
+                                                />
+                                            </div>
+                                        ))}
+                                    </Slider>
+                                ) : null}
                             </div>
                         </div>
 
                         {/* Product Details */}
                         <div className="col-md-5">
                             <div className="product-details">
-                                <h2 className="product-name"> {isLoading ? <Skeleton width={200} /> : name}</h2>
+                                <h2 className="product-name">
+                                    {" "}
+                                    {isLoading ? <Skeleton width={200} /> : name}
+                                </h2>
                                 <div>
                                     <div className="product-rating">
                                         {isLoading ? <Skeleton width={100} /> : renderRating()}
                                     </div>
                                     <a className="review-link" href="#">
-                                        {isLoading ? <Skeleton width={150} /> : '5 Review(s) | Add your review'}
+                                        {isLoading ? (
+                                            <Skeleton width={150} />
+                                        ) : (
+                                            "5 Review(s) | Add your review"
+                                        )}
                                     </a>
                                 </div>
                                 <div>
                                     <h3 className="product-price">
                                         {isLoading ? (
                                             <>
-                                                <Skeleton width={80} /> <Skeleton width={50} style={{ marginLeft: 10 }} />
+                                                <Skeleton width={80} />{" "}
+                                                <Skeleton width={50} style={{ marginLeft: 10 }} />
                                             </>
                                         ) : (
                                             <>
-                                                ${price} <del className="product-old-price">${oldPrice}</del>
+                                                ${price}{" "}
+                                                <del className="product-old-price">${oldPrice}</del>
                                             </>
                                         )}
                                     </h3>
-                                    <span className="product-available">{isLoading ? <Skeleton width={80} /> : 'In Stock'}</span>
+                                    <span className="product-available">
+                                        {isLoading ? <Skeleton width={80} /> : "In Stock"}
+                                    </span>
                                 </div>
                                 <p>
-                                    {isLoading ? <Skeleton count={3} /> : 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed doeiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'}
+                                    {isLoading ? (
+                                        <Skeleton count={3} />
+                                    ) : (
+                                        "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed doeiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+                                    )}
                                 </p>
 
                                 <div className="product-options">
+                                    Size :
                                     <label>
-                                        Size :
                                         {isLoading ? (
                                             <Skeleton width={100} height={30} />
                                         ) : (
-                                            sizes.map((size) => (
-                                                <button
-                                                    key={size}
-                                                    className={`size-button ${selectedSize === size ? 'selected' : ''}`}
-                                                    onClick={() => handleSizeClick(size)}
-                                                >
-                                                    {size}
-                                                </button>
-                                            ))
+                                            <div>
+                                                {sizes.map((size, index) => (
+                                                    <button
+                                                        key={index}
+                                                        className={`size-option 
+                                                            ${selectedSize === size ? "selected" : ""}
+                                                            ${hoveredSize === size ? "hovered" : ""}`} // Thêm class 'hovered' nếu size đang hover
+                                                        onClick={() => setSelectedSize(size)}
+                                                        onMouseEnter={() => setHoveredSize(size)} // Khi hover vào
+                                                        onMouseLeave={() => setHoveredSize(null)} // Khi không còn hover
+                                                    >
+                                                        {size}
+                                                    </button>
+                                                ))}
+                                            </div>
                                         )}
                                     </label>
-                                    
                                 </div>
+
 
                                 <div className="add-to-cart">
                                     <div className="qty-label">
@@ -319,7 +367,6 @@ const ProductDetail = () => {
                                         </button>
                                     )}
                                 </div>
-
 
                                 <ul className="product-btns">
                                     {isLoading ? (
@@ -355,7 +402,7 @@ const ProductDetail = () => {
                                     ) : (
                                         <>
                                             <li>Brand: </li>
-                                            {(supplier)}
+                                            {supplier}
                                         </>
                                     )}
                                 </ul>
@@ -389,7 +436,6 @@ const ProductDetail = () => {
                                         </>
                                     )}
                                 </ul>
-
                             </div>
                         </div>
                         {/* Product Tabs */}
@@ -405,72 +451,80 @@ const ProductDetail = () => {
                 <div className="container">
                     {/* row */}
                     <div className="row">
-
                         <div className="section-title text-center">
                             <h3 className="title">Related Products</h3>
                         </div>
                         {isLoading ? (
                             // Hiển thị các skeleton trong khi đang tải
-                            Array(1).fill().map((_, index) => (
-                                <Product
-                                    key={index}
-                                    isLoading={isLoading}
-                                />
-                            ))
-                        ) : (
-                            productsState.length > 0 ? (
-                                isDesktop ? (
-                                    <div className="slider-container">
-                                        <button className="custom-prev-btn" onClick={() => sliderRef.current.slickPrev()}>
-                                            <i className="fa fa-chevron-left" style={{ fontSize: 20, marginRight: 3, }}></i>
-                                        </button>
-                                        <Slider ref={sliderRef} {...sliderSettings}>
-                                            {productsState.map((product) => (
-                                                <div className="col-md-4 col-xs-6 marginBottom" key={product['productId']}>
-                                                    <Product
-                                                        key={product['productId']}
-                                                        id={product['productId']}
-                                                        name={product['productName']}
-                                                        price={product['productPriceSale']}
-                                                        oldPrice={product['productPrice']}
-                                                        categories={product['categories']}
-                                                        images={product['productImages']}
-                                                        rating={product['productRating']}
-                                                        sale={product['productSale']}
-                                                        isLoading={false}
-                                                    />
-                                                </div>
-
-                                            ))}
-                                        </Slider>
-                                        <button className="custom-next-btn" onClick={() => sliderRef.current.slickNext()}>
-                                            <i className="fa fa-chevron-right" style={{ fontSize: 20, marginLeft: 5, }}></i>
-                                        </button>
-                                    </div>
-                                ) : (
-
-                                    <div className="product-grid">
+                            Array(1)
+                                .fill()
+                                .map((_, index) => (
+                                    <Product key={index} isLoading={isLoading} />
+                                ))
+                        ) : productsState.length > 0 ? (
+                            isDesktop ? (
+                                <div className="slider-container">
+                                    <button
+                                        className="custom-prev-btn"
+                                        onClick={() => sliderRef.current.slickPrev()}
+                                    >
+                                        <i
+                                            className="fa fa-chevron-left"
+                                            style={{ fontSize: 20, marginRight: 3 }}
+                                        ></i>
+                                    </button>
+                                    <Slider ref={sliderRef} {...sliderSettings}>
                                         {productsState.map((product) => (
-                                            <div className="product-item" key={product['productId']}>
+                                            <div
+                                                className="col-md-4 col-xs-6 marginBottom"
+                                                key={product["productId"]}
+                                            >
                                                 <Product
-                                                    key={product['productId']}
-                                                    id={product['productId']}
-                                                    name={product['productName']}
-                                                    price={product['productPriceSale']}
-                                                    oldPrice={product['productPrice']}
-                                                    images={product['productImages']}
-                                                    rating={product['productRating']}
-                                                    sale={product['productSale']}
+                                                    key={product["productId"]}
+                                                    id={product["productId"]}
+                                                    name={product["productName"]}
+                                                    price={product["productPriceSale"]}
+                                                    oldPrice={product["productPrice"]}
+                                                    categories={product["categories"]}
+                                                    images={product["productImages"]}
+                                                    rating={product["productRating"]}
+                                                    sale={product["productSale"]}
                                                     isLoading={false}
                                                 />
                                             </div>
                                         ))}
-                                    </div>
-                                )
+                                    </Slider>
+                                    <button
+                                        className="custom-next-btn"
+                                        onClick={() => sliderRef.current.slickNext()}
+                                    >
+                                        <i
+                                            className="fa fa-chevron-right"
+                                            style={{ fontSize: 20, marginLeft: 5 }}
+                                        ></i>
+                                    </button>
+                                </div>
                             ) : (
-                                null // Khi không có sản phẩm
+                                <div className="product-grid">
+                                    {productsState.map((product) => (
+                                        <div className="product-item" key={product["productId"]}>
+                                            <Product
+                                                key={product["productId"]}
+                                                id={product["productId"]}
+                                                name={product["productName"]}
+                                                price={product["productPriceSale"]}
+                                                oldPrice={product["productPrice"]}
+                                                images={product["productImages"]}
+                                                rating={product["productRating"]}
+                                                sale={product["productSale"]}
+                                                isLoading={false}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
                             )
-                        )}
+                        ) : null // Khi không có sản phẩm
+                        }
                     </div>
                     {/* /row */}
                 </div>

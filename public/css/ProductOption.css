@@ -1,51 +1,37 @@
 .product-options {
-    margin: 20px;
-    font-family: Arial, sans-serif;
+    margin: 20px 0;
 }
 
-.price-label {
-    font-size: 20px;
+.size-label {
     font-weight: bold;
     margin-bottom: 10px;
-    display: block;
 }
 
 .size-options {
     display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 10px;
+    gap: 10px; /* Giữa các size */
+    position: relative; /* Để kiểm soát các hiệu ứng */
+}
+.size-option {
+    padding: 10px 20px; /* Thêm không gian */
+    border: 1px solid #ccc; /* Đường viền cho nút */
+    background-color: #f0f0f0; /* Màu nền cho nút */
+    cursor: pointer; /* Con trỏ chuột */
+    transition: background-color 0.3s, color 0.3s; /* Hiệu ứng chuyển động */
 }
 
-.size-label {
-    margin-right: 10px;
-    font-size: 16px;
+.size-option.disabled {
+    background-color: #f5f5f5; /* Màu nền cho kích cỡ không khả dụng */
+    color: #aaa; /* Màu chữ cho kích cỡ không khả dụng */
+    cursor: not-allowed; /* Hiển thị con trỏ không cho phép */
+    pointer-events: none; /* Không cho phép hover trên phần tử disabled */
 }
 
-.size-button {
-    width: 40px;
-    height: 40px;
-    border: 1px solid #ddd;
-    background-color: white;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s, border-color 0.3s;
+.size-option.selected {
+    background-color: #1a73e8; /* Màu nền cho kích cỡ đang chọn */
+    color: #fff; /* Màu chữ cho kích cỡ đang chọn */
 }
-
-.size-button:hover:not(.disabled) {
-    background-color: #f0f0f0;
-}
-
-.size-button.selected {
-    background-color: #007bff; /* Màu xanh khi chọn */
-    color: #fff;
-    border-color: #007bff; /* Đổi màu viền khi chọn */
-}
-
-.size-button.disabled {
-    background-color: #f9f9f9;
-    color: #bbb;
-    border-color: #ddd;
-    cursor: not-allowed;
-    text-decoration: line-through;
+.size-option.hovered {
+    background-color: #ffd700; /* Màu nền cho nút đang hover */
+    color: black; /* Màu chữ cho nút đang hover */
 }

@@ -1,2 +1,2 @@
 export const BASE_URL =
-  'https://fcaa-2001-ee0-d700-d7f0-1965-7ae6-19b7-6c68.ngrok-free.app/api/v1/';
+  'https://17dc-2001-ee0-d700-d7f0-99d3-ae9a-6081-3509.ngrok-free.app/api/v1/';

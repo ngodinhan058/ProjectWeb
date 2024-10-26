@@ -12,6 +12,9 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import ZoomEffect from "../components/ZoomEffect";
 import ProductTabs from "../components/ProductTabs";
+import Breadcrumb from "../components/Breadcrumb";
+import axios from 'axios';
+
 
 const ProductDetail = () => {
     const location = useLocation();
@@ -70,7 +73,7 @@ const ProductDetail = () => {
         ['L', 3],  // Size L với số lượng 3
         ['XL', 0]  // Size XL với số lượng 0 (vô hiệu hóa)
     ];
-
+    const [categoriess, setCategoriess] = useState([]);
     const [hoveredSize, setHoveredSize] = useState(null);
     // Cài đặt cho slider (carousel) trên desktop
     const sliderRef = useRef(null);
@@ -116,6 +119,24 @@ const ProductDetail = () => {
                 setIsLoading(false); // Kết thúc tải dù có lỗi
             });
     }, [categoryIdss]);
+
+    useEffect(() => {
+        let apiUrl = `${BASE_URL}categories`;
+        axios.get(apiUrl, {
+            headers: {
+                'ngrok-skip-browser-warning': 'true'
+            }
+        })
+            .then(response => {
+                const { data } = response.data;
+                setCategoriess(data);
+                setIsLoading(false)
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                setIsLoading(false);
+            });
+      }, []);
 
     const renderRating = () => {
         const stars = [];
@@ -213,7 +234,7 @@ const ProductDetail = () => {
             <div id="breadcrumb" className="section">
                 <div className="container">
                     <div className="row">
-                        
+                        <Breadcrumb categoryId={categoryIdss} allCategories={categoriess} />
                     </div>
                 </div>
             </div>

@@ -38,27 +38,21 @@ const ProductDetail = () => {
         if (!Array.isArray(categories)) {
             return null; // hoặc return []; nếu bạn muốn trả về một mảng rỗng
         }
-
         // Khởi tạo danh sách để lưu trữ các mục danh mục
         let categoryItems = [];
-
         // Duyệt qua từng danh mục trong mảng categories
         categories.forEach((category) => {
             // Kiểm tra nếu category có giá trị hợp lệ
             if (category && category.categoryId) {
                 // Thêm danh mục hiện tại vào danh sách
                 categoryItems.push(
-                    <li key={category.categoryId}>
-                        <a href={`#${category.categoryId}`}>{category.categoryName}</a>
-                    </li>
+                    <Link to={`/${category.categoryId}`}>
+                        <li key={category.categoryId}>
+                            <a href={`#${category.categoryId}`}> {category.categoryName}</a>
+                        </li>
+                    </Link>
                 );
 
-                // Nếu có danh mục con, thêm danh sách các danh mục con vào
-                if (category.categoryChildren && category.categoryChildren.length > 0) {
-                    const childItems = getCategoryItems(category.categoryChildren); // Đệ quy để lấy danh mục con
-                    // Duyệt qua từng danh mục con và thêm vào danh sách
-                    categoryItems = categoryItems.concat(childItems);
-                }
             }
         });
 
@@ -136,7 +130,7 @@ const ProductDetail = () => {
                 console.error('Error fetching data:', error);
                 setIsLoading(false);
             });
-      }, []);
+    }, []);
 
     const renderRating = () => {
         const stars = [];
@@ -150,7 +144,6 @@ const ProductDetail = () => {
 
     const handleImageClick = (imgSrc, index) => {
         setSelectedImage(`../${imgSrc}`);
-        sliderRef.current.slickGoTo(index);
     };
 
     const [isHoveredUp, setIsHoveredUp] = useState(false);
@@ -226,7 +219,7 @@ const ProductDetail = () => {
         autoplay: true, // Tự động chạy
         autoplaySpeed: 2000, // Chuyển mỗi 2 giây
         arrows: false,
-        
+
     };
     const isDesktop = useMediaQuery({ minWidth: 481 });
     return (
@@ -256,7 +249,6 @@ const ProductDetail = () => {
                                 </div>
                             </div>
                         </div>
-                        {/* Thumbnail Images */}
                         {/* Thumbnail Images */}
                         <div className="col-md-2 col-md-pull-5">
                             <div id="product-imgs">
@@ -324,19 +316,29 @@ const ProductDetail = () => {
                                     <h3 className="product-price">
                                         {isLoading ? (
                                             <>
-                                                <Skeleton width={80} />{" "}
+                                                <Skeleton width={80} />
                                                 <Skeleton width={50} style={{ marginLeft: 10 }} />
                                             </>
                                         ) : (
                                             <>
-                                                ${price}{" "}
-                                                <del className="product-old-price">${oldPrice}</del>
+                                                {sale > 0 ? (
+                                                    <>
+                                                        {price}{" "}
+                                                        <del className="product-old-price">{oldPrice}</del>
+                                                        <span className="product-available">
+                                                            {isLoading ? <Skeleton width={80} /> : "In Stock"}
+                                                        </span>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        {price}{" "}
+                                                    </>
+                                                )}
                                             </>
                                         )}
+
                                     </h3>
-                                    <span className="product-available">
-                                        {isLoading ? <Skeleton width={80} /> : "In Stock"}
-                                    </span>
+
                                 </div>
                                 <p>
                                     {isLoading ? (
@@ -380,7 +382,7 @@ const ProductDetail = () => {
                                             <Skeleton width={80} height={30} />
                                         ) : (
                                             <>
-                                                Qty
+                                                Qty:
                                                 <div className="input-number">
                                                     <input type="number" />
                                                     <span className="qty-up">+</span>
@@ -404,12 +406,12 @@ const ProductDetail = () => {
                                     ) : (
                                         <>
                                             <li>
-                                                <a href="#">
+                                                <a href="">
                                                     <i className="fa fa-heart-o"></i> add to wishlist
                                                 </a>
                                             </li>
                                             <li>
-                                                <a href="#">
+                                                <a href="">
                                                     <i className="fa fa-exchange"></i> add to compare
                                                 </a>
                                             </li>
@@ -421,7 +423,7 @@ const ProductDetail = () => {
                                         <Skeleton width={100} height={30} />
                                     ) : (
                                         <>
-                                            <li>Category:</li>
+                                            <li>Category: </li>
                                             {getCategoryItems(categories)}
                                         </>
                                     )}
@@ -432,7 +434,7 @@ const ProductDetail = () => {
                                     ) : (
                                         <>
                                             <li>Brand: </li>
-                                            {supplier}
+                                            <li>{supplier}</li>
                                         </>
                                     )}
                                 </ul>
@@ -469,16 +471,16 @@ const ProductDetail = () => {
                             </div>
                         </div>
                         {/* Product Tabs */}
-                        <ProductTabs image={images}/>
+                        <ProductTabs image={images} />
                         {/* Product Tabs */}
                     </div>
                     {/* row */}
                 </div>
                 {/* container */}
-            </div>
+            </div >
             <div>
-               {/* container */}
-               <div className="container">
+                {/* container */}
+                <div className="container">
                     {/* row */}
                     <div className="row">
 

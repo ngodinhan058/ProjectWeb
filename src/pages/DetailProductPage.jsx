@@ -93,7 +93,7 @@ const ProductDetail = () => {
     }, [categories]);
 
     useEffect(() => {
-        let apiUrl = `${BASE_URL}products/${categoryIdss}`;
+        let apiUrl = `${BASE_URL}products/relate/${categoryIdss}`;
         console.log(apiUrl);
 
         // Khởi tạo danh sách query params

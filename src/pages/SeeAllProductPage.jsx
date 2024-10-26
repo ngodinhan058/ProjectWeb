@@ -118,6 +118,9 @@ const Store = () => {
     if (selectedSubcCategory != null) {
       setCategoryId(selectedSubcCategory);
     }
+    else {
+      setCategoryId(null)
+    }
 
     // Cập nhật danh mục được chọnz
   };

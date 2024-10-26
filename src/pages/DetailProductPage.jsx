@@ -73,8 +73,10 @@ const ProductDetail = () => {
     ];
 
     const [hoveredSize, setHoveredSize] = useState(null);
+    // Cài đặt cho slider (carousel) trên desktop
+    const sliderRef = useRef(null);
+    const [selectedImage, setSelectedImage] = useState('');
 
-    const [selectedImage, setSelectedImage] = useState("");
 
     const [isLoading, setIsLoading] = useState(true); // Trạng thái loading
 
@@ -126,8 +128,9 @@ const ProductDetail = () => {
         return stars;
     };
 
-    const handleImageClick = (imgSrc) => {
+    const handleImageClick = (imgSrc, index) => {
         setSelectedImage(`../${imgSrc}`);
+        sliderRef.current.slickGoTo(index);
     };
 
     const [isHoveredUp, setIsHoveredUp] = useState(false);
@@ -194,8 +197,7 @@ const ProductDetail = () => {
         nextArrow: <UpArrow />, // Mũi tên xuống tùy chỉnh
         prevArrow: <DownArrow />, // Mũi tên lên tùy chỉnh
     };
-    // Cài đặt cho slider (carousel) trên desktop
-    const sliderRef = useRef(null);
+
     const sliderSettings = {
         infinite: true,
         speed: 100,
@@ -204,6 +206,7 @@ const ProductDetail = () => {
         autoplay: true, // Tự động chạy
         autoplaySpeed: 2000, // Chuyển mỗi 2 giây
         arrows: false,
+        
     };
     const isDesktop = useMediaQuery({ minWidth: 481 });
     return (
@@ -454,84 +457,76 @@ const ProductDetail = () => {
                 {/* container */}
             </div>
             <div>
-                {/* container */}
-                <div className="container">
+               {/* container */}
+               <div className="container">
                     {/* row */}
                     <div className="row">
+
                         <div className="section-title text-center">
                             <h3 className="title">Related Products</h3>
                         </div>
                         {isLoading ? (
                             // Hiển thị các skeleton trong khi đang tải
-                            Array(1)
-                                .fill()
-                                .map((_, index) => (
-                                    <Product key={index} isLoading={isLoading} />
-                                ))
-                        ) : productsState.length > 0 ? (
-                            isDesktop ? (
-                                <div className="slider-container">
-                                    <button
-                                        className="custom-prev-btn"
-                                        onClick={() => sliderRef.current.slickPrev()}
-                                    >
-                                        <i
-                                            className="fa fa-chevron-left"
-                                            style={{ fontSize: 20, marginRight: 3 }}
-                                        ></i>
-                                    </button>
-                                    <Slider ref={sliderRef} {...sliderSettings}>
+                            Array(1).fill().map((_, index) => (
+                                <Product
+                                    key={index}
+                                    isLoading={isLoading}
+                                />
+                            ))
+                        ) : (
+                            productsState.length > 0 ? (
+                                isDesktop ? (
+                                    <div className="slider-container">
+                                        <button className="custom-prev-btn" onClick={() => sliderRef.current.slickPrev()}>
+                                            <i className="fa fa-chevron-left" style={{ fontSize: 20, marginRight: 3, }}></i>
+                                        </button>
+                                        <Slider ref={sliderRef} {...sliderSettings}>
+                                            {productsState.map((product) => (
+                                                <div className="col-md-3 col-xs-6 marginBottom" key={product['productId']}>
+                                                    <Product
+                                                        key={product['productId']}
+                                                        id={product['productId']}
+                                                        name={product['productName']}
+                                                        price={product['productPriceSale']}
+                                                        oldPrice={product['productPrice']}
+                                                        categories={product['categories']}
+                                                        images={product['productImages']}
+                                                        rating={product['productRating']}
+                                                        sale={product['productSale']}
+                                                        isLoading={false}
+                                                    />
+                                                </div>
+
+                                            ))}
+                                        </Slider>
+                                        <button className="custom-next-btn" onClick={() => sliderRef.current.slickNext()}>
+                                            <i className="fa fa-chevron-right" style={{ fontSize: 20, marginLeft: 5, }}></i>
+                                        </button>
+                                    </div>
+                                ) : (
+
+                                    <div className="product-grid">
                                         {productsState.map((product) => (
-                                            <div
-                                                className="col-md-4 col-xs-6 marginBottom"
-                                                key={product["productId"]}
-                                            >
+                                            <div className="product-item" key={product['productId']}>
                                                 <Product
-                                                    key={product["productId"]}
-                                                    id={product["productId"]}
-                                                    name={product["productName"]}
-                                                    price={product["productPriceSale"]}
-                                                    oldPrice={product["productPrice"]}
-                                                    categories={product["categories"]}
-                                                    images={product["productImages"]}
-                                                    rating={product["productRating"]}
-                                                    sale={product["productSale"]}
+                                                    key={product['productId']}
+                                                    id={product['productId']}
+                                                    name={product['productName']}
+                                                    price={product['productPriceSale']}
+                                                    oldPrice={product['productPrice']}
+                                                    images={product['productImages']}
+                                                    rating={product['productRating']}
+                                                    sale={product['productSale']}
                                                     isLoading={false}
                                                 />
                                             </div>
                                         ))}
-                                    </Slider>
-                                    <button
-                                        className="custom-next-btn"
-                                        onClick={() => sliderRef.current.slickNext()}
-                                    >
-                                        <i
-                                            className="fa fa-chevron-right"
-                                            style={{ fontSize: 20, marginLeft: 5 }}
-                                        ></i>
-                                    </button>
-                                </div>
+                                    </div>
+                                )
                             ) : (
-                                <div className="product-grid">
-                                    {productsState.map((product) => (
-                                        <div className="product-item" key={product["productId"]}>
-                                            <Product
-                                                key={product["productId"]}
-                                                id={product["productId"]}
-                                                name={product["productName"]}
-                                                price={product["productPriceSale"]}
-                                                oldPrice={product["productPrice"]}
-                                                images={product["productImages"]}
-                                                rating={product["productRating"]}
-                                                sale={product["productSale"]}
-                                                isLoading={false}
-                                            />
-                                        </div>
-                                    ))}
-                                </div>
+                                null // Khi không có sản phẩm
                             )
-                        ) : null // Khi không có sản phẩm
-                        }
+                        )}
                     </div>
                     {/* /row */}
                 </div>

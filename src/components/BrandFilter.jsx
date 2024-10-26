@@ -1,19 +1,49 @@
+import { useEffect, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
+import { useParams } from 'react-router-dom';
+import { BASE_URL } from './api/config';
+import { axiosInstance } from './api/axiosConfig';
 
 const BrandFilter = ({ isLoading, selectedBrands, onSelectBrands }) => {
-  const brands = [
-    { id: 'brand-1', name: 'Adidas', count: 578 },
-    { id: 'brand-2', name: 'Coros', count: 125 },
-    { id: 'brand-3', name: 'Black Diamon', count: 755 },
-    { id: 'brand-4', name: 'KOO', count: 578 },
-  ];
+  // const brands = [
+  //   { id: 'brand-1', name: 'Adidas', count: 578 },
+  //   { id: 'brand-2', name: 'Coros', count: 125 },
+  //   { id: 'brand-3', name: 'Black Diamon', count: 755 },
+  //   { id: 'brand-4', name: 'KOO', count: 578 },
+  // ];
+
+  const { categoryIdFromLink } = useParams(); // Lấy categoryId từ URL
+  const [brands, setBrands] = useState([]);
 
   const handleCheckboxChange = (id) => {
     onSelectBrands((prev) =>
       prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]
     );
   };
+
+  useEffect(() => {
+    //**
+    //@GetMapping(value = {"/product-suppliers/category/{categoryId}", "/product-sizes/category/{categoryId}/"})
+
+    let apiUrl = `${BASE_URL}product-suppliers/category/${categoryIdFromLink}?`;
+
+    axiosInstance
+      .get(apiUrl, {
+        headers: {
+          'ngrok-skip-browser-warning': 'true',
+        },
+      })
+      .then((response) => {
+        setBrands(response.data.data);
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 400) {
+        } else {
+          console.error('Error fetching data:', error);
+        }
+      });
+  }, [categoryIdFromLink]);
 
   return (
     <div className="aside">
@@ -28,17 +58,18 @@ const BrandFilter = ({ isLoading, selectedBrands, onSelectBrands }) => {
             <Skeleton key={brand.id} height={20} />
           ) : (
             // Add key to parent div of each brand item
-            <div className="input-checkbox" key={brand.id}>
+            <div className="input-checkbox" key={brand['productSupplierSd']}>
               <input
                 type="checkbox"
-                id={brand.id}
-                checked={selectedBrands.includes(brand.id)}
-                onChange={() => handleCheckboxChange(brand.id)}
+                id={brand['productSupplierSd']}
+                checked={selectedBrands.includes(brand['productSupplierSd'])}
+                onChange={() =>
+                  handleCheckboxChange(brand['productSupplierSd'])
+                }
               />
-              <label htmlFor={brand.id}>
+              <label htmlFor={brand['productSupplierSd']}>
                 <span></span>
-                {brand.name}
-                <small>({brand.count})</small>
+                <small>{brand['productSupplierName']}</small>
               </label>
             </div>
           )
@@ -47,6 +78,5 @@ const BrandFilter = ({ isLoading, selectedBrands, onSelectBrands }) => {
     </div>
   );
 };
-
 
 export default BrandFilter;

@@ -19,27 +19,37 @@ const ProductTabs = () => {
   };
 
   const descriptionMarkdown = `
+
 ### Description
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, 
-sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, 
-consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-  
-### More Content
-This is additional content that will be shown when the user expands the description. 
-You can add more details or images here to provide users with more information about the product.
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliq.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+
+### Detail
+#### From : China
+#### Material : Polime
+#### Address : Xã Ninh Gia, Huyện Đức Trọng
+#### Aplace of production : CTTNHH Một thành viên
+
+
+### Images
+![Product Image](/img/20200225_y0nRhnwGDyzKR7hOKlPIMuqN.jpg) 
+![Product Image](/img/20200225_y0nRhnwGDyzKR7hOKlPIMuqN.jpg) 
+
   `;
 
   const markdownToHtml = (markdown) => {
     return markdown
-      .replace(/!\[(.*?)\]\((.*?)\)/g, '<img alt="$1" src="$2" style="max-width: 100%; height: auto;" />')
-      .replace(/### (.*?)\n/g, '<h3>$1</h3>')
-      .replace(/## (.*?)\n/g, '<h2>$1</h2>')
-      .replace(/# (.*?)\n/g, '<h1>$1</h1>')
-      .replace(/\n/g, '<br />')
-      .replace(/\* (.*?)\n/g, '<li>$1</li>')
-      .replace(/<(li)>/g, '<ul><li>')
-      .replace(/<\/li>/g, '</li></ul>');
+      .replace(/!\[(.*?)\]\((.*?)\)/g, '<img alt="$1" src="$2" style="width:300px; height:250px; display:inline-block;" />') // Chuyển đổi cú pháp hình ảnh
+      .replace(/#### (.*?)\n/g, '<h5>$1</h5>') // Chuyển đổi ### thành <h3>
+      .replace(/### (.*?)\n/g, '<h3>$1</h3>') // Chuyển đổi ### thành <h3>
+      .replace(/## (.*?)\n/g, '<h2>$1</h2>')   // Chuyển đổi ## thành <h2>
+      .replace(/# (.*?)\n/g, '<h1>$1</h1>')     // Chuyển đổi # thành <h1>
+      .replace(/\n/g, '<br />')                  // Chuyển đổi xuống dòng
+      .replace(/\* (.*?)\n/g, '<li>$1</li>')     // Chuyển đổi * thành <li>
+      .replace(/<(li)>/g, '<ul><li>')            // Thêm <ul> trước <li>
+      .replace(/<\/li>/g, '</li></ul>');         // Đóng <ul> sau <li>
   };
 
   const handleToggleExpand = () => {

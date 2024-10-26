@@ -63,9 +63,14 @@ const ProductDetail = () => {
         return categoryItems;
     };
     // Mảng size
-    const [selectedSize, setSelectedSize] = useState('S'); // Thiết lập mặc định là 'S'
-    const sizes = ['S', 'M', 'L', 'XL']; // Mảng size giả
-    const quantity = 0; // Bạn cần lấy số lượng thực tế từ dữ liệu sản phẩm
+    const [selectedSize, setSelectedSize] = useState(""); // Đặt size mặc định
+    // Thiết lập mặc định là 'S'
+    const sizes = [
+        ['S', 5],  // Size S với số lượng 5
+        ['M', 0],  // Size M với số lượng 0 (vô hiệu hóa)
+        ['L', 3],  // Size L với số lượng 3
+        ['XL', 0]  // Size XL với số lượng 0 (vô hiệu hóa)
+    ];
 
     const [hoveredSize, setHoveredSize] = useState(null);
 
@@ -325,15 +330,17 @@ const ProductDetail = () => {
                                             <Skeleton width={100} height={30} />
                                         ) : (
                                             <div>
-                                                {sizes.map((size, index) => (
+                                                {sizes.map(([size, quantity], index) => (
                                                     <button
                                                         key={index}
                                                         className={`size-option 
                                                             ${selectedSize === size ? "selected" : ""}
-                                                            ${hoveredSize === size ? "hovered" : ""}`} // Thêm class 'hovered' nếu size đang hover
+                                                            ${hoveredSize === size ? "hovered" : ""}
+                                                            ${quantity === 0 ? "disabled" : ""}`}
                                                         onClick={() => setSelectedSize(size)}
                                                         onMouseEnter={() => setHoveredSize(size)} // Khi hover vào
                                                         onMouseLeave={() => setHoveredSize(null)} // Khi không còn hover
+                                                        disabled={quantity === 0} // Vô hiệu hóa nếu số lượng = 0
                                                     >
                                                         {size}
                                                     </button>

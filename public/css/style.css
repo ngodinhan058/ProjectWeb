@@ -1729,7 +1729,8 @@ textarea.input {
 .product-details .product-links li {
   display: inline-block;
   text-transform: uppercase;
-  font-size: 12px;
+  font-size: 13px;
+  margin-left: 10px;
 }
 
 .product-details .product-links li+li {

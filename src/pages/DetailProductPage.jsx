@@ -12,7 +12,6 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import ZoomEffect from "../components/ZoomEffect";
 import ProductTabs from "../components/ProductTabs";
-import Breadcrumb from "../components/Breadcrumb";
 
 const ProductDetail = () => {
     const location = useLocation();
@@ -214,7 +213,7 @@ const ProductDetail = () => {
             <div id="breadcrumb" className="section">
                 <div className="container">
                     <div className="row">
-                        <Breadcrumb categories={categories} name={name} />
+                        
                     </div>
                 </div>
             </div>
@@ -449,7 +448,7 @@ const ProductDetail = () => {
                             </div>
                         </div>
                         {/* Product Tabs */}
-                        <ProductTabs />
+                        <ProductTabs image={images}/>
                         {/* Product Tabs */}
                     </div>
                     {/* row */}

@@ -1,3 +1,73 @@
+/* Tab Product */
+.description-content {
+  display: -webkit-box;
+  -webkit-line-clamp: 4; /* Hiển thị tối đa 3 dòng */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.description-content.expanded {
+  -webkit-line-clamp: none; /* Bỏ giới hạn dòng khi mở rộng */
+}
+
+.btn-see-more {
+  background-color: transparent;
+  color: blue;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+
+.tab-nav {
+  list-style: none; /* Bỏ dấu gạch đầu dòng */
+  padding: 0; /* Bỏ padding */
+  display: flex; /* Sử dụng flex để các nút nằm ngang */
+  gap: 100px;
+}
+
+.tab-nav li {
+  flex: 1; /* Mỗi nút chiếm 1 phần bằng nhau */
+  text-align: center; /* Canh giữa chữ */
+  position: relative; /* Để sử dụng hiệu ứng */
+}
+
+.tab-nav button {
+  background: none; /* Bỏ màu nền */
+  border: none; /* Bỏ viền khung */
+  padding: 10px 15px; /* Thêm padding cho nút */
+  cursor: pointer; /* Thay đổi con trỏ khi hover */
+  font-size: 25px; /* Kích thước chữ lớn hơn */
+  font-weight: bold; /* Làm đậm chữ */
+  transition: color 0.3s; /* Thêm hiệu ứng chuyển màu chữ */
+}
+
+.tab-nav button.active {
+  border-bottom: 2px solid #007bff; /* Viền màu xanh bên dưới nút đang active */
+}
+
+.tab-nav button:hover {
+  color: #007bff; /* Thay đổi màu chữ khi hover */
+}
+
+/* Đường viền dưới xuất hiện từ trái sang phải */
+.tab-nav li::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 2px; /* Độ dày của đường viền */
+  background: #007bff; /* Màu đường viền */
+  transition: width 0.3s; /* Thời gian chuyển động của đường viền */
+}
+
+.tab-nav li:hover::after {
+  width: 100%; /* Đường viền mở rộng đầy đủ khi hover */
+}
+
+
 /* Scroll to Top */
 
 

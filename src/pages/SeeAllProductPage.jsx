@@ -161,7 +161,7 @@ const Store = () => {
                                                 images={product['productImages']}
                                                 rating={product['productRating']}
                                                 sale={product['productSale']}
-
+                                                supplier={product['productSupplier']['productSupplierName']}
                                                 isLoading={false}  // Đặt isLoading là false khi không tải
                                             />
                                         </div>

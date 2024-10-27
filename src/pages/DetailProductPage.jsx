@@ -265,6 +265,7 @@ const ProductDetail = () => {
                     style={{
                       display: isMobile ? 'flex' : 'block',
                       flexDirection: isMobile ? 'row' : 'column',
+                      gap: isMobile ? '1px' : '',
                     }}
                   >
                     {/* Hiển thị skeleton cho 2 hình ảnh thumbnail */}

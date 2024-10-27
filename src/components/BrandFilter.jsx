@@ -69,7 +69,9 @@ const BrandFilter = ({ isLoading, selectedBrands, onSelectBrands }) => {
               />
               <label htmlFor={brand['productSupplierSd']}>
                 <span></span>
-                <small>{brand['productSupplierName']}</small>
+                <small style={{ fontSize: 16 }}>
+                  {brand['productSupplierName']}
+                </small>
               </label>
             </div>
           )

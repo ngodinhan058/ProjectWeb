@@ -61,7 +61,9 @@ const SizeFilter = ({ isLoading, selectedSizes, onSelectSizes }) => {
               <label htmlFor={size['productSizeId']}>
                 <span></span>
 
-                <small>{size['productSizeName']}</small>
+                <small style={{ fontSize: 16 }}>
+                  {size['productSizeName']}
+                </small>
               </label>
             </div>
           )

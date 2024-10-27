@@ -192,7 +192,8 @@ const ProductDetail = () => {
         textAlign: 'center',
         transition: 'background-color 0.3s ease, color 0.3s ease', // Đảm bảo cú pháp đúng
         position: isMobile ? 'absolute' : '',
-        top: isMobile ? '40%' : '-4%',
+        bottom: isDesktop ? '40%' : '-4%',
+        top: isMobile ? '40%' : '',
         left: isMobile ? '100%' : '',
       }}
       onClick={onClick}

@@ -34,7 +34,12 @@ const CategoryFilter = ({ onCategoryChange }) => {
   useEffect(() => {
     onCategoryChange(selectedSubcategory); // Gửi ID đã chọn lên parent component
   }, [selectedSubcategory]);
-
+  
+  useEffect(() => {
+    if (categoryIdFromLink) {
+      setSelectedSubcategory(categoryIdFromLink);
+    }
+  }, [categoryIdFromLink]);
   // Hàm để mở/đóng danh mục cha
   const toggleCategory = (id) => {
     setOpenCategoryId((prevId) => (prevId === id ? null : id)); // Đóng nếu đã mở, mở nếu chưa mở

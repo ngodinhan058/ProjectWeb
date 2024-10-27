@@ -222,7 +222,7 @@ const Store = () => {
                     onClick={() => handlePageChange(0)}
                     style={{
                       color: currentPage > 0 ? '#000' : '#ccc',
-                      pointerEvents: currentPage > 0 ? 'auto' : 'auto',
+                      pointerEvents: currentPage > 0 ? 'auto' : 'none',
                     }}
                   >
                     <svg
@@ -252,7 +252,7 @@ const Store = () => {
                     onClick={() => handlePageChange(currentPage - 1)}
                     style={{
                       color: currentPage > 0 ? '#000' : '#ccc',
-                      pointerEvents: currentPage > 0 ? 'auto' : 'auto',
+                      pointerEvents: currentPage > 0 ? 'auto' : 'none',
                     }}
                   >
                     <svg

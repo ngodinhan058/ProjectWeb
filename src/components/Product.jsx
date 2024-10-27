@@ -100,7 +100,7 @@ const Product = ({
       <div className="product-body">
         {/* <p className="product-category">{isLoading ? <Skeleton width={80} /> : categories}</p> */}
         <h3 className="product-name">
-          {isLoading ? <Skeleton width={150} /> : <a href="#">{name}</a>}
+          {isLoading ? <Skeleton width={150} /> : <a href="">{name}</a>}
         </h3>
         <h4 className="product-price">
           {isLoading ? (

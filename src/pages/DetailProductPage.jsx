@@ -192,7 +192,8 @@ const ProductDetail = () => {
         textAlign: 'center',
         transition: 'background-color 0.3s ease, color 0.3s ease', // Đảm bảo cú pháp đúng
         position: isMobile ? 'absolute' : '',
-        top: isMobile ? '40%' : '-4%',
+        bottom: isDesktop ? '40%' : '-4%',
+        top: isMobile ? '40%' : '',
         left: isMobile ? '100%' : '',
       }}
       onClick={onClick}
@@ -260,21 +261,27 @@ const ProductDetail = () => {
             <div className="col-md-2 col-md-pull-5">
               <div id="product-imgs">
                 {isLoading ? (
-                  <div>
+                  <div
+                    style={{
+                      display: isMobile ? 'flex' : 'block',
+                      flexDirection: isMobile ? 'row' : 'column',
+                      gap: isMobile ? 10 : '',
+                    }}
+                  >
                     {/* Hiển thị skeleton cho 2 hình ảnh thumbnail */}
                     <Skeleton
-                      height={160}
-                      width={150}
+                      height={isDesktop ? 160 : 80}
+                      width={isDesktop ? 150 : 80}
                       style={{ marginBottom: 10 }}
                     />
                     <Skeleton
-                      height={160}
-                      width={150}
+                      height={isDesktop ? 160 : 80}
+                      width={isDesktop ? 150 : 80}
                       style={{ marginBottom: 10 }}
                     />
                     <Skeleton
-                      height={160}
-                      width={150}
+                      height={isDesktop ? 160 : 80}
+                      width={isDesktop ? 150 : 80}
                       style={{ marginBottom: 10 }}
                     />
                   </div>

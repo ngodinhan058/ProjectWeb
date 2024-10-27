@@ -2361,17 +2361,18 @@ textarea.input {
   }
 
   .popup-content button {
-    background: #f7f7f8;
-    color: #ccc;
+    background: #5050ea;
+    color: #fff;
     padding: 10px 15px;
     border-radius: 50%;
     cursor: pointer;
-    position: absolute;
-    right: 20%;
+    position: fixed;
     border: none;
+    right: 10px;
+    top: 10px;
   }
 
   .popup-content button:hover {
-    background: #757576;
+    background: #1111e4;
   }
 }

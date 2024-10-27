@@ -14,6 +14,7 @@ import ZoomEffect from '../components/ZoomEffect';
 import ProductTabs from '../components/ProductTabs';
 import Breadcrumb from '../components/Breadcrumb';
 import axios from 'axios';
+import PopupImage from '../components/PopupImage';
 
 const ProductDetail = () => {
   const location = useLocation();
@@ -146,6 +147,8 @@ const ProductDetail = () => {
 
   const [isHoveredUp, setIsHoveredUp] = useState(false);
   const [isHoveredDown, setIsHoveredDown] = useState(false);
+  const isDesktop = useMediaQuery({ minWidth: 481 });
+  const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
 
   const DownArrow = ({ className, style, onClick }) => (
     <div
@@ -159,15 +162,17 @@ const ProductDetail = () => {
         border: '1px solid #e4e7ed',
         color: isHoveredUp ? '#fff' : '#000',
         textAlign: 'center',
-        top: '-4%',
         transition: 'background 0.3s, color 0.3s',
+        position: isMobile ? 'absolute' : '',
+        top: isMobile ? '40%' : '-4%',
+        left: isMobile ? '0%' : '',
       }}
       onClick={onClick}
       onMouseEnter={() => setIsHoveredUp(true)}
       onMouseLeave={() => setIsHoveredUp(false)}
     >
       <i
-        className="fa fa-chevron-up"
+        className={isMobile ? 'fa fa-chevron-left' : 'fa fa-chevron-up'}
         style={{ fontSize: 20, position: 'absolute', right: '22%', top: '20%' }}
       ></i>
     </div>
@@ -186,13 +191,16 @@ const ProductDetail = () => {
         color: isHoveredDown ? '#fff' : '#000',
         textAlign: 'center',
         transition: 'background-color 0.3s ease, color 0.3s ease', // Đảm bảo cú pháp đúng
+        position: isMobile ? 'absolute' : '',
+        top: isMobile ? '40%' : '-4%',
+        left: isMobile ? '100%' : '',
       }}
       onClick={onClick}
       onMouseEnter={() => setIsHoveredDown(true)}
       onMouseLeave={() => setIsHoveredDown(false)}
     >
       <i
-        className="fa fa-chevron-down"
+        className={isMobile ? 'fa fa-chevron-right' : 'fa fa-chevron-down'}
         style={{ fontSize: 20, position: 'absolute', right: '22%', top: '20%' }}
       ></i>
     </div>
@@ -202,7 +210,7 @@ const ProductDetail = () => {
     speed: 500,
     slidesToShow: 3,
     slidesToScroll: 1,
-    vertical: true,
+    vertical: isDesktop,
     verticalSwiping: true,
     arrows: true,
     nextArrow: <UpArrow />, // Mũi tên xuống tùy chỉnh
@@ -218,7 +226,7 @@ const ProductDetail = () => {
     autoplaySpeed: 2000, // Chuyển mỗi 2 giây
     arrows: false,
   };
-  const isDesktop = useMediaQuery({ minWidth: 481 });
+
   return (
     <>
       <div id="breadcrumb" className="section">
@@ -240,6 +248,8 @@ const ProductDetail = () => {
                 <div className="product-preview">
                   {isLoading ? (
                     <Skeleton height={400} />
+                  ) : isMobile ? (
+                    <PopupImage img={selectedImage} />
                   ) : (
                     <ZoomEffect imageUrl={selectedImage} zoomLevel={2} />
                   )}
@@ -493,38 +503,67 @@ const ProductDetail = () => {
             <div className="section-title text-center">
               <h3 className="title">Related Products</h3>
             </div>
-            {isLoading ? (
-              // Hiển thị các skeleton trong khi đang tải
-              Array(1)
-                .fill()
-                .map((_, index) => (
-                  <Product key={index} isLoading={isLoading} />
-                ))
-            ) : productsState.length > 0 ? (
-              isDesktop ? (
-                <div className="slider-container">
-                  <button
-                    className="custom-prev-btn"
-                    onClick={() => sliderRef.current.slickPrev()}
-                  >
-                    <i
-                      className="fa fa-chevron-left"
-                      style={{ fontSize: 20, marginRight: 3 }}
-                    ></i>
-                  </button>
-                  <Slider ref={sliderRef} {...sliderSettings}>
+            {
+              isLoading ? (
+                // Hiển thị các skeleton trong khi đang tải
+                Array(1)
+                  .fill()
+                  .map((_, index) => (
+                    <Product key={index} isLoading={isLoading} />
+                  ))
+              ) : productsState.length > 0 ? (
+                isDesktop ? (
+                  <div className="slider-container">
+                    <button
+                      className="custom-prev-btn"
+                      onClick={() => sliderRef.current.slickPrev()}
+                    >
+                      <i
+                        className="fa fa-chevron-left"
+                        style={{ fontSize: 20, marginRight: 3 }}
+                      ></i>
+                    </button>
+                    <Slider ref={sliderRef} {...sliderSettings}>
+                      {productsState.map((product) => (
+                        <div
+                          className="col-md-3 col-xs-6 marginBottom"
+                          key={product['productId']}
+                        >
+                          <Product
+                            key={product['productId']}
+                            id={product['productId']}
+                            name={product['productName']}
+                            price={product['productPriceSale']}
+                            oldPrice={product['productPrice']}
+                            categories={product['categories']}
+                            images={product['productImages']}
+                            rating={product['productRating']}
+                            sale={product['productSale']}
+                            isLoading={false}
+                          />
+                        </div>
+                      ))}
+                    </Slider>
+                    <button
+                      className="custom-next-btn"
+                      onClick={() => sliderRef.current.slickNext()}
+                    >
+                      <i
+                        className="fa fa-chevron-right"
+                        style={{ fontSize: 20, marginLeft: 5 }}
+                      ></i>
+                    </button>
+                  </div>
+                ) : (
+                  <div className="product-grid">
                     {productsState.map((product) => (
-                      <div
-                        className="col-md-3 col-xs-6 marginBottom"
-                        key={product['productId']}
-                      >
+                      <div className="product-item" key={product['productId']}>
                         <Product
                           key={product['productId']}
                           id={product['productId']}
                           name={product['productName']}
                           price={product['productPriceSale']}
                           oldPrice={product['productPrice']}
-                          categories={product['categories']}
                           images={product['productImages']}
                           rating={product['productRating']}
                           sale={product['productSale']}
@@ -532,37 +571,9 @@ const ProductDetail = () => {
                         />
                       </div>
                     ))}
-                  </Slider>
-                  <button
-                    className="custom-next-btn"
-                    onClick={() => sliderRef.current.slickNext()}
-                  >
-                    <i
-                      className="fa fa-chevron-right"
-                      style={{ fontSize: 20, marginLeft: 5 }}
-                    ></i>
-                  </button>
-                </div>
-              ) : (
-                <div className="product-grid">
-                  {productsState.map((product) => (
-                    <div className="product-item" key={product['productId']}>
-                      <Product
-                        key={product['productId']}
-                        id={product['productId']}
-                        name={product['productName']}
-                        price={product['productPriceSale']}
-                        oldPrice={product['productPrice']}
-                        images={product['productImages']}
-                        rating={product['productRating']}
-                        sale={product['productSale']}
-                        isLoading={false}
-                      />
-                    </div>
-                  ))}
-                </div>
-              )
-            ) : null // Khi không có sản phẩm
+                  </div>
+                )
+              ) : null // Khi không có sản phẩm
             }
           </div>
           {/* /row */}

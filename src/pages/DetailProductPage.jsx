@@ -265,23 +265,22 @@ const ProductDetail = () => {
                     style={{
                       display: isMobile ? 'flex' : 'block',
                       flexDirection: isMobile ? 'row' : 'column',
-                      gap: isMobile ? 10 : '',
                     }}
                   >
                     {/* Hiển thị skeleton cho 2 hình ảnh thumbnail */}
                     <Skeleton
-                      height={isDesktop ? 160 : 80}
-                      width={isDesktop ? 150 : 80}
+                      height={160}
+                      width={150}
                       style={{ marginBottom: 10 }}
                     />
                     <Skeleton
-                      height={isDesktop ? 160 : 80}
-                      width={isDesktop ? 150 : 80}
+                      height={160}
+                      width={150}
                       style={{ marginBottom: 10 }}
                     />
                     <Skeleton
-                      height={isDesktop ? 160 : 80}
-                      width={isDesktop ? 150 : 80}
+                      height={160}
+                      width={150}
                       style={{ marginBottom: 10 }}
                     />
                   </div>

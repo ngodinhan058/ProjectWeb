@@ -2,37 +2,54 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
+import { useMediaQuery } from 'react-responsive';
 
-const Product = ({ id, images, name, categories, supplier, price, oldPrice, rating, sale, isNew, isLoading }) => {
+const Product = ({
+  id,
+  images,
+  name,
+  categories,
+  supplier,
+  price,
+  oldPrice,
+  rating,
+  sale,
+  isNew,
+  isLoading,
+}) => {
   const renderRating = () => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
       stars.push(
-        <i
-          key={i}
-          className={i <= rating ? 'fa fa-star' : 'fa fa-star-o'}
-        ></i>
+        <i key={i} className={i <= rating ? 'fa fa-star' : 'fa fa-star-o'}></i>
       );
     }
     return stars;
   };
 
-  const image = [images]
-
-
-
-
+  const image = [images];
   const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
 
   const handleClick = () => {
     navigate(`/chi-tiet/${id}`, {
-      state: { id, images, name, categories, supplier, price, oldPrice, rating, sale, isNew },
+      state: {
+        id,
+        images,
+        name,
+        categories,
+        supplier,
+        price,
+        oldPrice,
+        rating,
+        sale,
+        isNew,
+      },
     });
     window.scrollTo(0, 0);
   };
-  return (
 
+  return (
     <div
       key={id}
       className="product"
@@ -47,11 +64,19 @@ const Product = ({ id, images, name, categories, supplier, price, oldPrice, rati
           <Skeleton height={300} />
         ) : (
           <img
-          src={
-            isHovered
-              ? `../${image[0]?.[1]?.['productImagePath'] || image[0]?.[0]?.['productImagePath'] || 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/langvi-300px-No_image_available.svg.png'}`
-              : `../${image[0]?.[0]?.['productImagePath'] || image[0]?.[1]?.['productImagePath'] || 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/langvi-300px-No_image_available.svg.png'}`
-          }
+            src={
+              isHovered
+                ? `../${
+                    image[0]?.[1]?.['productImagePath'] ||
+                    image[0]?.[0]?.['productImagePath'] ||
+                    'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/langvi-300px-No_image_available.svg.png'
+                  }`
+                : `../${
+                    image[0]?.[0]?.['productImagePath'] ||
+                    image[0]?.[1]?.['productImagePath'] ||
+                    'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/langvi-300px-No_image_available.svg.png'
+                  }`
+            }
             alt={image[0]?.[0]?.['productImageAlt'] || 'Default Alt Text'} // Giá trị alt, nếu không có thì dùng văn bản mặc định
           />
         )}
@@ -63,7 +88,11 @@ const Product = ({ id, images, name, categories, supplier, price, oldPrice, rati
           ) : (
             <>
               {sale !== 0 && <span className="sale">-{sale}%</span>}
-              {isNew && <span className="new" style={{ marginLeft: 5 }}>NEW</span>}
+              {isNew && (
+                <span className="new" style={{ marginLeft: 5 }}>
+                  NEW
+                </span>
+              )}
             </>
           )}
         </div>
@@ -71,26 +100,21 @@ const Product = ({ id, images, name, categories, supplier, price, oldPrice, rati
       <div className="product-body">
         {/* <p className="product-category">{isLoading ? <Skeleton width={80} /> : categories}</p> */}
         <h3 className="product-name">
-          {isLoading ? <Skeleton width={150} /> : <a href="#">{name}</a>}
+          {isLoading ? <Skeleton width={150} /> : <a href="">{name}</a>}
         </h3>
         <h4 className="product-price">
           {isLoading ? (
             <Skeleton width={100} />
           ) : (
             <>
-              <div>
-                {price}
-              </div>
+              <div>{price}</div>
               {sale !== 0 ? (
-                <del className="product-old-price">
-                  {oldPrice}
-                </del>
+                <del className="product-old-price">{oldPrice}</del>
               ) : (
                 <del className="product-old-price" style={{ color: '#fff' }}>
                   {price}
                 </del>
               )}
-
             </>
           )}
         </h4>
@@ -129,7 +153,6 @@ const Product = ({ id, images, name, categories, supplier, price, oldPrice, rati
         </div>
       )}
     </div>
-
   );
 };
 

@@ -463,10 +463,12 @@ const ProductDetail = () => {
                         </div>
                         {isLoading ? (
                             // Hiển thị các skeleton trong khi đang tải
-                            Array(1)
+                            Array(4) // Số lượng skeleton muốn hiển thị
                                 .fill()
                                 .map((_, index) => (
-                                    <Product key={index} isLoading={isLoading} />
+                                    <div className="col-md-3 col-xs-6 marginBottom" key={index}>
+                                        <Product isLoading={true} />
+                                    </div>
                                 ))
                         ) : productsState.length > 0 ? (
                             isDesktop ? (

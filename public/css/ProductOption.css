@@ -1,0 +1,51 @@
+.product-options {
+    margin: 20px 0;
+    font-family: Arial, sans-serif; /* Thêm kiểu chữ */
+}
+
+.size-label {
+    font-weight: bold;
+    font-size: 1.2em; /* Tăng kích thước chữ */
+    margin-bottom: 10px;
+    color: #333; /* Màu chữ tối hơn */
+}
+
+.size-options {
+    display: flex;
+    gap: 15px; /* Giữa các size */
+    position: relative; /* Để kiểm soát các hiệu ứng */
+}
+
+.size-option {
+    padding: 10px 20px; /* Thêm không gian */
+    border: 2px solid #ccc; /* Đường viền cho nút */
+    background-color: #f7f7f7; /* Màu nền cho nút */
+    border-radius: 5px; /* Bo tròn các góc */
+    cursor: pointer; /* Con trỏ chuột */
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s; /* Hiệu ứng chuyển động */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ cho nút */
+    font-size: 12pt;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.size-option.disabled {
+    background-color: #e0e0e0; /* Màu nền cho kích cỡ không khả dụng */
+    color: #aaa; /* Màu chữ cho kích cỡ không khả dụng */
+    cursor: not-allowed; /* Hiển thị con trỏ không cho phép */
+    pointer-events: none; /* Không cho phép hover trên phần tử disabled */
+    text-decoration: line-through;
+}
+
+.size-option.selected {
+    background-color: #ef233c; /* Màu nền cho kích cỡ đang chọn */
+    color: #fff; /* Màu chữ cho kích cỡ đang chọn */
+    transform: scale(1.05); /* Tăng kích thước nhẹ khi chọn */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Đổ bóng đậm hơn khi chọn */
+}
+
+.size-option.hovered {
+    background-color: #e0e0e0; /* Màu nền cho nút đang hover */
+    color: black; /* Màu chữ cho nút đang hover */
+    transform: scale(1.05); /* Tăng kích thước nhẹ khi hover */
+}

@@ -3,31 +3,36 @@ import axios from 'axios';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { BASE_URL } from './api/config';
+import { axiosInstance } from './api/axiosConfig';
+import { useParams } from 'react-router-dom';
 
 const SizeFilter = ({ isLoading, selectedSizes, onSelectSizes }) => {
   const [sizes, setSizes] = useState([]); // Lưu dữ liệu danh mục từ API
-  // const sizes = [
-  //   { id: 'size-1', name: 'S', count: 578 },
-  //   { id: 'size-2', name: 'M', count: 125 },
-  //   { id: 'size-3', name: 'L', count: 755 },
-  //   { id: 'size-4', name: 'XL', count: 578 },
-  //   { id: 'size-5', name: 'XXL', count: 125 },
-  //   { id: 'size-6', name: 'XXXL', count: 755 },
-  // ];
-  // Fetch dữ liệu từ API khi component được mount
-  // useEffect(() => {
-  //   let apiUrl = `${BASE_URL}/size`;
-  //   axios.get(apiUrl)
-  //     .then(response => {
-  //       setSizes(response.data.data || []); // Lưu dữ liệu từ API vào state
-        
-  //     })
-  //     .catch(error => {
-  //       console.error('Error fetching data:', error);
-        
-  //     });
-  // }, []); // [] đảm bảo chỉ gọi API khi component mount lần đầu
-  // console.log(sizes)
+
+  const { categoryIdFromLink } = useParams(); // Lấy categoryId từ URL
+
+  useEffect(() => {
+    //**
+    //@GetMapping(value = {"/product-suppliers/category/{categoryId}", "/product-sizes/category/{categoryId}/"})
+
+    let apiUrl = `${BASE_URL}product-sizes/category/${categoryIdFromLink}?`;
+
+    axiosInstance
+      .get(apiUrl, {
+        headers: {
+          'ngrok-skip-browser-warning': 'true',
+        },
+      })
+      .then((response) => {
+        setSizes(response.data.data);
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 400) {
+        } else {
+          console.error('Error fetching data:', error);
+        }
+      });
+  }, [categoryIdFromLink]);
 
   const handleCheckboxChange = (id) => {
     onSelectSizes((prev) =>
@@ -42,25 +47,27 @@ const SizeFilter = ({ isLoading, selectedSizes, onSelectSizes }) => {
         className="checkbox-filter"
         style={{ maxHeight: 140, overflowY: 'scroll' }}
       >
-        {/* {sizes.map((size) =>
+        {sizes.map((size) =>
           isLoading ? (
             <Skeleton height={20} />
           ) : (
-            <div className="input-checkbox" key={size['product-size-id']}>
+            <div className="input-checkbox" key={size['productSizeId']}>
               <input
                 type="checkbox"
-                id={size['product-size-id']}
-                checked={selectedSizes.includes(size['product-size-id'])}
-                onChange={() => handleCheckboxChange(size['product-size-id'])}
+                id={size['productSizeId']}
+                checked={selectedSizes.includes(size['productSizeId'])}
+                onChange={() => handleCheckboxChange(size['productSizeId'])}
               />
-              <label htmlFor={size['product-size-id']}>
+              <label htmlFor={size['productSizeId']}>
                 <span></span>
-                {size['product-size-name']}
-                <small>({size.count})</small>
+
+                <small style={{ fontSize: 16 }}>
+                  {size['productSizeName']}
+                </small>
               </label>
             </div>
           )
-        )} */}
+        )}
       </div>
     </div>
   );

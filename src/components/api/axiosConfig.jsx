@@ -4,7 +4,7 @@ import axiosRetry from 'axios-retry';
 
 // Cấu hình axios và axios-retry
 axiosRetry(axios, {
-  retries: 3, // Số lần thử lại
+  retries: 1, // Số lần thử lại
   retryDelay: (retryCount) => {
     return retryCount * 2000; // Thời gian chờ giữa các lần thử lại (mili giây)
   },

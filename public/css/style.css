@@ -74,7 +74,7 @@ Table OF Contents
   /* Đảm bảo sản phẩm chiếm hết chiều rộng của cột */
 }
 
-@media (max-width: 480px) {
+@media (max-width: 481px) {
   .product-grid {
     grid-template-columns: repeat(2, 1fr);
     /* 2 sản phẩm trên một hàng */

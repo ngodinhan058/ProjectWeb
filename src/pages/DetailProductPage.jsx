@@ -104,11 +104,11 @@ const ProductDetail = () => {
       .then((response) => {
         const { content } = response.data.data;
         setProductsState(content);
-        setIsLoading(false); // Kết thúc tải
+        setIsLoading(true); // Kết thúc tải
       })
       .catch((error) => {
         console.error('Error fetching data:', error);
-        setIsLoading(false); // Kết thúc tải dù có lỗi
+
       });
   }, [categoryIdss]);
 
@@ -123,7 +123,7 @@ const ProductDetail = () => {
       .then((response) => {
         const { data } = response.data;
         setCategoriess(data);
-        setIsLoading(false);
+        setIsLoading(true);
       })
       .catch((error) => {
         console.error('Error fetching data:', error);
@@ -148,7 +148,7 @@ const ProductDetail = () => {
   const [isHoveredUp, setIsHoveredUp] = useState(false);
   const [isHoveredDown, setIsHoveredDown] = useState(false);
   const isDesktop = useMediaQuery({ minWidth: 481 });
-  const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
+  const isMobile = useMediaQuery({ query: '(max-width: 480px)' });
 
   const DownArrow = ({ className, style, onClick }) => (
     <div
@@ -290,11 +290,10 @@ const ProductDetail = () => {
                     {images.map((image, index) => (
                       <div
                         key={index}
-                        className={`product-preview ${
-                          selectedImage === image.productImagePath
-                            ? 'selected'
-                            : ''
-                        }`}
+                        className={`product-preview ${selectedImage === image.productImagePath
+                          ? 'selected'
+                          : ''
+                          }`}
                         onClick={() => handleImageClick(image.productImagePath)}
                       >
                         <img
@@ -370,23 +369,20 @@ const ProductDetail = () => {
                           <button
                             key={index}
                             className={`size-option 
-                                                            ${
-                                                              selectedSize ===
-                                                              size
-                                                                ? 'selected'
-                                                                : ''
-                                                            }
-                                                            ${
-                                                              hoveredSize ===
-                                                              size
-                                                                ? 'hovered'
-                                                                : ''
-                                                            }
-                                                            ${
-                                                              quantity === 0
-                                                                ? 'disabled'
-                                                                : ''
-                                                            }`}
+                              ${selectedSize ===
+                                size
+                                ? 'selected'
+                                : ''
+                              }
+                              ${hoveredSize ===
+                                size
+                                ? 'hovered'
+                                : ''
+                              }
+                              ${quantity === 0
+                                ? 'disabled'
+                                : ''
+                              }`}
                             onClick={() => setSelectedSize(size)}
                             onMouseEnter={() => setHoveredSize(size)} // Khi hover vào
                             onMouseLeave={() => setHoveredSize(null)} // Khi không còn hover
@@ -511,75 +507,90 @@ const ProductDetail = () => {
               <h3 className="title">Related Products</h3>
             </div>
             {
-              isLoading ? (
-                // Hiển thị các skeleton trong khi đang tải
-                Array(1)
-                  .fill()
-                  .map((_, index) => (
-                    <Product key={index} isLoading={isLoading} />
-                  ))
-              ) : productsState.length > 0 ? (
-                isDesktop ? (
-                  <div className="slider-container">
-                    <button
-                      className="custom-prev-btn"
-                      onClick={() => sliderRef.current.slickPrev()}
-                    >
-                      <i
-                        className="fa fa-chevron-left"
-                        style={{ fontSize: 20, marginRight: 3 }}
-                      ></i>
-                    </button>
-                    <Slider ref={sliderRef} {...sliderSettings}>
-                      {productsState.map((product) => (
-                        <div
-                          className="col-md-3 col-xs-6 marginBottom"
-                          key={product['productId']}
-                        >
-                          <Product
-                            key={product['productId']}
-                            id={product['productId']}
-                            name={product['productName']}
-                            price={product['productPriceSale']}
-                            oldPrice={product['productPrice']}
-                            categories={product['categories']}
-                            images={product['productImages']}
-                            rating={product['productRating']}
-                            sale={product['productSale']}
-                            isLoading={false}
-                          />
-                        </div>
-                      ))}
-                    </Slider>
-                    <button
-                      className="custom-next-btn"
-                      onClick={() => sliderRef.current.slickNext()}
-                    >
-                      <i
-                        className="fa fa-chevron-right"
-                        style={{ fontSize: 20, marginLeft: 5 }}
-                      ></i>
-                    </button>
-                  </div>
-                ) : (
-                  <div className="product-grid">
-                    {productsState.map((product) => (
-                      <div className="product-item" key={product['productId']}>
-                        <Product
-                          key={product['productId']}
-                          id={product['productId']}
-                          name={product['productName']}
-                          price={product['productPriceSale']}
-                          oldPrice={product['productPrice']}
-                          images={product['productImages']}
-                          rating={product['productRating']}
-                          sale={product['productSale']}
-                          isLoading={false}
-                        />
+              productsState.length > 0 ? (
+                isLoading ? (
+                  // Hiển thị các skeleton trong khi đang tải
+                  Array(4)
+                    .fill()
+                    .map((_, index) => (
+                      <div className="col-md-3 col-xs-6">
+                        <Product key={index} isLoading={isLoading} />
                       </div>
-                    ))}
-                  </div>
-                )
+                    ))
+                ) :
+                  isDesktop ? (
+                    <div className="slider-container">
+                      <button
+                        className="custom-prev-btn"
+                        onClick={() => sliderRef.current.slickPrev()}
+                      >
+                        <i
+                          className="fa fa-chevron-left"
+                          style={{ fontSize: 20, marginRight: 3 }}
+                        ></i>
+                      </button>
+                      <Slider ref={sliderRef} {...sliderSettings}>
+                        {productsState.map((product) => (
+                          <div
+                            className="col-md-3 col-xs-6 marginBottom"
+                            key={product['productId']}
+                          >
+                            <Product
+                              key={product['productId']}
+                              id={product['productId']}
+                              name={product['productName']}
+                              price={product['productPriceSale']}
+                              oldPrice={product['productPrice']}
+                              categories={product['categories']}
+                              images={product['productImages']}
+                              rating={product['productRating']}
+                              sale={product['productSale']}
+                              isLoading={false}
+                            />
+                          </div>
+                        ))}
+                      </Slider>
+                      <button
+                        className="custom-next-btn"
+                        onClick={() => sliderRef.current.slickNext()}
+                      >
+                        <i
+                          className="fa fa-chevron-right"
+                          style={{ fontSize: 20, marginLeft: 5 }}
+                        ></i>
+                      </button>
+                    </div>
+                  ) : (
+                    isLoading ? (
+                      // Hiển thị các skeleton trong khi đang tải
+                      <div className="product-grid">
+                        {Array(6)
+                          .fill()
+                          .map((_, index) => (
+                            <div className="product-item" key={index}>
+                              <Product isLoading={isLoading} />
+                            </div>
+                          ))}
+                      </div>
+                    ) :
+                      <div className="product-grid">
+                        {productsState.map((product) => (
+                          <div className="product-item" key={product['productId']}>
+                            <Product
+                              key={product['productId']}
+                              id={product['productId']}
+                              name={product['productName']}
+                              price={product['productPriceSale']}
+                              oldPrice={product['productPrice']}
+                              images={product['productImages']}
+                              rating={product['productRating']}
+                              sale={product['productSale']}
+                              isLoading={false}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                  )
               ) : null // Khi không có sản phẩm
             }
           </div>

@@ -58,26 +58,24 @@ const Product = ({
       onClick={handleClick}
       style={{ cursor: 'pointer' }}
     >
-      <div className="product-img">
         {/* Hiển thị skeleton khi đang load */}
+      <div className="product-img">
         {isLoading ? (
-          <Skeleton height={300} />
+          <Skeleton height={170} width={170} />
         ) : (
           <img
             src={
               isHovered
-                ? `../${
-                    image[0]?.[1]?.['productImagePath'] ||
-                    image[0]?.[0]?.['productImagePath'] ||
-                    'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/langvi-300px-No_image_available.svg.png'
-                  }`
-                : `../${
-                    image[0]?.[0]?.['productImagePath'] ||
-                    image[0]?.[1]?.['productImagePath'] ||
-                    'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/langvi-300px-No_image_available.svg.png'
-                  }`
+                ? `../${image[0]?.[1]?.['productImagePath'] ||
+                image[0]?.[0]?.['productImagePath'] ||
+                'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/langvi-300px-No_image_available.svg.png'
+                }`
+                : `../${image[0]?.[0]?.['productImagePath'] ||
+                image[0]?.[1]?.['productImagePath'] ||
+                'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/langvi-300px-No_image_available.svg.png'
+                }`
             }
-            alt={image[0]?.[0]?.['productImageAlt'] || 'Default Alt Text'} // Giá trị alt, nếu không có thì dùng văn bản mặc định
+            alt={image[0]?.[0]?.['productImageAlt'] || 'Default Alt Text'}
           />
         )}
 

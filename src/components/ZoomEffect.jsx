@@ -34,8 +34,9 @@ const ZoomEffect = ({ imageUrl, zoomLevel = 2 }) => {
       style={{
         position: 'relative',
         width: '100%',
-        height: '400px',
-        cursor: isZoomed ? 'zoom-out' : 'zoom-in'
+        height: 'auto',
+        cursor: isZoomed ? 'zoom-out' : 'zoom-in',
+        objectFit: 'contain',
       }}
       onMouseEnter={() => setIsZoomed(true)}
       onMouseLeave={() => setIsZoomed(false)}
@@ -45,7 +46,7 @@ const ZoomEffect = ({ imageUrl, zoomLevel = 2 }) => {
       <img
         src={imageUrl}
         alt="Zoomed Product"
-        style={{ width: '100%' }}
+        style={{ width: '100%',objectFit: 'contain' }}
       />
 
       {isZoomed && (

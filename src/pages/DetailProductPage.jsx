@@ -268,6 +268,7 @@ const ProductDetail = () => {
                       gap: isMobile ? '1px' : '',
                       padding: isMobile ? '0' : '',
                       justifyContent: isMobile ? 'space-between' : '',
+                      objectFit: 'contain',
                     }}
                   >
                     {/* Hiển thị skeleton cho 2 hình ảnh thumbnail */}
@@ -598,11 +599,6 @@ const ProductDetail = () => {
                 ))}
               </div>
             )}
-
-
-
-
-
           </div>
           {/* /row */}
         </div>

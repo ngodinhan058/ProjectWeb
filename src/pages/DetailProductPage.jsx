@@ -148,7 +148,7 @@ const ProductDetail = () => {
   const [isHoveredUp, setIsHoveredUp] = useState(false);
   const [isHoveredDown, setIsHoveredDown] = useState(false);
   const isDesktop = useMediaQuery({ minWidth: 481 });
-  const isMobile = useMediaQuery({ query: '(max-width: 480px)' });
+  const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
 
   const DownArrow = ({ className, style, onClick }) => (
     <div
@@ -491,7 +491,7 @@ const ProductDetail = () => {
               </div>
             </div>
             {/* Product Tabs */}
-            <ProductTabs image={images} />
+            {/* <ProductTabs image={images} /> */}
             {/* Product Tabs */}
           </div>
           {/* row */}
@@ -508,17 +508,18 @@ const ProductDetail = () => {
             </div>
             {
               productsState.length > 0 ? (
-                isLoading ? (
-                  // Hiển thị các skeleton trong khi đang tải
-                  Array(4)
-                    .fill()
-                    .map((_, index) => (
-                      <div className="col-md-3 col-xs-6">
-                        <Product key={index} isLoading={isLoading} />
-                      </div>
-                    ))
-                ) :
-                  isDesktop ? (
+
+                isDesktop ? (
+                  isLoading ? (
+                    // Hiển thị các skeleton trong khi đang tải
+                    Array(4)
+                      .fill()
+                      .map((_, index) => (
+                        <div className="col-md-3 col-xs-6">
+                          <Product key={index} isLoading={isLoading} />
+                        </div>
+                      ))
+                  ) :
                     <div className="slider-container">
                       <button
                         className="custom-prev-btn"
@@ -560,37 +561,37 @@ const ProductDetail = () => {
                         ></i>
                       </button>
                     </div>
-                  ) : (
-                    isLoading ? (
-                      // Hiển thị các skeleton trong khi đang tải
-                      <div className="product-grid">
-                        {Array(6)
-                          .fill()
-                          .map((_, index) => (
-                            <div className="product-item" key={index}>
-                              <Product isLoading={isLoading} />
-                            </div>
-                          ))}
-                      </div>
-                    ) :
-                      <div className="product-grid">
-                        {productsState.map((product) => (
-                          <div className="product-item" key={product['productId']}>
-                            <Product
-                              key={product['productId']}
-                              id={product['productId']}
-                              name={product['productName']}
-                              price={product['productPriceSale']}
-                              oldPrice={product['productPrice']}
-                              images={product['productImages']}
-                              rating={product['productRating']}
-                              sale={product['productSale']}
-                              isLoading={false}
-                            />
+                ) : (
+                  isLoading ? (
+                    // Hiển thị các skeleton trong khi đang tải
+                    <>
+                      {Array(6)
+                        .fill()
+                        .map((_, index) => (
+                          <div className="product-grid">
+                            <Product key={index} isLoading={isLoading} />
                           </div>
                         ))}
-                      </div>
-                  )
+                    </>
+                  ) :
+                    <div className="product-grid">
+                      {productsState.map((product) => (
+                        <div className="product-item" key={product['productId']}>
+                          <Product
+                            key={product['productId']}
+                            id={product['productId']}
+                            name={product['productName']}
+                            price={product['productPriceSale']}
+                            oldPrice={product['productPrice']}
+                            images={product['productImages']}
+                            rating={product['productRating']}
+                            sale={product['productSale']}
+                            isLoading={false}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                )
               ) : null // Khi không có sản phẩm
             }
           </div>

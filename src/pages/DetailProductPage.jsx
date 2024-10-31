@@ -260,28 +260,30 @@ const ProductDetail = () => {
             {/* Thumbnail Images */}
             <div className="col-md-2 col-md-pull-5">
               <div id="product-imgs">
-                {isLoading ? (
+                {true ? (
                   <div
                     style={{
                       display: isMobile ? 'flex' : 'block',
                       flexDirection: isMobile ? 'row' : 'column',
                       gap: isMobile ? '1px' : '',
+                      padding: isMobile ? '0' : '',
+                      justifyContent: isMobile ? 'space-between' : '',
                     }}
                   >
                     {/* Hiển thị skeleton cho 2 hình ảnh thumbnail */}
                     <Skeleton
-                      height={160}
-                      width={150}
+                      height={isDesktop ? 160 : 120}
+                      width={isDesktop ? 150 : 120}
                       style={{ marginBottom: 10 }}
                     />
                     <Skeleton
-                      height={160}
-                      width={150}
+                      height={isDesktop ? 160 : 120}
+                      width={isDesktop ? 150 : 120}
                       style={{ marginBottom: 10 }}
                     />
                     <Skeleton
-                      height={160}
-                      width={150}
+                      height={isDesktop ? 160 : 120}
+                      width={isDesktop ? 150 : 120}
                       style={{ marginBottom: 10 }}
                     />
                   </div>

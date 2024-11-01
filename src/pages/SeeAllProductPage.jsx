@@ -5,6 +5,7 @@ import BrandFilter from '../components/BrandFilter';
 import PriceFilter from '../components/PriceFilter';
 import CategoryFilter from '../components/CategoryFilter';
 import SizeFilter from '../components/SizeFilter';
+import { useMediaQuery } from 'react-responsive';
 import { useParams } from 'react-router-dom';
 import { BASE_URL } from '../components/api/config';
 import { axiosInstance } from '../components/api/axiosConfig';
@@ -24,7 +25,6 @@ const Store = () => {
   const [maxPrice, setMaxPrice] = useState(2000000);
 
   const { categoryIdFromLink } = useParams(); // Lấy categoryId từ URL
-
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [selectedSizes, setSelectedSizes] = useState([]);
 
@@ -126,6 +126,7 @@ const Store = () => {
 
     // Cập nhật danh mục được chọnz
   };
+  const isDesktop = useMediaQuery({ minWidth: 481 });
   return (
     <div className="section">
       <div className="container">
@@ -159,8 +160,8 @@ const Store = () => {
                 value={`${sort}|${direction}`}
                 onChange={handleSelectChange}
               >
-                <option value="productPrice|asc">Tăng Dần (Giá)</option>
-                <option value="productPrice|desc">Giảm Dần (Giá)</option>
+                <option value="productPriceSale|asc">Tăng Dần (Giá)</option>
+                <option value="productPriceSale|desc">Giảm Dần (Giá)</option>
                 <option value="productSale|desc">Giảm Dần (Sale)</option>
               </select>
             </label>
@@ -168,18 +169,44 @@ const Store = () => {
           {/* Store products */}
           <div className="row">
             {isLoading ? (
-              Array(20)
-                .fill()
-                .map((_, index) => (
-                  <div className="col-md-3 col-xs-6">
-                    <Product key={index} isLoading={isLoading} />
+              isDesktop ? (
+                Array(20)
+                  .fill()
+                  .map((_, index) => (
+                    <div className="col-md-3 col-xs-6" key={index}>
+                      <Product isLoading={isLoading} />
+                    </div>
+                  ))
+              ) : (
+                <div className="product-grid">
+                  {Array(20)
+                    .fill()
+                    .map((_, index) => (
+                      <Product key={index} isLoading={isLoading} />
+                    ))}
+                </div>
+              )
+            ) : productsState.length > 0 ? (
+              isDesktop ? (
+                productsState.map((product) => (
+                  <div className="col-md-3 col-xs-6" key={product['productId']}>
+                    <Product
+                      id={product['productId']}
+                      name={product['productName']}
+                      price={product['productPriceSale']}
+                      oldPrice={product['productPrice']}
+                      categories={product['categories']}
+                      images={product['productImages']}
+                      rating={product['productRating']}
+                      sale={product['productSale']}
+                      supplier={product['productSupplier']['productSupplierName']}
+                      isLoading={isLoading}
+                    />
                   </div>
                 ))
-
-            ) : productsState.length > 0 ? (
-              productsState.map((product) => {
-                return (
-                  <div className="col-md-3 col-xs-6" key={product['productId']}>
+              ) : (
+                <div className="product-grid">
+                  {productsState.map((product) => (
                     <Product
                       key={product['productId']}
                       id={product['productId']}
@@ -190,20 +217,20 @@ const Store = () => {
                       images={product['productImages']}
                       rating={product['productRating']}
                       sale={product['productSale']}
-                      supplier={
-                        product['productSupplier']['productSupplierName']
-                      }
+                      supplier={product['productSupplier']['productSupplierName']}
                       isLoading={isLoading}
                     />
-                  </div>
-                );
-              })
+                  ))}
+                </div>
+              )
             ) : (
               <div>
                 <h3>Không có sản phẩm</h3>
               </div>
             )}
           </div>
+
+
 
           {/* /store products */}
 

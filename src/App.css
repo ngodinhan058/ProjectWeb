@@ -1,3 +1,21 @@
+/* Khoảng cách chỗ Sort */
+.store-sort {
+  display: flex;
+  margin: 20px 0; /* Khoảng trống trên và dưới toàn bộ div */
+}
+
+.store-sort label {
+  font-size: 17px;
+  margin: 5px 0;
+}
+
+.store-sort .input-select {
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin: 0 10px;
+}
+
 /* Tab Product */
 .description-content.collapsed {
   max-height: 100px; /* Chiều cao tối đa cho nội dung rút gọn */
@@ -46,6 +64,48 @@
 .tab-nav button:hover {
   color: #007bff; /* Thay đổi màu chữ khi hover */
 }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .tab-nav {
+    gap: 10px;
+    flex-wrap: nowrap; /* Không cho xuống dòng */
+  }
+
+  .tab-nav button {
+    font-size: 16px;
+    padding: 8px 10px;
+    white-space: nowrap; /* Ngăn chữ xuống dòng */
+  }
+
+  .btn-see-more {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tab-nav {
+    flex-direction: row; 
+    gap: 5px;
+    flex-wrap: nowrap; 
+  }
+
+  .tab-nav button {
+    font-size: 14px;
+    padding: 5px 8px; 
+    white-space: nowrap; 
+  }
+
+  .description-content.collapsed {
+    max-height: 80px;
+  }
+
+  .btn-see-more {
+    font-size: 12px;
+  }
+}
+
+
 
 /* Đường viền dưới xuất hiện từ trái sang phải */
 .tab-nav li::after {

@@ -72,7 +72,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 
         <div className="tab-content">
           {loading ? (
-            <Skeleton count={8} />
+            <Skeleton count={3} />
           ) : (
             <>
               {activeTab === 'description' && (

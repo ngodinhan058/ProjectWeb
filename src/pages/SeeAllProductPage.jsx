@@ -137,6 +137,7 @@ const Store = () => {
           <PriceFilter
             isLoading={isLoading}
             onPriceChange={handlePriceChange}
+            onPageChange={handlePageChange}
           />
 
           <BrandFilter

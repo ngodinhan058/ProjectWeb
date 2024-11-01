@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const PriceRangeSlider = ({ onPriceChange }) => {
+const PriceRangeSlider = ({ onPriceChange , onPageChange }) => {
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(2000000);
   const [error, setError] = useState("");
@@ -24,6 +24,7 @@ const PriceRangeSlider = ({ onPriceChange }) => {
     if (value >= 0) {
       setMinPrice(value);
       validatePrices(value, maxPrice);
+      onPageChange(0);
     }
   };
 
@@ -32,22 +33,29 @@ const PriceRangeSlider = ({ onPriceChange }) => {
     if (value <= 2000000) {
       setMaxPrice(value);
       validatePrices(minPrice, value);
+      onPageChange(0);
     }
   };
 
   const handleRangeInputChange = (e, type) => {
     const value = parseInt(e.target.value);
-    if (type === "min" && value >= 0) {
-      setMinPrice(value);
-      validatePrices(value, maxPrice);
-    } else if (type === "max" && value <= 2000000) {
-      setMaxPrice(value);
-      validatePrices(minPrice, value);
+    if (type === "min") {
+      if (value >= 0 && value <= maxPrice) {
+        setMinPrice(value);
+        validatePrices(value, maxPrice);
+        onPageChange(0);
+      }
+    } else if (type === "max") {
+      if (value <= 2000000 && value >= minPrice) {
+        setMaxPrice(value);
+        validatePrices(minPrice, value);
+        onPageChange(0);
+      }
     }
   };
 
   const handleQtyUp = (type) => {
-    if (type === "min" && minPrice + priceGap <= 2000000) {
+    if (type === "min" && minPrice + priceGap <= maxPrice) {
       setMinPrice((prev) => {
         const newMin = prev + priceGap;
         validatePrices(newMin, maxPrice);
@@ -69,7 +77,7 @@ const PriceRangeSlider = ({ onPriceChange }) => {
         validatePrices(newMin, maxPrice);
         return newMin;
       });
-    } else if (type === "max" && maxPrice - priceGap >= 0) {
+    } else if (type === "max" && maxPrice - priceGap >= minPrice) {
       setMaxPrice((prev) => {
         const newMax = prev - priceGap;
         validatePrices(minPrice, newMax);
@@ -80,10 +88,20 @@ const PriceRangeSlider = ({ onPriceChange }) => {
 
   useEffect(() => {
     const debounce = setTimeout(() => {
-      onPriceChange({ minPrice, maxPrice });
+      // Chỉ gửi giá trị khi không có lỗi
+      if (!error) {
+        onPriceChange({ minPrice, maxPrice });
+      }
     }, 1000);
     return () => clearTimeout(debounce);
-  }, [minPrice, maxPrice, onPriceChange]);
+  }, [minPrice, maxPrice, onPriceChange, error]);
+
+  useEffect(() => {
+    // Kiểm tra và xử lý khi minPrice > maxPrice
+    if (minPrice > maxPrice) {
+      setError("Giá tối thiểu không được lớn hơn giá tối đa!"); // Hiển thị lỗi
+    }
+  }, [minPrice, maxPrice]);
 
   return (
     <div className="aside">
@@ -92,8 +110,8 @@ const PriceRangeSlider = ({ onPriceChange }) => {
         <div
           className="progress"
           style={{
-            left: `${(minPrice / 2000000) * 100}%`,
-            right: `${100 - (maxPrice / 2000000) * 100}%`,
+            left: minPrice > maxPrice ? "0%" : `${(minPrice / 2000000) * 100}%`,
+            right: minPrice > maxPrice ? "0%" : `${100 - (maxPrice / 2000000) * 100}%`,
           }}
         ></div>
       </div>
@@ -103,7 +121,7 @@ const PriceRangeSlider = ({ onPriceChange }) => {
           className="range-min"
           min="0"
           max="2000000"
-          value={minPrice}
+          value={minPrice > maxPrice ? 0 : minPrice} // Giá trị cho đầu nút min
           step="10000"
           onChange={(e) => handleRangeInputChange(e, "min")}
         />
@@ -112,7 +130,7 @@ const PriceRangeSlider = ({ onPriceChange }) => {
           className="range-max"
           min="0"
           max="2000000"
-          value={maxPrice}
+          value={minPrice > maxPrice ? 2000000 : maxPrice} // Giá trị cho đầu nút max
           step="10000"
           onChange={(e) => handleRangeInputChange(e, "max")}
         />

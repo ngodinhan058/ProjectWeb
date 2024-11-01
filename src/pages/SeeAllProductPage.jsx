@@ -107,6 +107,8 @@ const Store = () => {
     const value = event.target.value.split('|');
     setDirection(value[1]);
     setSort(value[0]); // Cập nhật state với giá trị được chọn
+    setCurrentPage(0);
+    window.scrollTo(0, 0);
   };
   // Handle price range change
   const handlePriceChange = ({ minPrice, maxPrice }) => {

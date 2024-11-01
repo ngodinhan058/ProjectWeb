@@ -6,6 +6,10 @@ const PriceRangeSlider = ({ onPriceChange }) => {
   const [error, setError] = useState("");
   const priceGap = 10000;
 
+  const formatPrice = (price) => {
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " VND";
+  };
+
   const validatePrices = (min, max) => {
     if (min > max) {
       setError("Giá tối thiểu không được lớn hơn giá tối đa!");
@@ -16,7 +20,7 @@ const PriceRangeSlider = ({ onPriceChange }) => {
   };
 
   const handleMinInputChange = (e) => {
-    const value = parseInt(e.target.value);
+    const value = parseInt(e.target.value.replace(/,/g, ''), 10);
     if (value >= 0) {
       setMinPrice(value);
       validatePrices(value, maxPrice);
@@ -24,7 +28,7 @@ const PriceRangeSlider = ({ onPriceChange }) => {
   };
 
   const handleMaxInputChange = (e) => {
-    const value = parseInt(e.target.value);
+    const value = parseInt(e.target.value.replace(/,/g, ''), 10);
     if (value <= 2000000) {
       setMaxPrice(value);
       validatePrices(minPrice, value);
@@ -116,25 +120,23 @@ const PriceRangeSlider = ({ onPriceChange }) => {
       <div className="price-input">
         <div className="field input-number">
           <input
-            type="number"
+            type="text"
             className={`input-min ${error ? "error" : ""}`}
-            value={minPrice}
+            value={formatPrice(minPrice)}
             onChange={handleMinInputChange}
             min="0"
             max="2000000"
-            step="10000"
           />
         </div>
         
         <div className="field input-number">
           <input
-            type="number"
+            type="text"
             className={`input-max ${error ? "error" : ""}`}
-            value={maxPrice}  
+            value={formatPrice(maxPrice)}
             onChange={handleMaxInputChange}
             min="0"
             max="2000000"
-            step="10000"
           />
         </div>
       </div>

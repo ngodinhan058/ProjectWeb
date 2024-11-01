@@ -83,7 +83,7 @@ const PriceRangeSlider = ({ onPriceChange }) => {
 
   return (
     <div className="aside">
-      <h3 className="aside-title">Price</h3>
+      <h3 className="aside-title">Giá</h3>
       <div className="slider">
         <div
           className="progress"
@@ -114,7 +114,7 @@ const PriceRangeSlider = ({ onPriceChange }) => {
         />
       </div>
       <div className="price-input">
-        <div className="field input-number price-min">
+        <div className="field input-number">
           <input
             type="number"
             className={`input-min ${error ? "error" : ""}`}
@@ -124,22 +124,18 @@ const PriceRangeSlider = ({ onPriceChange }) => {
             max="2000000"
             step="10000"
           />
-          <span className="qty-up" onClick={() => handleQtyUp("min")}>+</span>
-          <span className="qty-down" onClick={() => handleQtyDown("min")}>-</span>
         </div>
-        <div className="separator">-</div>
-        <div className="field input-number price-max">
+        
+        <div className="field input-number">
           <input
             type="number"
             className={`input-max ${error ? "error" : ""}`}
-            value={maxPrice}
+            value={maxPrice}  
             onChange={handleMaxInputChange}
             min="0"
             max="2000000"
             step="10000"
           />
-          <span className="qty-up" onClick={() => handleQtyUp("max")}>+</span>
-          <span className="qty-down" onClick={() => handleQtyDown("max")}>-</span>
         </div>
       </div>
       {error && <p style={{ color: "red" }}>{error}</p>}

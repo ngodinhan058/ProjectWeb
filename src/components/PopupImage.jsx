@@ -9,7 +9,7 @@ const PopupImage = ({ img }) => {
   };
 
   return (
-    <div class="modal-dialog modal-fullscreen-sm-down">
+    <>
       {!open ? (
         <img
           onClick={() => handleClick()}
@@ -56,7 +56,7 @@ const PopupImage = ({ img }) => {
           </Popup>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

@@ -5,6 +5,7 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import { BASE_URL } from './api/config';
 import { axiosInstance } from './api/axiosConfig';
 import { useParams } from 'react-router-dom';
+import { unstable_renderSubtreeIntoContainer } from 'react-dom';
 
 const SizeFilter = ({ isLoading, selectedSizes, onSelectSizes }) => {
   const [sizes, setSizes] = useState([]); // Lưu dữ liệu danh mục từ API
@@ -14,8 +15,12 @@ const SizeFilter = ({ isLoading, selectedSizes, onSelectSizes }) => {
   useEffect(() => {
     //**
     //@GetMapping(value = {"/product-suppliers/category/{categoryId}", "/product-sizes/category/{categoryId}/"})
-
-    let apiUrl = `${BASE_URL}product-sizes/category/${categoryIdFromLink}?`;
+    let apiUrl = '';
+    if (categoryIdFromLink === undefined) {
+      apiUrl = `${BASE_URL}product-sizes/category`;
+    } else {
+      apiUrl = `${BASE_URL}product-sizes/category/${categoryIdFromLink}?`;
+    }
 
     axiosInstance
       .get(apiUrl, {

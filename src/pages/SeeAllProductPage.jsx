@@ -57,7 +57,7 @@ const Store = () => {
     }
 
     apiUrl += queryParams.join('&');
-    console.log(apiUrl);
+    setIsLoading(true);
     axiosInstance
       .get(apiUrl, {
         headers: {
@@ -74,15 +74,17 @@ const Store = () => {
         setCurrentPage(number);
         setPageSize(size);
         setTotalElements(totalElements);
-        setIsLoading(false);
       })
       .catch((error) => {
         if (error.response && error.response.status === 400) {
           setProductsState([]); // Lỗi 400, coi như không có sản phẩm
-          setIsLoading(false);
+          setIsLoading(true);
         } else {
           console.error('Error fetching data:', error);
         }
+      })
+      .finally(() => {
+        setIsLoading(false); // Kết thúc loading
       });
   }, [
     currentPage,
@@ -169,7 +171,6 @@ const Store = () => {
           {/* Store products */}
           <div className="row">
             {isLoading ? (
-              // Render các Skeleton
               Array(20)
                 .fill()
                 .map((_, index) => (
@@ -177,6 +178,7 @@ const Store = () => {
                     <Product key={index} isLoading={isLoading} />
                   </div>
                 ))
+
             ) : productsState.length > 0 ? (
               productsState.map((product) => {
                 return (
@@ -194,7 +196,7 @@ const Store = () => {
                       supplier={
                         product['productSupplier']['productSupplierName']
                       }
-                      isLoading={false} // Đặt isLoading là false khi không tải
+                      isLoading={isLoading}
                     />
                   </div>
                 );

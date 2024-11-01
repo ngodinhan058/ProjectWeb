@@ -35,7 +35,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 #### Địa Chỉ : Thành Phố Hồ Chí Minh
 
 ![Product Image](../${image[2]?.["productImagePath"]}) 
-### End
+### Kết Thúc Mô Tả
   `;
 
   const markdownToHtml = (markdown) => {

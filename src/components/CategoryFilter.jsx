@@ -69,7 +69,7 @@ const CategoryFilter = ({ onCategoryChange }) => {
       <h3 className="aside-title">Category</h3>
       <div className="checkbox-filter">
         {categories.length === 0 ? (
-          Array(5).fill().map((_, index) => (
+          Array(7).fill().map((_, index) => (
             <Skeleton height={30} key={index} />
           ))
         ) : (

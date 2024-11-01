@@ -163,7 +163,7 @@ const Store = () => {
                 value={`${sort}|${direction}`}
                 onChange={handleSelectChange}
               >
-               <option value="productPriceSale|asc">Tăng Dần (Giá)</option>
+                <option value="productPriceSale|asc">Tăng Dần (Giá)</option>
                 <option value="productPriceSale|desc">Giảm Dần (Giá)</option>
                 <option value="productSale|desc">Giảm Dần (Sale)</option>
               </select>
@@ -239,7 +239,7 @@ const Store = () => {
 
           {/* Store bottom filter */}
 
-          {!isLoading && productsState.length > 0 ? (
+          {productsState.length > 0 ? (
             <div className="store-filter clearfix">
               <span className="store-qty">
                 Showing {currentPage * pageSize + 1}-
@@ -384,144 +384,8 @@ const Store = () => {
           ) : (
             <div className="store-filter clearfix">
               <span className="store-qty">
-                Showing {currentPage * pageSize + 1}-
-                {Math.min((currentPage + 1) * pageSize, totalElements)} of{' '}
-                {totalElements} products
+                SHOWING 0-0 OF 0 PRODUCTS
               </span>
-              <ul className="store-pagination">
-                {/* First page button */}
-                <li>
-                  <a
-                    href="#!"
-                    onClick={() => handlePageChange(0)}
-                    style={{
-                      color: currentPage > 0 ? '#000' : '#ccc',
-                      pointerEvents: currentPage > 0 ? 'auto' : 'auto',
-                    }}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="14"
-                      height="14"
-                      fill="currentColor"
-                      className="bi bi-chevron-double-left"
-                      viewBox="0 0 14 14"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"
-                      />
-                      <path
-                        fillRule="evenodd"
-                        d="M12.354 1.646a.5.5 0 0 1 0 .708L6.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"
-                      />
-                    </svg>
-                  </a>
-                </li>
-
-                {/* Previous page button */}
-                <li>
-                  <a
-                    href="#!"
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    style={{
-                      color: currentPage > 0 ? '#000' : '#ccc',
-                      pointerEvents: currentPage > 0 ? 'auto' : 'auto',
-                    }}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="14"
-                      height="14"
-                      fill="currentColor"
-                      className="bi bi-chevron-left"
-                      viewBox="0 0 16 16"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"
-                      />
-                    </svg>
-                  </a>
-                </li>
-
-                {/* Page numbers */}
-                {[...Array(totalPages).keys()].map((page) => (
-                  <li
-                    key={page}
-                    className={currentPage === page ? 'active' : ''}
-                  >
-                    <a
-                      href="#!"
-                      onClick={() => handlePageChange(page)}
-                      style={{
-                        color: currentPage === page ? '#fff' : '#000',
-                        pointerEvents: currentPage === page ? 'none' : 'auto',
-                      }}
-                    >
-                      {page + 1}
-                    </a>
-                  </li>
-                ))}
-
-                {/* Next page button */}
-                <li>
-                  <a
-                    href="#!"
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    style={{
-                      color: currentPage < totalPages - 1 ? '#000' : '#ccc',
-                      pointerEvents:
-                        currentPage < totalPages - 1 ? 'auto' : 'none',
-                    }}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="14"
-                      height="14"
-                      fill="currentColor"
-                      className="bi bi-chevron-right"
-                      viewBox="0 0 16 16"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"
-                      />
-                    </svg>
-                  </a>
-                </li>
-
-                {/* Last page button */}
-                <li>
-                  <a
-                    href="#!"
-                    onClick={() => handlePageChange(totalPages - 1)}
-                    style={{
-                      color: currentPage < totalPages - 1 ? '#000' : '#ccc',
-                      pointerEvents:
-                        currentPage < totalPages - 1 ? 'auto' : 'none',
-                    }}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="14"
-                      height="14"
-                      fill="currentColor"
-                      className="bi bi-chevron-double-right"
-                      viewBox="0 0 14 14"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708"
-                      />
-                      <path
-                        fillRule="evenodd"
-                        d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708"
-                      />
-                    </svg>
-                  </a>
-                </li>
-              </ul>
             </div>
           )}
 

@@ -5,7 +5,6 @@
 }
 
 .store-sort label {
-  font-weight: bold;
   font-size: 17px;
   margin: 5px 0;
 }
@@ -105,6 +104,7 @@
     font-size: 12px;
   }
 }
+
 
 
 /* Đường viền dưới xuất hiện từ trái sang phải */

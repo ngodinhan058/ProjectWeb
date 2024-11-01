@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import Product from '../components/Product'; // Import your Product component
 import ScrollToTop from '../components/ScrollToTop';
@@ -159,8 +160,8 @@ const Store = () => {
                 value={`${sort}|${direction}`}
                 onChange={handleSelectChange}
               >
-                <option value="productPrice|asc">Tăng Dần (Giá)</option>
-                <option value="productPrice|desc">Giảm Dần (Giá)</option>
+               <option value="productPriceSale|asc">Tăng Dần (Giá)</option>
+                <option value="productPriceSale|desc">Giảm Dần (Giá)</option>
                 <option value="productSale|desc">Giảm Dần (Sale)</option>
               </select>
             </label>
@@ -504,3 +505,5 @@ const Store = () => {
 };
 
 export default Store;
+
+

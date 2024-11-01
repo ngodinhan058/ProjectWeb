@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import Product from '../components/Product'; // Import your Product component
 import ScrollToTop from '../components/ScrollToTop';
@@ -109,6 +110,8 @@ const Store = () => {
     const value = event.target.value.split('|');
     setDirection(value[1]);
     setSort(value[0]); // Cập nhật state với giá trị được chọn
+    setCurrentPage(0);
+    window.scrollTo(0, 0);
   };
   // Handle price range change
   const handlePriceChange = ({ minPrice, maxPrice }) => {
@@ -160,7 +163,7 @@ const Store = () => {
                 value={`${sort}|${direction}`}
                 onChange={handleSelectChange}
               >
-                <option value="productPriceSale|asc">Tăng Dần (Giá)</option>
+               <option value="productPriceSale|asc">Tăng Dần (Giá)</option>
                 <option value="productPriceSale|desc">Giảm Dần (Giá)</option>
                 <option value="productSale|desc">Giảm Dần (Sale)</option>
               </select>
@@ -531,3 +534,5 @@ const Store = () => {
 };
 
 export default Store;
+
+

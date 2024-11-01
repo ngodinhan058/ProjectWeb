@@ -26,7 +26,12 @@ const BrandFilter = ({ isLoading, selectedBrands, onSelectBrands }) => {
     //**
     //@GetMapping(value = {"/product-suppliers/category/{categoryId}", "/product-sizes/category/{categoryId}/"})
 
-    let apiUrl = `${BASE_URL}product-suppliers/category/${categoryIdFromLink}?`;
+    let apiUrl = '';
+    if (categoryIdFromLink === undefined) {
+      apiUrl = `${BASE_URL}product-suppliers/category`;
+    } else {
+      apiUrl = `${BASE_URL}product-suppliers/category/${categoryIdFromLink}?`;
+    }
 
     axiosInstance
       .get(apiUrl, {

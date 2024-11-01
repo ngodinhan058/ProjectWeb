@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from "react";
 
-const PriceRangeSlider = ({ onPriceChange , onPageChange }) => {
-  const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(2000000);
+const PriceRangeSlider = ({ onPriceChange, onPageChange }) => {
+  const DEFAULT_MIN_PRICE = 0;
+  const DEFAULT_MAX_PRICE = 2000000;
+
+  const [minPrice, setMinPrice] = useState(DEFAULT_MIN_PRICE);
+  const [maxPrice, setMaxPrice] = useState(DEFAULT_MAX_PRICE);
+  const [tempMinPrice, setTempMinPrice] = useState(DEFAULT_MIN_PRICE);
+  const [tempMaxPrice, setTempMaxPrice] = useState(DEFAULT_MAX_PRICE);
   const [error, setError] = useState("");
   const priceGap = 10000;
 
@@ -20,25 +25,37 @@ const PriceRangeSlider = ({ onPriceChange , onPageChange }) => {
   };
 
   const handleMinInputChange = (e) => {
-    const value = parseInt(e.target.value.replace(/,/g, ''), 10);
-    if (value >= 0) {
-      setMinPrice(value);
-      validatePrices(value, maxPrice);
-      onPageChange(0);
-    }
+    const value = parseInt(e.target.value.replace(/,/g, ''), 10) || 0;
+    setTempMinPrice(value);
   };
 
   const handleMaxInputChange = (e) => {
-    const value = parseInt(e.target.value.replace(/,/g, ''), 10);
-    if (value <= 2000000) {
-      setMaxPrice(value);
-      validatePrices(minPrice, value);
+    const value = parseInt(e.target.value.replace(/,/g, ''), 10) || 0;
+    setTempMaxPrice(value);
+  };
+
+  const handleMinBlur = () => {
+    if (validatePrices(tempMinPrice, maxPrice)) {
+      setMinPrice(tempMinPrice);
+      onPriceChange({ minPrice: tempMinPrice, maxPrice });
       onPageChange(0);
+    } else {
+      setTempMinPrice(minPrice);
+    }
+  };
+
+  const handleMaxBlur = () => {
+    if (validatePrices(minPrice, tempMaxPrice)) {
+      setMaxPrice(tempMaxPrice);
+      onPriceChange({ minPrice, maxPrice: tempMaxPrice });
+      onPageChange(0);
+    } else {
+      setTempMaxPrice(maxPrice);
     }
   };
 
   const handleRangeInputChange = (e, type) => {
-    const value = parseInt(e.target.value);
+    const value = parseInt(e.target.value, 10);
     if (type === "min") {
       if (value >= 0 && value <= maxPrice) {
         setMinPrice(value);
@@ -46,7 +63,7 @@ const PriceRangeSlider = ({ onPriceChange , onPageChange }) => {
         onPageChange(0);
       }
     } else if (type === "max") {
-      if (value <= 2000000 && value >= minPrice) {
+      if (value <= DEFAULT_MAX_PRICE && value >= minPrice) {
         setMaxPrice(value);
         validatePrices(minPrice, value);
         onPageChange(0);
@@ -61,7 +78,7 @@ const PriceRangeSlider = ({ onPriceChange , onPageChange }) => {
         validatePrices(newMin, maxPrice);
         return newMin;
       });
-    } else if (type === "max" && maxPrice + priceGap <= 2000000) {
+    } else if (type === "max" && maxPrice + priceGap <= DEFAULT_MAX_PRICE) {
       setMaxPrice((prev) => {
         const newMax = prev + priceGap;
         validatePrices(minPrice, newMax);
@@ -88,7 +105,6 @@ const PriceRangeSlider = ({ onPriceChange , onPageChange }) => {
 
   useEffect(() => {
     const debounce = setTimeout(() => {
-      // Chỉ gửi giá trị khi không có lỗi
       if (!error) {
         onPriceChange({ minPrice, maxPrice });
       }
@@ -97,9 +113,21 @@ const PriceRangeSlider = ({ onPriceChange , onPageChange }) => {
   }, [minPrice, maxPrice, onPriceChange, error]);
 
   useEffect(() => {
-    // Kiểm tra và xử lý khi minPrice > maxPrice
     if (minPrice > maxPrice) {
-      setError("Giá tối thiểu không được lớn hơn giá tối đa!"); // Hiển thị lỗi
+      setError("Giá tối thiểu không được lớn hơn giá tối đa!");
+    }
+  }, [minPrice, maxPrice]);
+
+  useEffect(() => {
+    if (minPrice >= DEFAULT_MAX_PRICE || maxPrice <= 0) {
+      const resetTimeout = setTimeout(() => {
+        setMinPrice(DEFAULT_MIN_PRICE);
+        setMaxPrice(DEFAULT_MAX_PRICE);
+        setTempMinPrice(DEFAULT_MIN_PRICE);
+        setTempMaxPrice(DEFAULT_MAX_PRICE);
+        setError("");
+      }, 2000);
+      return () => clearTimeout(resetTimeout);
     }
   }, [minPrice, maxPrice]);
 
@@ -110,8 +138,8 @@ const PriceRangeSlider = ({ onPriceChange , onPageChange }) => {
         <div
           className="progress"
           style={{
-            left: minPrice > maxPrice ? "0%" : `${(minPrice / 2000000) * 100}%`,
-            right: minPrice > maxPrice ? "0%" : `${100 - (maxPrice / 2000000) * 100}%`,
+            left: minPrice > maxPrice ? "0%" : `${(minPrice / DEFAULT_MAX_PRICE) * 100}%`,
+            right: minPrice > maxPrice ? "0%" : `${100 - (maxPrice / DEFAULT_MAX_PRICE) * 100}%`,
           }}
         ></div>
       </div>
@@ -120,8 +148,8 @@ const PriceRangeSlider = ({ onPriceChange , onPageChange }) => {
           type="range"
           className="range-min"
           min="0"
-          max="2000000"
-          value={minPrice > maxPrice ? 0 : minPrice} // Giá trị cho đầu nút min
+          max={DEFAULT_MAX_PRICE}
+          value={minPrice > maxPrice ? 0 : minPrice}
           step="10000"
           onChange={(e) => handleRangeInputChange(e, "min")}
         />
@@ -129,8 +157,8 @@ const PriceRangeSlider = ({ onPriceChange , onPageChange }) => {
           type="range"
           className="range-max"
           min="0"
-          max="2000000"
-          value={minPrice > maxPrice ? 2000000 : maxPrice} // Giá trị cho đầu nút max
+          max={DEFAULT_MAX_PRICE}
+          value={minPrice > maxPrice ? DEFAULT_MAX_PRICE : maxPrice}
           step="10000"
           onChange={(e) => handleRangeInputChange(e, "max")}
         />
@@ -140,21 +168,22 @@ const PriceRangeSlider = ({ onPriceChange , onPageChange }) => {
           <input
             type="text"
             className={`input-min ${error ? "error" : ""}`}
-            value={formatPrice(minPrice)}
+            value={tempMinPrice === minPrice ? formatPrice(minPrice) : tempMinPrice}
             onChange={handleMinInputChange}
+            onBlur={handleMinBlur}
             min="0"
-            max="2000000"
+            max={DEFAULT_MAX_PRICE}
           />
         </div>
-        
         <div className="field input-number">
           <input
             type="text"
             className={`input-max ${error ? "error" : ""}`}
-            value={formatPrice(maxPrice)}
+            value={tempMaxPrice === maxPrice ? formatPrice(maxPrice) : tempMaxPrice}
             onChange={handleMaxInputChange}
+            onBlur={handleMaxBlur}
             min="0"
-            max="2000000"
+            max={DEFAULT_MAX_PRICE}
           />
         </div>
       </div>

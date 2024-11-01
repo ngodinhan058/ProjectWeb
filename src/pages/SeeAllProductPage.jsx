@@ -102,7 +102,6 @@ const Store = () => {
   const handlePageChange = (pageNumber) => {
     if (pageNumber >= 0 && pageNumber < totalPages) {
       setCurrentPage(pageNumber);
-      window.scrollTo(0, 0);
     }
   };
   const handleSelectChange = (event) => {

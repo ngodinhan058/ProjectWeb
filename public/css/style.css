@@ -211,6 +211,7 @@ textarea.input {
 
 .input-number {
   position: relative;
+  margin-left: 10px;
 }
 
 .input-number input[type='number']::-webkit-inner-spin-button,

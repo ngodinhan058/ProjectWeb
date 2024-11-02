@@ -99,11 +99,15 @@ const Store = () => {
     selectedSizes,
   ]);
 
-  // Chuyển trang
-  const handlePageChange = (pageNumber) => {
+ const handlePageChange = (pageNumber) => {
     if (pageNumber >= 0 && pageNumber < totalPages) {
       setCurrentPage(pageNumber);
       window.scrollTo(0, 0);
+    }
+  };
+  const handlePricePageChange = (pageNumber) => {
+    if (pageNumber >= 0 && pageNumber < totalPages) {
+      setCurrentPage(pageNumber);
     }
   };
   const handleSelectChange = (event) => {
@@ -138,9 +142,10 @@ const Store = () => {
             isLoading={isLoading}
             onCategoryChange={handleCategoryChange}
           />
-          <PriceFilter
+         <PriceFilter
             isLoading={isLoading}
             onPriceChange={handlePriceChange}
+            onPageChange={handlePricePageChange}
           />
 
           <BrandFilter

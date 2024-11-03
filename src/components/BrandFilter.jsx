@@ -55,7 +55,7 @@ const BrandFilter = ({ isLoading, selectedBrands, onSelectBrands }) => {
       <h3 className="aside-title">Brand</h3>
       <div
         className="checkbox-filter"
-        style={{ maxHeight: 140, overflowY: 'scroll' }}
+        style={{ maxHeight: 160, overflowY: 'scroll' }}
       >
         {brands.map((brand) =>
           isLoading ? (
@@ -63,7 +63,7 @@ const BrandFilter = ({ isLoading, selectedBrands, onSelectBrands }) => {
             <Skeleton
               key={brand.id}
               height={28}
-              style={{ marginTop: '10px' }}
+              // style={{ marginTop: '10px' }}
             />
           ) : (
             // Add key to parent div of each brand item

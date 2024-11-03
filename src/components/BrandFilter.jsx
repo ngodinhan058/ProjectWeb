@@ -67,7 +67,11 @@ const BrandFilter = ({ isLoading, selectedBrands, onSelectBrands }) => {
             />
           ) : (
             // Add key to parent div of each brand item
-            <div className="input-checkbox" key={brand['productSupplierSd']}>
+            <div
+              className="input-checkbox"
+              key={brand['productSupplierSd']}
+              style={{ marginTop: '6px' }}
+            >
               <input
                 type="checkbox"
                 id={brand['productSupplierSd']}

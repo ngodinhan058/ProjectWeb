@@ -56,7 +56,11 @@ const SizeFilter = ({ isLoading, selectedSizes, onSelectSizes }) => {
           isLoading ? (
             <Skeleton height={28} style={{ marginTop: '10px' }} />
           ) : (
-            <div className="input-checkbox" key={size['productSizeId']}>
+            <div
+              className="input-checkbox"
+              key={size['productSizeId']}
+              style={{ marginTop: '6px' }}
+            >
               <input
                 type="checkbox"
                 id={size['productSizeId']}

@@ -54,7 +54,7 @@ const SizeFilter = ({ isLoading, selectedSizes, onSelectSizes }) => {
       >
         {sizes.map((size) =>
           isLoading ? (
-            <Skeleton height={20} />
+            <Skeleton height={28} style={{ marginTop: '10px' }} />
           ) : (
             <div className="input-checkbox" key={size['productSizeId']}>
               <input

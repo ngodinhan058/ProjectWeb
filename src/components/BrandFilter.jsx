@@ -60,7 +60,11 @@ const BrandFilter = ({ isLoading, selectedBrands, onSelectBrands }) => {
         {brands.map((brand) =>
           isLoading ? (
             // Add key to Skeleton component
-            <Skeleton key={brand.id} height={20} />
+            <Skeleton
+              key={brand.id}
+              height={28}
+              style={{ marginTop: '10px' }}
+            />
           ) : (
             // Add key to parent div of each brand item
             <div className="input-checkbox" key={brand['productSupplierSd']}>

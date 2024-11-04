@@ -55,15 +55,23 @@ const BrandFilter = ({ isLoading, selectedBrands, onSelectBrands }) => {
       <h3 className="aside-title">Brand</h3>
       <div
         className="checkbox-filter"
-        style={{ maxHeight: 140, overflowY: 'scroll' }}
+        style={{ maxHeight: 160, overflowY: 'scroll' }}
       >
         {brands.map((brand) =>
           isLoading ? (
             // Add key to Skeleton component
-            <Skeleton key={brand.id} height={20} />
+            <Skeleton
+              key={brand.id}
+              height={28}
+              // style={{ marginTop: '10px' }}
+            />
           ) : (
             // Add key to parent div of each brand item
-            <div className="input-checkbox" key={brand['productSupplierSd']}>
+            <div
+              className="input-checkbox"
+              key={brand['productSupplierSd']}
+              style={{ marginTop: '6px' }}
+            >
               <input
                 type="checkbox"
                 id={brand['productSupplierSd']}

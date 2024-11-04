@@ -50,13 +50,17 @@ const SizeFilter = ({ isLoading, selectedSizes, onSelectSizes }) => {
       <h3 className="aside-title">Size</h3>
       <div
         className="checkbox-filter"
-        style={{ maxHeight: 140, overflowY: 'scroll' }}
+        style={{ maxHeight: 160, overflowY: 'scroll' }}
       >
         {sizes.map((size) =>
           isLoading ? (
-            <Skeleton height={20} />
+            <Skeleton height={28} />
           ) : (
-            <div className="input-checkbox" key={size['productSizeId']}>
+            <div
+              className="input-checkbox"
+              key={size['productSizeId']}
+              style={{ marginTop: '6px' }}
+            >
               <input
                 type="checkbox"
                 id={size['productSizeId']}

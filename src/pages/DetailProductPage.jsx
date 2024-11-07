@@ -86,10 +86,6 @@ const ProductDetail = () => {
       const categoryId = productsData.categories[0].categoryId; // Lấy categoryId từ dữ liệu sản phẩm
       const productRelateData = await fetchRelatedProducts(categoryId); // Gọi hàm lấy sản phẩm liên quan
 
-      console.log("Dữ liệu sản phẩm:", productsData); // Log dữ liệu sản phẩm
-      console.log("Dữ liệu sản phẩm liên quan:", productRelateData); // Log dữ liệu sản phẩm liên quan
-
-      // Cập nhật state với dữ liệu nhận được
       setProductsState(productsData); // Cập nhật dữ liệu sản phẩm
       setProductsRelate(productRelateData); // Cập nhật dữ liệu sản phẩm liên quan
       setIsLoading(false); // Đã tải xong dữ liệu
@@ -99,10 +95,9 @@ const ProductDetail = () => {
     }
   };
 
-  // Gọi fetchData khi component mount
   useEffect(() => {
     fetchData(); // Lấy dữ liệu khi component lần đầu render
-  }, [id]); // Chỉ gọi lại khi ID thay đổi (nếu có)
+  }, [id]);
 
 
 
@@ -379,33 +374,24 @@ const ProductDetail = () => {
                       <Skeleton width={100} height={30} />
                     ) : (
                       <div>
-                        {sizes.map(([size, quantity], index) => (
-                          <button
-                            key={index}
-                            className={`size-option 
-                              ${selectedSize ===
-                                size
-                                ? 'selected'
-                                : ''
-                              }
-                              ${hoveredSize ===
-                                size
-                                ? 'hovered'
-                                : ''
-                              }
-                              ${quantity === 0
-                                ? 'disabled'
-                                : ''
-                              }`}
-                            onClick={() => setSelectedSize(size)}
-                            onMouseEnter={() => setHoveredSize(size)} // Khi hover vào
-                            onMouseLeave={() => setHoveredSize(null)} // Khi không còn hover
-                            disabled={quantity === 0} // Vô hiệu hóa nếu số lượng = 0
-                          >
-                            {size}
-                          </button>
-                        ))}
-                      </div>
+                      {productsState.productSizes.map((size, index) => (
+                        <button
+                          key={size.productSizeId} // Use productSizeId as the unique key
+                          className={`size-option 
+                            ${selectedSize === size.productSizeName ? 'selected' : ''} 
+                            ${hoveredSize === size.productSizeName ? 'hovered' : ''} 
+                            ${size.productSizeQuantity.productSizeQuantity === 0 ? 'disabled' : ''}`
+                          }
+                          onClick={() => setSelectedSize(size.productSizeName)}
+                          onMouseEnter={() => setHoveredSize(size.productSizeName)} // When hovering
+                          onMouseLeave={() => setHoveredSize(null)} // When not hovering
+                          disabled={size.productSizeQuantity.productSizeQuantity === 0} // Disable if quantity is 0
+                        >
+                          {size.productSizeName}
+                        </button>
+                      ))}
+                    </div>
+                    
                     )}
                   </label>
                 </div>

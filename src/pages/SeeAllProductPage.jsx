@@ -57,6 +57,8 @@ const Store = () => {
     }
 
     apiUrl += queryParams.join('&');
+    console.log(apiUrl);
+    
     setIsLoading(true);
     axiosInstance
       .get(apiUrl, {
@@ -99,16 +101,15 @@ const Store = () => {
     selectedSizes,
   ]);
 
- const handlePageChange = (pageNumber) => {
+  // Chuyển trang
+  const handlePageChange = (pageNumber) => {
     if (pageNumber >= 0 && pageNumber < totalPages) {
       setCurrentPage(pageNumber);
       window.scrollTo(0, 0);
     }
   };
   const handlePricePageChange = (pageNumber) => {
-    if (pageNumber >= 0 && pageNumber < totalPages) {
       setCurrentPage(pageNumber);
-    }
   };
   const handleSelectChange = (event) => {
     const value = event.target.value.split('|');
@@ -142,7 +143,7 @@ const Store = () => {
             isLoading={isLoading}
             onCategoryChange={handleCategoryChange}
           />
-         <PriceFilter
+          <PriceFilter
             isLoading={isLoading}
             onPriceChange={handlePriceChange}
             onPageChange={handlePricePageChange}

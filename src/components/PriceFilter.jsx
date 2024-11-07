@@ -1,25 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef  } from "react";
 
 const PriceRangeSlider = ({ onPriceChange, onPageChange }) => {
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(2000000);
   const [error, setError] = useState("");
+  const resetPageRef = useRef(false); // Track if page reset is needed
 
-  const formatPrice = (price) => {
-    return price.toLocaleString('vi-VN');
-  };
+  const formatPrice = (price) => price.toLocaleString("vi-VN");
 
   const validatePrices = (min, max) => {
-    if (min < 0 || max < 0) {
-      setError("Giá không thể là số âm.");
-      return false;
-    }
     if (min > max) {
       setError("Giá tối thiểu không được lớn hơn giá tối đa!");
-      return false;
-    }
-    if (min > 2000000 || max > 2000000) {
-      setError("Giá không được vượt quá 2,000,000 ₫.");
       return false;
     }
     setError("");
@@ -27,21 +18,23 @@ const PriceRangeSlider = ({ onPriceChange, onPageChange }) => {
   };
 
   const handleMinInputChange = (e) => {
-    const value = parseInt(e.target.value.replace(/[^0-9]/g, ''), 10) || 0;
-    if (validatePrices(value, maxPrice)) {
-      setMinPrice(value);
-      onPriceChange({ minPrice: value, maxPrice });
-      onPageChange(0);
-    }
+    let value = e.target.value.replace(/[^0-9]/g, "");
+    if (value.length > 9) value = value.slice(0, 9);
+    value = parseInt(value, 10) || 0;
+
+    setMinPrice(value);
+    validatePrices(value, maxPrice);
+    resetPageRef.current = true;
   };
 
   const handleMaxInputChange = (e) => {
-    const value = parseInt(e.target.value.replace(/[^0-9]/g, ''), 10) || 0;
-    if (validatePrices(minPrice, value)) {
-      setMaxPrice(value);
-      onPriceChange({ minPrice, maxPrice: value });
-      onPageChange(0);
-    }
+    let value = e.target.value.replace(/[^0-9]/g, "");
+    if (value.length > 9) value = value.slice(0, 9);
+    value = parseInt(value, 10) || 0;
+
+    setMaxPrice(value);
+    validatePrices(minPrice, value);
+    resetPageRef.current = true;
   };
 
   const handleRangeInputChange = (e, type) => {
@@ -53,28 +46,25 @@ const PriceRangeSlider = ({ onPriceChange, onPageChange }) => {
       setMaxPrice(value);
       validatePrices(minPrice, value);
     }
-    setTimeout(() => {
-      onPageChange(0);
-    }, 1000);
+    resetPageRef.current = true;
   };
 
   useEffect(() => {
+    // Set a debounce timer of 1 second
     const debounce = setTimeout(() => {
       if (!error) {
-        if (minPrice >= 2000000 || maxPrice <= 0) {
-            setMinPrice(0);
-            setMaxPrice(2000000);
-            setError("");
-        }
-       else {
         onPriceChange({ minPrice, maxPrice });
-       }
+        if (resetPageRef.current) {
+          onPageChange(0);
+          resetPageRef.current = false;
+        }
       }
     }, 1000);
-    return () => clearTimeout(debounce);
-  }, [minPrice, maxPrice, onPriceChange, error]);
 
-  
+    return () => clearTimeout(debounce); // Clear timeout if values change before 1000ms
+  }, [minPrice, maxPrice, onPriceChange, onPageChange, error]);
+
+
 
   return (
     <div className="aside">
@@ -98,7 +88,9 @@ const PriceRangeSlider = ({ onPriceChange, onPageChange }) => {
           step="10000"
           onChange={(e) => handleRangeInputChange(e, "min")}
         />
-        <div style={{position: 'absolute', fontSize: 16, top: 10}}>{formatPrice(minPrice)}{' ₫'}</div>
+        <div style={{ position: "absolute", fontSize: 16, top: 10 }}>
+          {formatPrice(minPrice)} ₫
+        </div>
         <input
           type="range"
           className="range-max"
@@ -108,7 +100,9 @@ const PriceRangeSlider = ({ onPriceChange, onPageChange }) => {
           step="10000"
           onChange={(e) => handleRangeInputChange(e, "max")}
         />
-        <div style={{ position: 'absolute', right:0, fontSize: 16,top: 10 }}>{formatPrice(maxPrice)}{' ₫'}</div>
+        <div style={{ position: "absolute", right: 0, fontSize: 16, top: 10 }}>
+          {formatPrice(maxPrice)} ₫
+        </div>
       </div>
       <div className="price-input">
         <div className="field input-number">
@@ -119,7 +113,7 @@ const PriceRangeSlider = ({ onPriceChange, onPageChange }) => {
             onChange={handleMinInputChange}
             min="0"
             max={2000000}
-          />  
+          />
         </div>
         <div className="field input-number">
           <input

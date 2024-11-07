@@ -55,12 +55,14 @@
     position: relative;
     background: #ddd;
     border-radius: 5px;
+    overflow: hidden;
   }
   .slider .progress {
     height: 100%;
     position: absolute;
     border-radius: 5px;
     background: #c50425;
+    overflow: hidden;
   }
   .range-input {
     position: relative;

@@ -18,45 +18,15 @@ import PopupImage from '../components/PopupImage';
 
 const ProductDetail = () => {
   const location = useLocation();
-  const [productsState, setProductsState] = useState([]); // Dữ liệu sản phẩm
+
+  const [products, setProducts] = useState([]); // Dữ liệu sản phẩm
   const {
     id,
     images,
-    name,
-    price,
-    supplier,
-    oldPrice,
-    categories,
-    rating,
-    sale,
-    isNew,
   } = location.state || {};
   const [categoryIdss, setCategoryIdss] = useState(); // Dữ liệu sản phẩm
 
-  const getCategoryItems = (categories) => {
-    // Kiểm tra xem categories có phải là một mảng không
-    if (!Array.isArray(categories)) {
-      return null; // hoặc return []; nếu bạn muốn trả về một mảng rỗng
-    }
-    // Khởi tạo danh sách để lưu trữ các mục danh mục
-    let categoryItems = [];
-    // Duyệt qua từng danh mục trong mảng categories
-    categories.forEach((category) => {
-      // Kiểm tra nếu category có giá trị hợp lệ
-      if (category && category.categoryId) {
-        // Thêm danh mục hiện tại vào danh sách
-        categoryItems.push(
-          <Link to={`/${category.categoryId}`}>
-            <li key={category.categoryId}>
-              <a href={`#${category.categoryId}`}> {category.categoryName}</a>
-            </li>
-          </Link>
-        );
-      }
-    });
 
-    return categoryItems;
-  };
   // Mảng size
   const [selectedSize, setSelectedSize] = useState(''); // Đặt size mặc định
   // Thiết lập mặc định là 'S'
@@ -72,75 +42,116 @@ const ProductDetail = () => {
   const sliderRef = useRef(null);
   const [selectedImage, setSelectedImage] = useState('');
 
-  const [isLoading, setIsLoading] = useState(true); // Trạng thái loading
 
-  useEffect(() => {
-    if (images && images.length > 0) {
-      setSelectedImage(`../${images[0]?.['productImagePath']}`);
-    } else {
-      setSelectedImage(
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/langvi-300px-No_image_available.svg.png'
-      );
+  const [productsState, setProductsState] = useState(null); // Dữ liệu sản phẩm ban đầu là null thay vì mảng rỗng
+  const [productsRelate, setProductsRelate] = useState([]); // Dữ liệu sản phẩm liên quan
+  const [isLoading, setIsLoading] = useState(true); // Đang tải dữ liệu
+
+  // Hàm lấy dữ liệu sản phẩm
+  const fetchProductData = async (id) => {
+    const productsApiUrl = `${BASE_URL}product/${id}`; // API lấy thông tin sản phẩm theo ID
+    try {
+      const response = await axios.get(productsApiUrl, {
+        headers: {
+          'ngrok-skip-browser-warning': 'true', // Bỏ qua cảnh báo của ngrok nếu có
+        },
+      });
+      return response.data.data; // Trả về dữ liệu sản phẩm
+    } catch (error) {
+      console.error('Lỗi khi lấy dữ liệu sản phẩm:', error);
+      throw error; // Ném lỗi để xử lý ở nơi gọi
     }
-  }, [images, id]);
+  };
 
-  useEffect(() => {
-    if (categories && categories.length > 0) {
-      setCategoryIdss(categories[0].categoryId); // Lấy categoryId của danh mục đầu tiên, nếu có
-    }
-  }, [categories]);
-
-  useEffect(() => {
-    let apiUrl = `${BASE_URL}products/relate/${categoryIdss}`;
-    console.log(apiUrl);
-
-    // Khởi tạo danh sách query params
-    axiosInstance
-      .get(apiUrl, {
+  // Hàm lấy sản phẩm liên quan
+  const fetchRelatedProducts = async (categoryId) => {
+    const categoriesApiUrl = `${BASE_URL}products/relate/${categoryId}`; // API lấy sản phẩm liên quan theo categoryId
+    try {
+      const response = await axios.get(categoriesApiUrl, {
         headers: {
           'ngrok-skip-browser-warning': 'true',
         },
-      })
-      .then((response) => {
-        const { content } = response.data.data;
-        setProductsState(content);
-        setIsLoading(false); // Kết thúc tải
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-
       });
-  }, [categoryIdss]);
+      return response.data.data.content; // Trả về dữ liệu sản phẩm liên quan
+    } catch (error) {
+      console.error('Lỗi khi lấy sản phẩm liên quan:', error);
+      throw error; // Ném lỗi để xử lý ở nơi gọi
+    }
+  };
 
+  // Hàm chính để gọi đồng thời hai API
+  const fetchData = async () => {
+    try {
+      const productsData = await fetchProductData(id); // Gọi hàm lấy dữ liệu sản phẩm
+      const categoryId = productsData.categories[0].categoryId; // Lấy categoryId từ dữ liệu sản phẩm
+      const productRelateData = await fetchRelatedProducts(categoryId); // Gọi hàm lấy sản phẩm liên quan
+
+      console.log("Dữ liệu sản phẩm:", productsData); // Log dữ liệu sản phẩm
+      console.log("Dữ liệu sản phẩm liên quan:", productRelateData); // Log dữ liệu sản phẩm liên quan
+
+      // Cập nhật state với dữ liệu nhận được
+      setProductsState(productsData); // Cập nhật dữ liệu sản phẩm
+      setProductsRelate(productRelateData); // Cập nhật dữ liệu sản phẩm liên quan
+      setIsLoading(false); // Đã tải xong dữ liệu
+
+    } catch (error) {
+      console.error('Lỗi khi lấy dữ liệu:', error); // Log lỗi nếu có
+    }
+  };
+
+  // Gọi fetchData khi component mount
   useEffect(() => {
-    let apiUrl = `${BASE_URL}categories`;
-    axios
-      .get(apiUrl, {
-        headers: {
-          'ngrok-skip-browser-warning': 'true',
-        },
-      })
-      .then((response) => {
-        const { data } = response.data;
-        setCategoriess(data);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-        setIsLoading(false);
-      });
-  }, []);
+    fetchData(); // Lấy dữ liệu khi component lần đầu render
+  }, [id]); // Chỉ gọi lại khi ID thay đổi (nếu có)
+
+
+
+  // useEffect(() => {
+  //   if (categories && categories.length > 0) {
+  //     setCategoryIdss(categories[0].categoryId); // Lấy categoryId của danh mục đầu tiên, nếu có
+  //   }
+  // }, [categories]);
+
+  
+
+  // useEffect(() => {
+  //   let apiUrl = `${BASE_URL}categories`;
+  //   axios
+  //     .get(apiUrl, {
+  //       headers: {
+  //         'ngrok-skip-browser-warning': 'true',
+  //       },
+  //     })
+  //     .then((response) => {
+  //       const { data } = response.data;
+  //       setCategoriess(data);
+  //       setIsLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.error('Error fetching data:', error);
+  //       setIsLoading(false);
+  //     });
+  // }, []);
+  
 
   const renderRating = () => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
       stars.push(
-        <i key={i} className={i <= rating ? 'fa fa-star' : 'fa fa-star-o'}></i>
+        <i key={i} className={i <= productsState.productRating ? 'fa fa-star' : 'fa fa-star-o'}></i>
       );
     }
     return stars;
   };
-
+  useEffect(() => {
+    if (productsState && productsState.productImages && productsState.productImages.length > 0) {
+      setSelectedImage(`../${productsState.productImages[0]?.productImagePath}`);
+    } else {
+      setSelectedImage(
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/langvi-300px-No_image_available.svg.png'
+      );
+    }
+  }, [productsState, id]);
   const handleImageClick = (imgSrc, index) => {
     setSelectedImage(`../${imgSrc}`);
   };
@@ -288,9 +299,9 @@ const ProductDetail = () => {
                       style={{ marginBottom: 10 }}
                     />
                   </div>
-                ) : images && Array.isArray(images) && images.length > 0 ? (
+                ) : productsState.productImages && Array.isArray(productsState.productImages) && productsState.productImages.length > 0 ? (
                   <Slider {...settings}>
-                    {images.map((image, index) => (
+                    {productsState.productImages.map((image, index) => (
                       <div
                         key={index}
                         className={`product-preview ${selectedImage === image.productImagePath
@@ -315,7 +326,7 @@ const ProductDetail = () => {
               <div className="product-details">
                 <h2 className="product-name">
                   {' '}
-                  {isLoading ? <Skeleton width={200} /> : name}
+                  {isLoading ? <Skeleton width={200} /> : productsState.productName}
                 </h2>
                 <div>
                   <div className="product-rating">
@@ -338,16 +349,16 @@ const ProductDetail = () => {
                       </>
                     ) : (
                       <>
-                        {sale > 0 ? (
+                        {productsState.productSale > 0 ? (
                           <>
-                            {price}{' '}
-                            <del className="product-old-price">{oldPrice}</del>
+                            {productsState.productPriceSale}{' '}
+                            <del className="product-old-price">{productsState.productPrice}</del>
                             <span className="product-available">
                               {isLoading ? <Skeleton width={80} /> : 'In Stock'}
                             </span>
                           </>
                         ) : (
-                          <>{price} </>
+                          <>{productsState.productPriceSale} </>
                         )}
                       </>
                     )}
@@ -447,7 +458,12 @@ const ProductDetail = () => {
                   ) : (
                     <>
                       <li>Category: </li>
-                      {getCategoryItems(categories)}
+                      {/* {getCategoryItems(categories)} */}
+                      <Link to={`/${productsState.categories[0].categoryId}`}>
+                        <li key={productsState.categories[0].categoryId}>
+                          <a href={`#${productsState.categories[0].categoryId}`}> {productsState.categories[0].categoryName}</a>
+                        </li>
+                      </Link>
                     </>
                   )}
                 </ul>
@@ -457,7 +473,7 @@ const ProductDetail = () => {
                   ) : (
                     <>
                       <li>Brand: </li>
-                      <li>{supplier}</li>
+                      <li>{productsState.productSupplier.productSupplierName}</li>
                     </>
                   )}
                 </ul>
@@ -531,7 +547,7 @@ const ProductDetail = () => {
                 </div>
               )
             ) : isDesktop ? (
-              productsState.length > 0 ? (
+              productsRelate.length > 0 ? (
                 <div className="slider-container">
                   <button
                     className="custom-prev-btn"
@@ -540,7 +556,7 @@ const ProductDetail = () => {
                     <i className="fa fa-chevron-left" style={{ fontSize: 20, marginRight: 3 }}></i>
                   </button>
                   <Slider ref={sliderRef} {...sliderSettings}>
-                    {productsState.map((product) => (
+                    {productsRelate.map((product) => (
                       <div className="col-md-3 col-xs-6 marginBottom" key={product.productId}>
                         <Product
                           id={product.productId}
@@ -565,7 +581,7 @@ const ProductDetail = () => {
                 </div>
               ) : (
                 <div className="product-grid">
-                  {productsState.map((product) => (
+                  {productsRelate.map((product) => (
                     <div className="product-item" key={product.productId}>
                       <Product
                         id={product.productId}
@@ -583,7 +599,7 @@ const ProductDetail = () => {
               )
             ) : (
               <div className="product-grid">
-                {productsState.map((product) => (
+                {productsRelate.map((product) => (
                   <div className="product-item" key={product.productId}>
                     <Product
                       id={product.productId}

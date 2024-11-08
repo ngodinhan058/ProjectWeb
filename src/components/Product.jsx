@@ -36,14 +36,6 @@ const Product = ({
       state: {
         id,
         images,
-        name,
-        categories,
-        supplier,
-        price,
-        oldPrice,
-        rating,
-        sale,
-        isNew,
       },
     });
     window.scrollTo(0, 0);

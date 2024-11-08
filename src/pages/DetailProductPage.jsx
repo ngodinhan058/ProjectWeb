@@ -24,24 +24,16 @@ const ProductDetail = () => {
     id,
     images,
   } = location.state || {};
-  const [categoryIdss, setCategoryIdss] = useState(); // Dữ liệu sản phẩm
+  const [categoryId, setCategoryId] = useState(); // Dữ liệu sản phẩm
 
 
-  // Mảng size
   const [selectedSize, setSelectedSize] = useState(''); // Đặt size mặc định
-  // Thiết lập mặc định là 'S'
-  const sizes = [
-    ['S', 5], // Size S với số lượng 5
-    ['M', 0], // Size M với số lượng 0 (vô hiệu hóa)
-    ['L', 3], // Size L với số lượng 3
-    ['XL', 0], // Size XL với số lượng 0 (vô hiệu hóa)
-  ];
+
   const [categoriess, setCategoriess] = useState([]);
   const [hoveredSize, setHoveredSize] = useState(null);
   // Cài đặt cho slider (carousel) trên desktop
   const sliderRef = useRef(null);
   const [selectedImage, setSelectedImage] = useState('');
-
 
   const [productsState, setProductsState] = useState(null); // Dữ liệu sản phẩm ban đầu là null thay vì mảng rỗng
   const [productsRelate, setProductsRelate] = useState([]); // Dữ liệu sản phẩm liên quan
@@ -78,56 +70,42 @@ const ProductDetail = () => {
       throw error; // Ném lỗi để xử lý ở nơi gọi
     }
   };
-
-  // Hàm chính để gọi đồng thời hai API
+  const fetchAllCategories = async () => {
+    const categoriesApiUrl = `${BASE_URL}categories`; // API lấy sản phẩm liên quan theo categoryId
+    try {
+      const response = await axios.get(categoriesApiUrl, {
+        headers: {
+          'ngrok-skip-browser-warning': 'true',
+        },
+      });
+      return response.data.data; // Trả về dữ liệu sản phẩm liên quan
+    } catch (error) {
+      console.error('Lỗi khi lấy sản phẩm liên quan:', error);
+      throw error;
+    }
+  };
+  
+  // Hàm chính để gọi đồng thời hết API
   const fetchData = async () => {
     try {
-      const productsData = await fetchProductData(id); // Gọi hàm lấy dữ liệu sản phẩm
-      const categoryId = productsData.categories[0].categoryId; // Lấy categoryId từ dữ liệu sản phẩm
-      const productRelateData = await fetchRelatedProducts(categoryId); // Gọi hàm lấy sản phẩm liên quan
+      const productsData = await fetchProductData(id);
+      const categoryId = productsData.categories[0].categoryId;
+      const productRelateData = await fetchRelatedProducts(categoryId);
+      const allCategories = await fetchAllCategories();
 
-      setProductsState(productsData); // Cập nhật dữ liệu sản phẩm
-      setProductsRelate(productRelateData); // Cập nhật dữ liệu sản phẩm liên quan
-      setIsLoading(false); // Đã tải xong dữ liệu
+      setProductsState(productsData);
+      setProductsRelate(productRelateData);
+      setCategoriess(allCategories)
+      setCategoryId(categoryId)
+      setIsLoading(false);
 
     } catch (error) {
       console.error('Lỗi khi lấy dữ liệu:', error); // Log lỗi nếu có
     }
   };
-
   useEffect(() => {
     fetchData(); // Lấy dữ liệu khi component lần đầu render
   }, [id]);
-
-
-
-  // useEffect(() => {
-  //   if (categories && categories.length > 0) {
-  //     setCategoryIdss(categories[0].categoryId); // Lấy categoryId của danh mục đầu tiên, nếu có
-  //   }
-  // }, [categories]);
-
-  
-
-  // useEffect(() => {
-  //   let apiUrl = `${BASE_URL}categories`;
-  //   axios
-  //     .get(apiUrl, {
-  //       headers: {
-  //         'ngrok-skip-browser-warning': 'true',
-  //       },
-  //     })
-  //     .then((response) => {
-  //       const { data } = response.data;
-  //       setCategoriess(data);
-  //       setIsLoading(false);
-  //     })
-  //     .catch((error) => {
-  //       console.error('Error fetching data:', error);
-  //       setIsLoading(false);
-  //     });
-  // }, []);
-  
 
   const renderRating = () => {
     const stars = [];
@@ -239,7 +217,12 @@ const ProductDetail = () => {
       <div id="breadcrumb" className="section">
         <div className="container">
           <div className="row">
-            <Breadcrumb categoryId={categoryIdss} allCategories={categoriess} />
+            {/* <Breadcrumb categoryId={categoryIdss} allCategories={categoriess} /> */}
+              <Breadcrumb
+                categoryId= {categoryId}
+                allCategories={categoriess}
+              />
+
           </div>
         </div>
       </div>
@@ -374,24 +357,24 @@ const ProductDetail = () => {
                       <Skeleton width={100} height={30} />
                     ) : (
                       <div>
-                      {productsState.productSizes.map((size, index) => (
-                        <button
-                          key={size.productSizeId} // Use productSizeId as the unique key
-                          className={`size-option 
+                        {productsState.productSizes.map((size, index) => (
+                          <button
+                            key={size.productSizeId} // Use productSizeId as the unique key
+                            className={`size-option 
                             ${selectedSize === size.productSizeName ? 'selected' : ''} 
                             ${hoveredSize === size.productSizeName ? 'hovered' : ''} 
                             ${size.productSizeQuantity.productSizeQuantity === 0 ? 'disabled' : ''}`
-                          }
-                          onClick={() => setSelectedSize(size.productSizeName)}
-                          onMouseEnter={() => setHoveredSize(size.productSizeName)} // When hovering
-                          onMouseLeave={() => setHoveredSize(null)} // When not hovering
-                          disabled={size.productSizeQuantity.productSizeQuantity === 0} // Disable if quantity is 0
-                        >
-                          {size.productSizeName}
-                        </button>
-                      ))}
-                    </div>
-                    
+                            }
+                            onClick={() => setSelectedSize(size.productSizeName)}
+                            onMouseEnter={() => setHoveredSize(size.productSizeName)} // When hovering
+                            onMouseLeave={() => setHoveredSize(null)} // When not hovering
+                            disabled={size.productSizeQuantity.productSizeQuantity === 0} // Disable if quantity is 0
+                          >
+                            {size.productSizeName}
+                          </button>
+                        ))}
+                      </div>
+
                     )}
                   </label>
                 </div>

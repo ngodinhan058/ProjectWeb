@@ -479,7 +479,7 @@ const ProductDetail = () => {
               </div>
             </div>
             {/* Product Tabs */}
-            <ProductTabs image={images} />
+            <ProductTabs image={images} id={id}/>
             {/* Product Tabs */}
           </div>
           {/* row */}

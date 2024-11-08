@@ -30,7 +30,6 @@ const Cart = () => {
 
   return (
     <div className="cart">
-      <h2>GIỎ HÀNG</h2>
       <table className="cart-table">
         <thead>
           <tr>

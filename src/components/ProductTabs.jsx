@@ -60,8 +60,9 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
   const markdownToHtml = (markdown) => {
     
     return markdown
-    .replace(/!\[(.*?)\]\((.*?)\)/g, (match, altText, imgPath, index) => {
-      return `<img alt="${altText}" src="${image[0]?.["productImagePath"]}" style="width:300px; height:250px; display:inline-block;" />`;
+    .replace(/!\[(.*?)\]\(`(.*?)`\)/g, (index , altText, imgPath) => {
+      // Chuyển đổi cú pháp ảnh Markdown thành thẻ HTML <img>
+      return `<img alt="${altText}" src="../${image[imgPath]?.["productImagePath"]}" style="width:300px; height:250px; display:inline-block;" />`;
     })
       .replace(/#### (.*?)\n/g, '<h4>$1</h4>') // Chuyển đổi #### thành <h4>
       .replace(/### (.*?)\n/g, '<h3>$1</h3>')  // Chuyển đổi ### thành <h3>

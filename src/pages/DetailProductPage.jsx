@@ -16,29 +16,26 @@ import Breadcrumb from '../components/Breadcrumb';
 import axios from 'axios';
 import PopupImage from '../components/PopupImage';
 
+// Hàm tính toán thời gian hết hạn (ở đây là 1 tuần)
+const ONE_WEEK = 7 * 24 * 60 * 60 * 1000; // 1 tuần (mili giây)
+const getExpiryTime = () => Date.now() + ONE_WEEK;
+
 const ProductDetail = () => {
   const location = useLocation();
-
-  const [products, setProducts] = useState([]); // Dữ liệu sản phẩm
   const {
     id,
-    images,
   } = location.state || {};
   const [categoryId, setCategoryId] = useState(); // Dữ liệu sản phẩm
-
-
   const [selectedSize, setSelectedSize] = useState(''); // Đặt size mặc định
-
   const [categoriess, setCategoriess] = useState([]);
   const [hoveredSize, setHoveredSize] = useState(null);
   // Cài đặt cho slider (carousel) trên desktop
   const sliderRef = useRef(null);
   const [selectedImage, setSelectedImage] = useState('');
-
+  const [images, setImage] = useState('');
   const [productsState, setProductsState] = useState(null); // Dữ liệu sản phẩm ban đầu là null thay vì mảng rỗng
   const [productsRelate, setProductsRelate] = useState([]); // Dữ liệu sản phẩm liên quan
   const [isLoading, setIsLoading] = useState(true); // Đang tải dữ liệu
-
   // Hàm lấy dữ liệu sản phẩm
   const fetchProductData = async (id) => {
     const productsApiUrl = `${BASE_URL}product/${id}`; // API lấy thông tin sản phẩm theo ID
@@ -84,12 +81,13 @@ const ProductDetail = () => {
       throw error;
     }
   };
-  
+
   // Hàm chính để gọi đồng thời hết API
   const fetchData = async () => {
     try {
       const productsData = await fetchProductData(id);
       const categoryId = productsData.categories[0].categoryId;
+      const images = productsData.productImages;
       const productRelateData = await fetchRelatedProducts(categoryId);
       const allCategories = await fetchAllCategories();
 
@@ -97,6 +95,7 @@ const ProductDetail = () => {
       setProductsRelate(productRelateData);
       setCategoriess(allCategories)
       setCategoryId(categoryId)
+      setImage(images)
       setIsLoading(false);
 
     } catch (error) {
@@ -104,18 +103,9 @@ const ProductDetail = () => {
     }
   };
   useEffect(() => {
-    fetchData(); // Lấy dữ liệu khi component lần đầu render
+    fetchData();
   }, [id]);
 
-  const renderRating = () => {
-    const stars = [];
-    for (let i = 1; i <= 5; i++) {
-      stars.push(
-        <i key={i} className={i <= productsState.productRating ? 'fa fa-star' : 'fa fa-star-o'}></i>
-      );
-    }
-    return stars;
-  };
   useEffect(() => {
     if (productsState && productsState.productImages && productsState.productImages.length > 0) {
       setSelectedImage(`../${productsState.productImages[0]?.productImagePath}`);
@@ -128,6 +118,87 @@ const ProductDetail = () => {
   const handleImageClick = (imgSrc, index) => {
     setSelectedImage(`../${imgSrc}`);
   };
+  const renderRating = () => {
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
+      stars.push(
+        <i key={i} className={i <= productsState.productRating ? 'fa fa-star' : 'fa fa-star-o'}></i>
+      );
+    }
+    return stars;
+  };
+
+
+  // THÊM CART VÀO LOCAL
+  const [cart, setCart] = useState([]);
+  const [quantity, setQuantity] = useState(1);
+  const [error, setError] = useState('');
+  useEffect(() => {
+    // Retrieve saved cart from localStorage
+    const savedCart = localStorage.getItem('cart');
+
+    if (savedCart) {
+      const { items, expiry } = JSON.parse(savedCart);
+
+      // Check if the cart has expired
+      if (Date.now() > expiry) {
+        localStorage.removeItem('cart'); // Remove expired cart from localStorage
+      } else {
+        setCart(items); // Restore the cart if it's still valid
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    // Only update localStorage when the cart changes
+    if (cart.length > 0) {
+      const cartData = {
+        items: cart,
+        expiry: getExpiryTime(), // Get the new expiry time
+      };
+      localStorage.setItem('cart', JSON.stringify(cartData)); // Save updated cart to localStorage
+    }
+  }, [cart]);  // This effect depends on `cart`
+
+  // Xử lý khi thêm sản phẩm vào giỏ hàng
+  const handleAddToCart = () => {
+    if (!selectedSize) {
+      setError('Vui lòng chọn kích thước sản phẩm');
+      return;
+    }
+    if (quantity < 1) {
+      setError('Vui lòng chọn số lượng hợp lệ');
+      return;
+    }
+
+    setError(''); // Xóa lỗi khi hợp lệ
+
+    // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
+    const existingProductIndex = cart.findIndex(
+      (item) => item.id === id && item.size === selectedSize
+    );
+
+    if (existingProductIndex !== -1) {
+      // Nếu đã có, tăng số lượng sản phẩm đó trong giỏ hàng
+      const updatedCart = [...cart];
+      updatedCart[existingProductIndex].quantity += quantity;
+      setCart(updatedCart);
+    } else {
+      // Nếu chưa có, thêm sản phẩm mới vào giỏ hàng
+      const newProduct = {
+        id: id,
+        name: productsState.productName,
+        size: selectedSize,
+        quantity,
+      };
+      setCart([...cart, newProduct]);
+    }
+  };
+  const handleQuantityChange = (amount) => {
+    setQuantity(Math.max(1, quantity + amount));
+  };
+  // KẾT THÚC THÊM CART VÀO LOCAL
+
 
   const [isHoveredUp, setIsHoveredUp] = useState(false);
   const [isHoveredDown, setIsHoveredDown] = useState(false);
@@ -218,10 +289,10 @@ const ProductDetail = () => {
         <div className="container">
           <div className="row">
             {/* <Breadcrumb categoryId={categoryIdss} allCategories={categoriess} /> */}
-              <Breadcrumb
-                categoryId= {categoryId}
-                allCategories={categoriess}
-              />
+            <Breadcrumb
+              categoryId={categoryId}
+              allCategories={categoriess}
+            />
 
           </div>
         </div>
@@ -303,7 +374,6 @@ const ProductDetail = () => {
             <div className="col-md-5">
               <div className="product-details">
                 <h2 className="product-name">
-                  {' '}
                   {isLoading ? <Skeleton width={200} /> : productsState.productName}
                 </h2>
                 <div>
@@ -387,9 +457,9 @@ const ProductDetail = () => {
                       <>
                         Qty:
                         <div className="input-number">
-                          <input type="number" />
-                          <span className="qty-up">+</span>
-                          <span className="qty-down">-</span>
+                          <input type="number" value={quantity} />
+                          <span className="qty-up" onClick={() => handleQuantityChange(1)}>+</span>
+                          <span className="qty-down" onClick={() => handleQuantityChange(-1)}>-</span>
                         </div>
                       </>
                     )}
@@ -397,10 +467,14 @@ const ProductDetail = () => {
                   {isLoading ? (
                     <Skeleton width={150} height={40} />
                   ) : (
-                    <button className="add-to-cart-btn">
-                      <i className="fa fa-shopping-cart"></i> add to cart
-                    </button>
+                    <Link to={`/cart`}>
+                      <button className="add-to-cart-btn" onClick={handleAddToCart}>
+                        <i className="fa fa-shopping-cart"></i> add to cart
+                      </button>
+                    </Link>
+
                   )}
+                  {error && <p className="error-message" style={{ color: 'red', fontSize: 18, fontWeight: 'bold' }}>{error}</p>}
                 </div>
 
                 <ul className="product-btns">
@@ -479,7 +553,7 @@ const ProductDetail = () => {
               </div>
             </div>
             {/* Product Tabs */}
-            <ProductTabs image={images} id={id}/>
+            <ProductTabs image={images} id={id} />
             {/* Product Tabs */}
           </div>
           {/* row */}

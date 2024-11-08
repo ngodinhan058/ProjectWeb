@@ -18,7 +18,7 @@
 
 /* Tab Product */
 .description-content.collapsed {
-  max-height: 1000px; /* Chiều cao tối đa cho nội dung rút gọn */
+  max-height: 200px; /* Chiều cao tối đa cho nội dung rút gọn */
   overflow: hidden; /* Ẩn phần nội dung vượt quá chiều cao tối đa */
 }
 .description-content.expanded {

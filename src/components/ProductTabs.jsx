@@ -1,21 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
+import { BASE_URL } from './api/config';
+import { axiosInstance } from './api/axiosConfig';
 
-const ProductTabs = ({ image }) => {
+const ProductTabs = ({ image, id }) => {
   const [activeTab, setActiveTab] = useState('description');
   const [loading, setLoading] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false); // Đặt mặc định là false để rút gọn
+  const [productsState, setProductsState] = useState([]);
+  
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1000);
-    return () => clearTimeout(timer);
-  }, []);
-
+    let apiUrl = `${BASE_URL}product/${id}`;
+    // console.log(apiUrl);
+    
+    axiosInstance
+      .get(apiUrl, {
+        headers: {
+          'ngrok-skip-browser-warning': 'true',
+        },
+      })
+      .then((response) => {
+        const productData = response.data.data;
+        setProductsState(productData);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  }, [id]);
   const handleTabClick = (tab) => {
     setActiveTab(tab);
-    setLoading(true);
-    setTimeout(() => setLoading(false), 2000);
   };
 
   const descriptionMarkdown = `
@@ -34,23 +50,28 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 #### Material : Polime
 #### Địa Chỉ : Thành Phố Hồ Chí Minh
 
-![Product Image](../${image[2]?.["productImagePath"]}) 
+![Product Image](../${image[2]?.[`productImagePath`]}) 
 ### Kết Thúc Mô Tả
   `;
+  // console.log(descriptionMarkdown);
+  
+  console.log(image);
 
   const markdownToHtml = (markdown) => {
+    
     return markdown
-      .replace(/!\[(.*?)\]\((.*?)\)/g, '<img alt="$1" src="$2" style="width:300px; height:250px; display:inline-block;" />') // Chuyển đổi cú pháp hình ảnh
-      .replace(/#### (.*?)\n/g, '<h5>$1</h5>') // Chuyển đổi ### thành <h3>
-      .replace(/### (.*?)\n/g, '<h3>$1</h3>') // Chuyển đổi ### thành <h3>
+    .replace(/!\[(.*?)\]\((.*?)\)/g, (match, altText, imgPath, index) => {
+      return `<img alt="${altText}" src="${image[0]?.["productImagePath"]}" style="width:300px; height:250px; display:inline-block;" />`;
+    })
+      .replace(/#### (.*?)\n/g, '<h4>$1</h4>') // Chuyển đổi #### thành <h4>
+      .replace(/### (.*?)\n/g, '<h3>$1</h3>')  // Chuyển đổi ### thành <h3>
       .replace(/## (.*?)\n/g, '<h2>$1</h2>')   // Chuyển đổi ## thành <h2>
-      .replace(/# (.*?)\n/g, '<h1>$1</h1>')     // Chuyển đổi # thành <h1>
-      .replace(/\n/g, '<br />')                  // Chuyển đổi xuống dòng
-      .replace(/\* (.*?)\n/g, '<li>$1</li>')     // Chuyển đổi * thành <li>
-      .replace(/<(li)>/g, '<ul><li>')            // Thêm <ul> trước <li>
-      .replace(/<\/li>/g, '</li></ul>');         // Đóng <ul> sau <li>
+      .replace(/# (.*?)\n/g, '<h1>$1</h1>')    // Chuyển đổi # thành <h1>
+      .replace(/\n/g, '<br />')                // Chuyển đổi xuống dòng
+      .replace(/^\* (.*?)(?=\n|$)/gm, '<li>$1</li>') // Chuyển đổi dòng bắt đầu bằng * thành <li>
+      .replace(/(<li>.*<\/li>)/g, '<ul>$1</ul>');    // Bao <ul> xung quanh <li>
   };
-
+  
   const handleToggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
@@ -72,14 +93,20 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 
         <div className="tab-content">
           {loading ? (
-            <Skeleton count={3} />
+            <Skeleton count={8} />
           ) : (
             <>
               {activeTab === 'description' && (
                 <div id="tab1">
                   <div
                     className={`description-content ${isExpanded ? 'expanded' : 'collapsed'}`}
-                    dangerouslySetInnerHTML={{ __html: markdownToHtml(isExpanded ? descriptionMarkdown : descriptionMarkdown.split("### More Content")[0]) }}
+                    dangerouslySetInnerHTML={{
+                      __html: markdownToHtml(
+                        isExpanded
+                          ? (productsState.post?.postContent || descriptionMarkdown)
+                          : (productsState.post?.postContent || descriptionMarkdown).split("### More Content")[0]
+                      )
+                    }}
                   />
                   <button onClick={handleToggleExpand} className="btn-see-more">
                     {isExpanded ? 'Thu gọn' : 'Xem thêm'}
@@ -103,6 +130,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
         </div>
       </div>
     </div>
+
   );
 };
 

@@ -8,6 +8,7 @@ import Footer from './components/Footer';
 
 import ProductDetails from './pages/DetailProductPage';
 import SeeAllProductPage from './pages/SeeAllProductPage';
+import CartPage from './pages/CartPage';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/" element={<SeeAllProductPage />} />
         <Route path="/:categoryIdFromLink" element={<SeeAllProductPage />} />
         <Route path="chi-tiet/:id" element={<ProductDetails />} />
+        <Route path="cart" element={<CartPage />} />
       </Routes>
       <Footer />
     </Router>

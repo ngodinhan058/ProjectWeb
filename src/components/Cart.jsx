@@ -60,16 +60,32 @@ const Cart = () => {
       return;
     }
     setError('');
-    localStorage.setItem('customerName', customerName);
-    localStorage.setItem('customerPhone', customerPhone);
+
+    // Lưu thông tin khách hàng vào localStorage với key là 'user'
+    const userInfo = { name: customerName, phone: customerPhone };
+    localStorage.setItem('user', JSON.stringify(userInfo));
+
     alert('Đặt hàng thành công!');
   };
+  useEffect(() => {
+    // Kiểm tra xem có thông tin khách hàng trong localStorage không
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      const userInfo = JSON.parse(storedUser);
+      setCustomerName(userInfo.name || '');  // Nạp tên khách hàng vào
+      setCustomerPhone(userInfo.phone || ''); // Nạp số điện thoại khách hàng vào
+    }
+
+    loadCartFromStorage();
+    setTimeout(() => setIsLoading(false), 1000); // Giả lập thời gian tải dữ liệu
+  }, []);  // Chạy 1 lần khi component mount
 
   // Tải giỏ hàng từ localStorage khi component mount
   useEffect(() => {
     loadCartFromStorage();
     setTimeout(() => setIsLoading(false), 1000); // Giả lập thời gian tải dữ liệu
   }, []);
+
 
   return (
     <div className="cart">
@@ -117,7 +133,7 @@ const Cart = () => {
                 </td>
                 <td>{item.price}</td>
                 <td>
-                {item.size}
+                  {item.size}
                 </td>
                 <td>
                   <input
@@ -146,14 +162,14 @@ const Cart = () => {
           placeholder="Nhập tên của bạn"
           value={customerName}
           onChange={(e) => setCustomerName(e.target.value)}
-          className="customer-input"
+          className={`customer-input ${error && !customerName ? 'error-input' : ''}`}
         />
         <input
           type="text"
           placeholder="Nhập số điện thoại của bạn"
           value={customerPhone}
           onChange={(e) => setCustomerPhone(e.target.value)}
-          className="customer-input"
+          className={`customer-input ${error && !customerPhone ? 'error-input' : ''}`}
         />
         {error && <p className="error-message">{error}</p>}
 

@@ -65,3 +65,7 @@
   .continue-shopping:hover {
     background-color: #ddd;
   }
+
+  .error-input {
+  border: 2px solid red;
+  }

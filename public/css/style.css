@@ -298,6 +298,24 @@ textarea.input {
   padding: 0px 35px 0px 15px;
 }
 
+.input-number .flash-quantity {
+  border: 2px solid red;
+  z-index: 999;
+  animation: flashQ 0.5s ease-in-out 0s 2 alternate;
+}
+
+@keyframes flashQ {
+  0% {
+    border-color: red;
+  }
+  50% {
+    border-color: transparent;
+  }
+  100% {
+    border-color: red;
+  }
+}
+
 .input-number .qty-up,
 .input-number .qty-down {
   position: absolute;

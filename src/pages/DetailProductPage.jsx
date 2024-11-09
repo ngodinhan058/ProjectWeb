@@ -219,7 +219,8 @@ const ProductDetail = () => {
           ? {
             ...item,
             quantity: item.quantity + quantity,
-            price: (basePrice * (item.quantity + quantity)).toLocaleString() + " ₫",
+            price: basePrice.toLocaleString() + " ₫",
+            total: (basePrice * (item.quantity + quantity)).toLocaleString() + " ₫",
             image: selectedImage,
           }
           : item
@@ -231,7 +232,8 @@ const ProductDetail = () => {
         name: productsState.productName,
         size: selectedSize,
         quantity,
-        price: (basePrice * quantity).toLocaleString() + " ₫",
+        price: basePrice.toLocaleString() + " ₫",
+        total: (basePrice * quantity).toLocaleString() + " ₫",
         image: selectedImage,
       };
       setCart([...cart, newProduct]);

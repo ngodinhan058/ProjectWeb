@@ -4,7 +4,7 @@ import 'slick-carousel/slick/slick.css'; // Import slick CSS
 import 'slick-carousel/slick/slick-theme.css'; // Import slick theme CSS
 import { useLocation } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import Product from '../components/Product';
 import { BASE_URL } from '../components/api/config';
 import { axiosInstance } from '../components/api/axiosConfig';
@@ -22,6 +22,7 @@ const getExpiryTime = () => Date.now() + ONE_WEEK;
 
 const ProductDetail = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const {
     id,
   } = location.state || {};
@@ -35,6 +36,7 @@ const ProductDetail = () => {
   const [images, setImage] = useState('');
   const [productsState, setProductsState] = useState(null); // Dữ liệu sản phẩm ban đầu là null thay vì mảng rỗng
   const [productsRelate, setProductsRelate] = useState([]); // Dữ liệu sản phẩm liên quan
+  const [quantityP, setQuantityP] = useState([]); // Dữ liệu sản phẩm liên quan
   const [isLoading, setIsLoading] = useState(true); // Đang tải dữ liệu
   // Hàm lấy dữ liệu sản phẩm
   const fetchProductData = async (id) => {
@@ -133,24 +135,26 @@ const ProductDetail = () => {
   const [cart, setCart] = useState([]);
   const [quantity, setQuantity] = useState(1);
   const [error, setError] = useState('');
+  const [errorCheck, setErrorCheck] = useState(false);
   useEffect(() => {
-    // Retrieve saved cart from localStorage
+    if (selectedSize && quantity > 0) {
+      setError('');
+    }
+  }, [selectedSize, quantity])
+  useEffect(() => {
     const savedCart = localStorage.getItem('cart');
-
+    
     if (savedCart) {
       const { items, expiry } = JSON.parse(savedCart);
-
-      // Check if the cart has expired
       if (Date.now() > expiry) {
-        localStorage.removeItem('cart'); // Remove expired cart from localStorage
+        localStorage.removeItem('cart');
       } else {
-        setCart(items); // Restore the cart if it's still valid
+        setCart(items);
       }
     }
   }, []);
-
+  
   useEffect(() => {
-    // Only update localStorage when the cart changes
     if (cart.length > 0) {
       const cartData = {
         items: cart,
@@ -158,42 +162,80 @@ const ProductDetail = () => {
       };
       localStorage.setItem('cart', JSON.stringify(cartData)); // Save updated cart to localStorage
     }
-  }, [cart]);  // This effect depends on `cart`
+  }, [cart]);
+  
 
-  // Xử lý khi thêm sản phẩm vào giỏ hàng
   const handleAddToCart = () => {
     if (!selectedSize) {
       setError('Vui lòng chọn kích thước sản phẩm');
+      setErrorCheck(false);
+      setTimeout(() => setErrorCheck(true), 0);
       return;
     }
+    
     if (quantity < 1) {
       setError('Vui lòng chọn số lượng hợp lệ');
+      setErrorCheck(false);
+      setTimeout(() => setErrorCheck(true), 0);
       return;
     }
-
-    setError(''); // Xóa lỗi khi hợp lệ
-
-    // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
+  
+    // Lấy thông tin kích thước đã chọn từ productSizes
+    const selectedProductSize = productsState.productSizes.find(
+      (size) => size.productSizeName === selectedSize
+    );
+  
+    if (!selectedProductSize) {
+      setError('Kích thước sản phẩm không tồn tại');
+      setErrorCheck(false);
+      setTimeout(() => setErrorCheck(true), 0);
+      return;
+    }
+  
+    // Kiểm tra nếu số lượng yêu cầu vượt quá số lượng tồn kho
+    const availableQuantity = selectedProductSize.productSizeQuantity.productSizeQuantity;
+    if (quantity > availableQuantity) {
+      setError(`Số lượng yêu cầu vượt quá số lượng tồn kho (${availableQuantity} sản phẩm)`);
+      setErrorCheck(false);
+      setTimeout(() => setErrorCheck(true), 0);
+      return;
+    }
+  
+    // Nếu vượt qua các kiểm tra, tiến hành thêm sản phẩm vào giỏ hàng
+    setError('');
+    setErrorCheck(false);
+  
+    const basePrice = parseInt(productsState.productPriceSale.replace(/\D/g, ''), 10);
+  
     const existingProductIndex = cart.findIndex(
       (item) => item.id === id && item.size === selectedSize
     );
-
+  
     if (existingProductIndex !== -1) {
-      // Nếu đã có, tăng số lượng sản phẩm đó trong giỏ hàng
-      const updatedCart = [...cart];
-      updatedCart[existingProductIndex].quantity += quantity;
+      const updatedCart = cart.map((item, index) => 
+        index === existingProductIndex
+          ? { 
+              ...item, 
+              quantity: item.quantity + quantity,
+              price: (basePrice * (item.quantity + quantity)).toLocaleString() + " ₫",
+            }
+          : item
+      );
       setCart(updatedCart);
     } else {
-      // Nếu chưa có, thêm sản phẩm mới vào giỏ hàng
       const newProduct = {
-        id: id,
+        id,
         name: productsState.productName,
         size: selectedSize,
         quantity,
+        price: (basePrice * quantity).toLocaleString() + " ₫",
       };
       setCart([...cart, newProduct]);
     }
   };
+  
+  
+  
   const handleQuantityChange = (amount) => {
     setQuantity(Math.max(1, quantity + amount));
   };
@@ -429,15 +471,16 @@ const ProductDetail = () => {
                       <div>
                         {productsState.productSizes.map((size, index) => (
                           <button
-                            key={size.productSizeId} // Use productSizeId as the unique key
+                            key={size.productSizeId}
                             className={`size-option 
                             ${selectedSize === size.productSizeName ? 'selected' : ''} 
                             ${hoveredSize === size.productSizeName ? 'hovered' : ''} 
-                            ${size.productSizeQuantity.productSizeQuantity === 0 ? 'disabled' : ''}`
+                            ${size.productSizeQuantity.productSizeQuantity === 0 ? 'disabled' : ''}
+                            ${errorCheck && size.productSizeQuantity.productSizeQuantity > 0 ? 'flash-border' : ''}`
                             }
                             onClick={() => setSelectedSize(size.productSizeName)}
-                            onMouseEnter={() => setHoveredSize(size.productSizeName)} // When hovering
-                            onMouseLeave={() => setHoveredSize(null)} // When not hovering
+                            onMouseEnter={() => setHoveredSize(size.productSizeName)}
+                            onMouseLeave={() => setHoveredSize(null)}
                             disabled={size.productSizeQuantity.productSizeQuantity === 0} // Disable if quantity is 0
                           >
                             {size.productSizeName}
@@ -457,7 +500,7 @@ const ProductDetail = () => {
                       <>
                         Qty:
                         <div className="input-number">
-                          <input type="number" value={quantity} />
+                          <input type="number" className={error ? 'flash-border' : ''} value={quantity} />
                           <span className="qty-up" onClick={() => handleQuantityChange(1)}>+</span>
                           <span className="qty-down" onClick={() => handleQuantityChange(-1)}>-</span>
                         </div>
@@ -467,12 +510,9 @@ const ProductDetail = () => {
                   {isLoading ? (
                     <Skeleton width={150} height={40} />
                   ) : (
-                    <Link to={`/cart`}>
                       <button className="add-to-cart-btn" onClick={handleAddToCart}>
                         <i className="fa fa-shopping-cart"></i> add to cart
                       </button>
-                    </Link>
-
                   )}
                   {error && <p className="error-message" style={{ color: 'red', fontSize: 18, fontWeight: 'bold' }}>{error}</p>}
                 </div>

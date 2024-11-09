@@ -49,3 +49,18 @@
     color: black; /* Màu chữ cho nút đang hover */
     transform: scale(1.05); /* Tăng kích thước nhẹ khi hover */
 }
+@keyframes border-flash {
+    0%, 100% {
+      border-color: transparent;
+    }
+    50% {
+      border-color: red;
+    }
+  }
+  
+  .size-option.flash-border {
+    animation: border-flash 0.5s ease-in-out 2; /* Hiệu ứng chớp viền trong 0.5 giây và lặp lại 2 lần */
+    border-width: 2px;
+    border-style: solid;
+  }
+  

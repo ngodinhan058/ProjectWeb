@@ -13,8 +13,6 @@ const ProductTabs = ({ image, id }) => {
 
   useEffect(() => {
     let apiUrl = `${BASE_URL}product/${id}`;
-    // console.log(apiUrl);
-    
     axiosInstance
       .get(apiUrl, {
         headers: {
@@ -53,10 +51,6 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 ![Product Image](../${image[2]?.[`productImagePath`]}) 
 ### Kết Thúc Mô Tả
   `;
-  // console.log(descriptionMarkdown);
-  
-  console.log(image);
-
   const markdownToHtml = (markdown) => {
     
     return markdown

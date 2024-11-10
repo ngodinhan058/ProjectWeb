@@ -144,14 +144,16 @@ const ProductDetail = () => {
   }, [selectedSize, quantity])
   useEffect(() => {
     const savedCart = localStorage.getItem('cart');
-
+  
     if (savedCart) {
       const { items, expiry } = JSON.parse(savedCart);
       if (Date.now() > expiry) {
         localStorage.removeItem('cart');
       } else {
-        setCart(items);
+        setCart(Array.isArray(items) ? items : []); // Đảm bảo items là mảng
       }
+    } else {
+      setCart([]); // Nếu không có dữ liệu trong localStorage, khởi tạo cart là mảng rỗng
     }
   }, []);
 
@@ -241,8 +243,6 @@ const ProductDetail = () => {
     setTimeout(() => navigate("/cart"), 100);
   };
 
-
-
   const handleQuantityChange = (change) => {
     setQuantity((prevQuantity) => Math.max(1, prevQuantity + change));
   };
@@ -252,7 +252,7 @@ const ProductDetail = () => {
     const value = parseInt(event.target.value, 10);
     if (!isNaN(value) && value >= 1) {
       setQuantity(value);
-    } else {
+    } else {  
       setQuantity(1); // Nếu giá trị nhập không hợp lệ thì đặt về 1
     }
   };

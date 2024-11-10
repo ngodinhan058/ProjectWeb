@@ -69,3 +69,16 @@
   .error-input {
   border: 2px solid red;
   }
+  
+  .cart-table button {
+    padding: 5px 10px;
+    margin: 0 5px; /* Thêm khoảng cách giữa các nút */
+    border: 1px solid #ccc;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .cart-table button:hover {
+    background-color: #ddd;
+  }

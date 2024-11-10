@@ -82,7 +82,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
             <button onClick={() => handleTabClick('details')}>Comment</button>
           </li>
           <li className={activeTab === 'reviews' ? 'active' : ''}>
-            <button onClick={() => handleTabClick('reviews')}>Reviews (3)</button>
+            <button onClick={() => handleTabClick('reviews')}>Reviews</button>
           </li>
         </ul>
 

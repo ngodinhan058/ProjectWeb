@@ -1,3 +1,130 @@
+.cart-table {
+  
+}
+
+.skeleton {
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  animation: shimmer 1.5s infinite linear;
+  display: block;
+  height: 100%; /* Đảm bảo skeleton có chiều cao đầy đủ */
+}
+
+.skeleton-image {
+  width: 80px;
+  height: 80px;
+}
+
+.skeleton-text {
+  width: 316px;
+  height: 40px;
+}
+
+.skeleton-price,
+.skeleton-quantity,
+.skeleton-button {
+  width: 80px;
+  height: 30px;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: 200px 0; }
+}
+
+.skeleton-button {
+  width: 100px;
+  height: 40px;
+  background-color: #ddd;
+  border-radius: 4px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    background-color: #ddd;
+  }
+  50% {
+    background-color: #f0f0f0;
+  }
+  100% {
+    background-color: #ddd;
+  }
+}
+
+
+/* Responsive styles */
+@media (max-width: 1024px) {
+  .cart-table {
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .product-image {
+    width: 60px;
+  }
+
+  .cart-summary {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .cart-table thead {
+    display: none; /* Hide header for smaller screens */
+  }
+
+  .cart-table tr {
+    display: block; /* Stack items vertically */
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 10px;
+    padding: 10px 0;
+  }
+
+  .cart-table td {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 10px;
+  }
+
+  .quantity-input {
+    width: 50px; /* Ensure inputs are manageable */
+  }
+
+  .cart-summary {
+    font-size: 1.2em;
+    text-align: center;
+  }
+
+  .total-price {
+    font-size: 1.4em;
+    font-weight: bold;
+  }
+}
+
+@media (max-width: 480px) {
+  .cart-table td {
+    padding: 8px 5px; /* Reduce padding for very small screens */
+  }
+
+  .cart-summary {
+    font-size: 16px;
+  }
+
+  .continue-shopping, .checkout {
+    width: 100%;
+    font-size: 16px;
+    padding: 12px;
+  }
+
+  /* Adjust skeleton button width to be more appropriate */
+  .skeleton-button {
+    width: 48%; /* Adjust to fit button size without stretching */
+    margin: 5px 1%;
+  }
+}
+
+
 /* Khoảng cách chỗ Sort */
 .store-sort {
   display: flex;
@@ -33,28 +160,29 @@
   margin-top: 10px;
 }
 
-  
 .tab-nav {
-  list-style: none; /* Bỏ dấu gạch đầu dòng */
-  padding: 0; /* Bỏ padding */
-  display: flex; /* Sử dụng flex để các nút nằm ngang */
-  gap: 100px;
+  list-style: none; 
+  padding: 0; 
+  display: flex;
+  justify-content: center; 
+  gap: 20px; 
 }
 
 .tab-nav li {
-  flex: 1; /* Mỗi nút chiếm 1 phần bằng nhau */
-  text-align: center; /* Canh giữa chữ */
-  position: relative; /* Để sử dụng hiệu ứng */
+  flex: 1; 
+  text-align: center; 
+  position: relative; 
+  align-items: center;
 }
 
 .tab-nav button {
-  background: none; /* Bỏ màu nền */
-  border: none; /* Bỏ viền khung */
-  padding: 10px 15px; /* Thêm padding cho nút */
-  cursor: pointer; /* Thay đổi con trỏ khi hover */
-  font-size: 25px; /* Kích thước chữ lớn hơn */
-  font-weight: bold; /* Làm đậm chữ */
-  transition: color 0.3s; /* Thêm hiệu ứng chuyển màu chữ */
+  background: none; 
+  border: none; 
+  padding: 10px 15px; 
+  cursor: pointer; 
+  font-size: 25px; 
+  font-weight: bold; 
+  transition: color 0.3s; 
 }
 
 .tab-nav button.active {
@@ -102,6 +230,27 @@
 
   .btn-see-more {
     font-size: 12px;
+  }
+}
+@media (max-width: 400px) {
+  .tab-nav {
+    flex-direction: row; 
+    gap: 5px;
+    flex-wrap: nowrap; 
+  }
+
+  .tab-nav button {
+    font-size: 10px;
+    padding: 3px 8px; 
+    white-space: nowrap; 
+  }
+
+  .description-content.collapsed {
+    max-height: 80px;
+  }
+
+  .btn-see-more {
+    font-size: 8px;
   }
 }
 

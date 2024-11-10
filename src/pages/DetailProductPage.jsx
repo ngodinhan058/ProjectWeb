@@ -136,6 +136,7 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [error, setError] = useState('');
   const [errorCheck, setErrorCheck] = useState(false);
+  const [errorCheckQuantity, setErrorCheckQuantity] = useState(false);
   useEffect(() => {
     if (selectedSize && quantity > 0) {
       setError('');
@@ -143,7 +144,7 @@ const ProductDetail = () => {
   }, [selectedSize, quantity])
   useEffect(() => {
     const savedCart = localStorage.getItem('cart');
-    
+
     if (savedCart) {
       const { items, expiry } = JSON.parse(savedCart);
       if (Date.now() > expiry) {
@@ -153,7 +154,7 @@ const ProductDetail = () => {
       }
     }
   }, []);
-  
+
   useEffect(() => {
     if (cart.length > 0) {
       const cartData = {
@@ -163,7 +164,7 @@ const ProductDetail = () => {
       localStorage.setItem('cart', JSON.stringify(cartData)); // Save updated cart to localStorage
     }
   }, [cart]);
-  
+
 
   const handleAddToCart = () => {
     if (!selectedSize) {
@@ -172,53 +173,56 @@ const ProductDetail = () => {
       setTimeout(() => setErrorCheck(true), 0);
       return;
     }
-    
+
     if (quantity < 1) {
       setError('Vui lòng chọn số lượng hợp lệ');
       setErrorCheck(false);
       setTimeout(() => setErrorCheck(true), 0);
       return;
     }
-  
+
     // Lấy thông tin kích thước đã chọn từ productSizes
     const selectedProductSize = productsState.productSizes.find(
       (size) => size.productSizeName === selectedSize
     );
-  
+
     if (!selectedProductSize) {
       setError('Kích thước sản phẩm không tồn tại');
       setErrorCheck(false);
       setTimeout(() => setErrorCheck(true), 0);
       return;
     }
-  
+
     // Kiểm tra nếu số lượng yêu cầu vượt quá số lượng tồn kho
     const availableQuantity = selectedProductSize.productSizeQuantity.productSizeQuantity;
     if (quantity > availableQuantity) {
       setError(`Số lượng yêu cầu vượt quá số lượng tồn kho (${availableQuantity} sản phẩm)`);
-      setErrorCheck(false);
-      setTimeout(() => setErrorCheck(true), 0);
+      setErrorCheckQuantity(false);
+      setTimeout(() => setErrorCheckQuantity(true), 0);
       return;
     }
-  
+
     // Nếu vượt qua các kiểm tra, tiến hành thêm sản phẩm vào giỏ hàng
     setError('');
     setErrorCheck(false);
-  
+    setErrorCheckQuantity(false);
+
     const basePrice = parseInt(productsState.productPriceSale.replace(/\D/g, ''), 10);
-  
+
     const existingProductIndex = cart.findIndex(
       (item) => item.id === id && item.size === selectedSize
     );
-  
+
     if (existingProductIndex !== -1) {
-      const updatedCart = cart.map((item, index) => 
+      const updatedCart = cart.map((item, index) =>
         index === existingProductIndex
-          ? { 
-              ...item, 
-              quantity: item.quantity + quantity,
-              price: (basePrice * (item.quantity + quantity)).toLocaleString() + " ₫",
-            }
+          ? {
+            ...item,
+            quantity: item.quantity + quantity,
+            price: basePrice.toLocaleString() + " ₫",
+            total: (basePrice * (item.quantity + quantity)).toLocaleString() + " ₫",
+            image: selectedImage,
+          }
           : item
       );
       setCart(updatedCart);
@@ -228,16 +232,29 @@ const ProductDetail = () => {
         name: productsState.productName,
         size: selectedSize,
         quantity,
-        price: (basePrice * quantity).toLocaleString() + " ₫",
+        price: basePrice.toLocaleString() + " ₫",
+        total: (basePrice * quantity).toLocaleString() + " ₫",
+        image: selectedImage,
       };
       setCart([...cart, newProduct]);
     }
+    setTimeout(() => navigate("/cart"), 100);
   };
-  
-  
-  
-  const handleQuantityChange = (amount) => {
-    setQuantity(Math.max(1, quantity + amount));
+
+
+
+  const handleQuantityChange = (change) => {
+    setQuantity((prevQuantity) => Math.max(1, prevQuantity + change));
+  };
+
+  // Hàm xử lý khi có thay đổi trong ô input
+  const handleInputChange = (event) => {
+    const value = parseInt(event.target.value, 10);
+    if (!isNaN(value) && value >= 1) {
+      setQuantity(value);
+    } else {
+      setQuantity(1); // Nếu giá trị nhập không hợp lệ thì đặt về 1
+    }
   };
   // KẾT THÚC THÊM CART VÀO LOCAL
 
@@ -500,7 +517,12 @@ const ProductDetail = () => {
                       <>
                         Qty:
                         <div className="input-number">
-                          <input type="number" className={error ? 'flash-border' : ''} value={quantity} />
+                          <input
+                            type="number"
+                            className={errorCheckQuantity ? 'flash-quantity' : ''}
+                            value={quantity}
+                            onChange={handleInputChange}
+                          />
                           <span className="qty-up" onClick={() => handleQuantityChange(1)}>+</span>
                           <span className="qty-down" onClick={() => handleQuantityChange(-1)}>-</span>
                         </div>
@@ -510,9 +532,9 @@ const ProductDetail = () => {
                   {isLoading ? (
                     <Skeleton width={150} height={40} />
                   ) : (
-                      <button className="add-to-cart-btn" onClick={handleAddToCart}>
-                        <i className="fa fa-shopping-cart"></i> add to cart
-                      </button>
+                    <button className="add-to-cart-btn" onClick={handleAddToCart}>
+                      <i className="fa fa-shopping-cart"></i> add to cart
+                    </button>
                   )}
                   {error && <p className="error-message" style={{ color: 'red', fontSize: 18, fontWeight: 'bold' }}>{error}</p>}
                 </div>

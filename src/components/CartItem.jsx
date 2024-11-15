@@ -50,10 +50,10 @@ const Cart = () => {
     });
   };
 
-  const handleDecrement = (id) => {
+  const handleDecrement = (id, size) => {
     setCartItems((prevItems) => {
       const updatedItems = prevItems.map((item) => {
-        if (item.id === id && item.quantity > 1) {
+        if (item.id === id && item.quantity > 1 && item.size == size) {
           return { ...item, quantity: item.quantity - 1 };
         }
         return item; // Giữ nguyên nếu số lượng = 1
@@ -63,10 +63,10 @@ const Cart = () => {
     });
   };
 
-  const handleIncrement = (id) => {
+  const handleIncrement = (id, size) => {
     setCartItems((prevItems) => {
       const updatedItems = prevItems.map((item) =>
-        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+        item.id === id && item.size == size ? { ...item, quantity: item.quantity + 1 } : item
       );
       saveCartToStorage(updatedItems); // Lưu giỏ hàng đã cập nhật vào localStorage
       return updatedItems;
@@ -136,12 +136,12 @@ const Cart = () => {
              Array.from({ length: cartItems.length }).map((_, index) => (
               <tr key={index}>
                 <td><Skeleton height={75} width={80} /></td>
-                <td><Skeleton width={60} height={22} /></td>
-                <td><Skeleton width={60} height={22} /></td>
-                <td><Skeleton width={50} height={22} /></td>
-                <td><Skeleton width={80} height={40} /></td>
-                <td><Skeleton width={60} height={22} /></td>
-                <td><Skeleton width={60} height={40} /></td>
+                <td><Skeleton width={70} height={15} /></td>
+                <td><Skeleton width={60} height={15} /></td>
+                <td><Skeleton width={20} height={15} /></td>
+                <td><Skeleton width={90} height={34.8} /></td>
+                <td><Skeleton width={80} height={15} /></td>
+                <td><Skeleton width={50.5} height={34.8} /></td>
               </tr>
             ))
           ) : (
@@ -152,9 +152,9 @@ const Cart = () => {
                 <td>{item.price}</td>
                 <td>{item.size}</td>
                 <td>
-                  <button onClick={() => handleDecrement(item.id)}>-</button>
+                  <button onClick={() => handleDecrement(item.id, item.size)}>-</button>
                   {item.quantity}
-                  <button onClick={() => handleIncrement(item.id)}>+</button>
+                  <button onClick={() => handleIncrement(item.id, item.size)}>+</button>
                 </td>
                 <td>
                   {(parseInt(item.price.replace(/\D/g, ''), 10)* item.quantity).toLocaleString("vi-VN") + " ₫"}

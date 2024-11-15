@@ -53,15 +53,10 @@ const Cart = () => {
   const handleDecrement = (id) => {
     setCartItems((prevItems) => {
       const updatedItems = prevItems.map((item) => {
-        if (item.id === id) {
-          const newQuantity = item.quantity > 1 ? item.quantity - 1 : 0;
-          if (newQuantity === 0) {
-            handleRemoveItem(id); // Nếu số lượng là 0, xóa sản phẩm
-          } else {
-            return { ...item, quantity: newQuantity };
-          }
+        if (item.id === id && item.quantity > 1) {
+          return { ...item, quantity: item.quantity - 1 };
         }
-        return item;
+        return item; // Giữ nguyên nếu số lượng = 1
       });
       saveCartToStorage(updatedItems); // Lưu giỏ hàng đã cập nhật vào localStorage
       return updatedItems;
@@ -123,7 +118,7 @@ const Cart = () => {
 
 
   return (
-    <div className="cart">
+    <div className="cart"> 
       <table className="cart-table">
         <thead>
           <tr>
@@ -138,16 +133,17 @@ const Cart = () => {
         </thead>
         <tbody>
           {isLoading ? (
-            // Hiển thị Skeleton khi đang tải
-            <tr>
-              <td><Skeleton height={100} width={100} /></td>
-              <td><Skeleton count={1} height={20} /></td>
-              <td><Skeleton width={80} height={20} /></td>
-              <td><Skeleton width={60} height={20} /></td>
-              <td><Skeleton width={80} height={20} /></td>
-              <td><Skeleton width={80} height={20} /></td>
-              <td><Skeleton width={80} height={20} /></td>
-            </tr>
+             Array.from({ length: cartItems.length }).map((_, index) => (
+              <tr key={index}>
+                <td><Skeleton height={75} width={80} /></td>
+                <td><Skeleton width={60} height={22} /></td>
+                <td><Skeleton width={60} height={22} /></td>
+                <td><Skeleton width={50} height={22} /></td>
+                <td><Skeleton width={80} height={40} /></td>
+                <td><Skeleton width={60} height={22} /></td>
+                <td><Skeleton width={60} height={40} /></td>
+              </tr>
+            ))
           ) : (
             cartItems.map((item) => (
               <tr key={item.id}>
@@ -161,7 +157,7 @@ const Cart = () => {
                   <button onClick={() => handleIncrement(item.id)}>+</button>
                 </td>
                 <td>
-                    {(parseFloat(item.price.replace(/[^\d.-]/g, '')) * item.quantity).toLocaleString()} VND
+                    {(parseFloat(item.price.replace(/[^\d.-]/g, '')) * item.quantity).toLocaleString()} ₫
                 </td>
                 <td>
                   <button onClick={() => handleRemoveItem(item.id)} className="remove-button">Xóa</button>
@@ -171,37 +167,6 @@ const Cart = () => {
           )}
         </tbody>
       </table>
-      <div className="cart-summary">
-        <p>
-          Tổng tiền: 
-          <span className="total-price">{calculateTotal().toLocaleString()} VND</span>
-        </p>
-
-        <input
-          type="text"
-          placeholder="Nhập tên của bạn"
-          value={customerName}
-          onChange={(e) => setCustomerName(e.target.value)}
-          className={`customer-input ${error && !customerName ? 'error-input' : ''}`}
-        />
-        <input
-          type="text"
-          placeholder="Nhập số điện thoại của bạn"
-          value={customerPhone}
-          onChange={(e) => setCustomerPhone(e.target.value)}
-          className={`customer-input ${error && !customerPhone ? 'error-input' : ''}`}
-        />
-        {error && <p className="error-message">{error}</p>}
-
-        <button className="continue-shopping">Tiếp tục mua hàng</button>
-        <button
-          className="checkout"
-          disabled={cartItems.length === 0}
-          onClick={handlePlaceOrder}
-        >
-          Đặt hàng
-        </button>
-      </div>
     </div>
   );
 };

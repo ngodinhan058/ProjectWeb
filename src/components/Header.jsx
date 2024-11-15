@@ -76,6 +76,39 @@ const Header = () => {
     return cartItems.items.reduce((total, item) => total + parseFloat(item.price.replace(' ₫', '').replace(',', '')) * item.quantity, 0).toFixed(2) ;
   };
 
+  // State to track if the screen width is mobile
+  const [isMobile, setIsMobile] = useState(false);
+  // State to track if search bar is visible (only for mobile)
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
+  // State to track if the language modal is visible
+  const [isLanguageModalVisible, setIsLanguageModalVisible] = useState(false);
+
+  // Update the state based on window width
+  const updateWindowDimensions = () => {
+    setIsMobile(window.innerWidth <= 767); // If width <= 767px, consider it mobile
+  };
+
+  // Use useEffect to listen for changes in window size
+  useEffect(() => {
+    updateWindowDimensions(); // Check initial window size
+    window.addEventListener('resize', updateWindowDimensions); // Add resize event listener
+    
+    // Cleanup the event listener on unmount
+    return () => window.removeEventListener('resize', updateWindowDimensions);
+  }, []);
+
+  // Toggle the visibility of the search bar (only for mobile)
+  const toggleSearch = () => {
+    if (isMobile) {
+      setIsSearchVisible(!isSearchVisible);
+    }
+  };
+
+  // Toggle the language modal visibility
+  const toggleLanguageModal = () => {
+    setIsLanguageModalVisible(!isLanguageModalVisible);
+  };
+
   return (
     <header>
       {/* TOP HEADER */}
@@ -99,7 +132,7 @@ const Header = () => {
         <div className="container">
           <div className="row">
             {/* LOGO */}
-            <div className="col-md-3">
+            <div className={isMobile ? "col-4 d-flex justify-content-start align-items-center" : "col-md-3"}>
               <div className="header-logo">
                 <a href="http://localhost:3000/" className="logo">
                   <img src="../img/logo.png" alt="Logo" />
@@ -108,98 +141,101 @@ const Header = () => {
             </div>
             {/* /LOGO */}
 
-            {/* SEARCH BAR */}
-            <div className="col-md-6">
-              <div className="header-search">
-                <form>
-                  <select className="input-select">
-                    <option value="0">All Categories</option>
-                    <option value="1">Category 01</option>
-                    <option value="2">Category 02</option>
-                  </select>
-                  <input className="input" placeholder="Search here" />
-                  <button className="search-btn">Search</button>
-                </form>
+            {/* SEARCH BAR (only for desktop) */}
+            {!isMobile && (
+              <div className="col-md-6">
+                <div className="header-search ml-5">
+                  <form>
+                    <select className="input-select">
+                      <option value="0">All Categories</option>
+                      <option value="1">Category 01</option>
+                      <option value="2">Category 02</option>
+                    </select>
+                    <input className="input input-desktop" placeholder="Search here" />
+                    <button className="search-btn">Search</button>
+                  </form>
+                </div>
               </div>
-            </div>
+            )}
             {/* /SEARCH BAR */}
 
-            {/* ACCOUNT */}
-            <div className="col-md-3 clearfix">
-              <div className="header-ctn">
-                {/* Wishlist */}
+            {/* SEARCH BAR (only for mobile, toggle visibility) */}
+            {isMobile && isSearchVisible && (
+              <div className="col-12 d-inline-block justify-content-center ">
+                <div className="header-search">
+                  <form className="d-flex">
+                    <input className="input input-mobile" placeholder="Search here" />
+                    <button className="search-btn">Search</button>
+                  </form>
+                </div>
+              </div>
+            )}
+            {/* /SEARCH BAR */}
+
+            {/* ICONS AND MENU */}
+            <div className={isMobile ? "col-8 row d-flex justify-content-end align-items-center" : "col-md-3 clearfix"}>
+              {/* Menu Toggle (for mobile) */}
+              <div className="col-md-3 header-three-line">
+                {isMobile && (
+                  <div className="menu-toggle float-left">
+                    <a href="#" onClick={toggleSearch}>
+                      <i className="fa fa-bars"></i>
+                    </a>
+                  </div>
+                )}
+              </div>
+
+              <div className="col-md-9 header-ctn">
+                {/* Search Icon (only for mobile) */}
+                {isMobile && (
+                  <div>
+                    <a href="#" onClick={toggleSearch}>
+                      <i className="fa fa-solid fa-search"></i>
+                    </a>
+                  </div>
+                )}
+
+                {/* Language Icon */}
                 <div>
-                  <a href="#">
-                    <i className="fa fa-heart-o"></i>
-                    <span>Your Wishlist</span>
-                    <div className="qty">2</div>
+                  <a href="#" onClick={toggleLanguageModal}>
+                    <i className="fa fa-solid fa-language"></i>
+                    {!isMobile && <span>Language</span>}
                   </a>
                 </div>
-                {/* /Wishlist */}
 
                 {/* Cart */}
-                <div className="dropdown">
-                  <a className="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                <div>
+                  <Link to="/cart" className="cart-link">
                     <i className="fa fa-shopping-cart"></i>
-                    <span>Your Cart</span>
-                    <div className="qty">{getTotalQuantity()}</div> {/* Hiển thị tổng số lượng sản phẩm từ localStorage */}
-                  </a>
-                  <div className="cart-dropdown">
-                    <div className="cart-list">
-                      {cartItems.items.map(item => (
-                        <div key={item.id} className="product-widget">
-                          <div className="product-img">
-                            <img src={item.image} alt={item.name} />
-                          </div>
-                          <div className="product-body">
-                            <h3 className="product-name"><a href="#">{item.name}</a></h3>
-                            <h4 className="product-price">
-                              <span className="qty">{item.quantity}x</span>
-                              {item.price}
-                            </h4>
-                          </div>
-                          <button 
-                            className="delete" 
-                            onClick={(e) => removeItem(item.id, e)}  // Gọi hàm xóa khi nhấn nút
-                          >
-                            <i className="fa fa-close"></i>
-                          </button>
-                          <div>
-                            {/* Cập nhật số lượng */}
-                            <button className="" onClick={(e) => updateQuantity(item.id, item.quantity + 1, e)}>+</button>
-                            <button className="" onClick={(e) => updateQuantity(item.id, item.quantity - 1, e)}>-</button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="cart-summary">
-                      <small>{getTotalQuantity()} Item(s) selected</small>
-                      <h5>SUBTOTAL: {getTotalPrice()} ₫</h5>
-                    </div>
-                    <div className="cart-btns">
-                      {/* Thay thế thẻ a bằng Link */}
-                      <Link to="/cart">View Cart</Link>
-                      <a href="#">Checkout <i className="fa fa-arrow-circle-right"></i></a>
-                    </div>
-                  </div>
+                    {!isMobile && <span>Your cart</span>}
+                    <div className="qty">{getTotalQuantity()}</div> {/* Hiển thị tổng số lượng sản phẩm */}
+                  </Link>
                 </div>
                 {/* /Cart */}
-
-                {/* Menu Toggle */}
-                <div className="menu-toggle">
-                  <a href="#">
-                    <i className="fa fa-bars"></i>
-                    <span>Menu</span>
-                  </a>
-                </div>
-                {/* /Menu Toggle */}
               </div>
             </div>
-            {/* /ACCOUNT */}
+            {/* /ICON AND MENU */}
           </div>
         </div>
       </div>
       {/* /MAIN HEADER */}
+
+      {/* LANGUAGE SELECTION MODAL */}
+      {isLanguageModalVisible && (
+        <div className="language-modal">
+          <div className="modal-content">
+            <span className="close-btn" onClick={toggleLanguageModal}>&times;</span>
+            <h3>Select Language</h3>
+            <ul>
+              <li><button>English</button></li>
+              <li><button>Spanish</button></li>
+              <li><button>French</button></li>
+              <li><button>German</button></li>
+            </ul>
+          </div>
+        </div>
+      )}
+      {/* /LANGUAGE SELECTION MODAL */}
     </header>
   );
 };

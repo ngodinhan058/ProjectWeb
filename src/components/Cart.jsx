@@ -102,39 +102,24 @@ const Cart = () => {
           </tr>
         </thead>
         <tbody>
-          {isLoading ? (
-            // Hiển thị Skeleton khi đang tải
-            <>
-              <tr>
-                <td><Skeleton height={100} width={100} /></td>
-                <td><Skeleton count={1} height={20} /></td>
-                <td><Skeleton width={80} height={20} /></td>
-                <td><Skeleton width={60} height={20} /></td>
-                <td><Skeleton width={80} height={20} /></td>
-                <td><Skeleton width={80} height={20} /></td>
-                <td><Skeleton width={80} height={20} /></td>
+          {isLoading
+            ? Array.from({ length: cartItems.length }).map((_, index) => (
+              <tr key={index}>
+                <td><Skeleton height={75} width={80} /></td>
+                <td><Skeleton width={70} height={15} /></td>
+                <td><Skeleton width={60} height={15} /></td>
+                <td><Skeleton width={20} height={15} /></td>
+                <td><Skeleton width={50} height={15} /></td>
+                <td><Skeleton width={40} height={15} /></td>
+                <td><Skeleton width={37} height={15} /></td>
               </tr>
-              <tr>
-                <td><Skeleton height={100} width={100} /></td>
-                <td><Skeleton count={1} height={20} /></td>
-                <td><Skeleton width={80} height={20} /></td>
-                <td><Skeleton width={60} height={20} /></td>
-                <td><Skeleton width={80} height={20} /></td>
-                <td><Skeleton width={80} height={20} /></td>
-                <td><Skeleton width={80} height={20} /></td>
-              </tr>
-            </>
-          ) : (
-            cartItems.map((item) => (
+            ))
+            : cartItems.map((item) => (
               <tr key={item.id}>
                 <td><img src={item.image} alt={item.name} className="product-image" /></td>
-                <td>
-                  {item.name}
-                </td>
+                <td>{item.name}</td>
                 <td>{item.price}</td>
-                <td>
-                  {item.size}
-                </td>
+                <td>{item.size}</td>
                 <td>
                   <input
                     type="number"
@@ -144,14 +129,14 @@ const Cart = () => {
                     className="quantity-input"
                   />
                 </td>
-                <td>{(parseFloat(item.price.replace(/[^\d.-]/g, '')) * item.quantity).toLocaleString()} VND</td>
+                <td>{(parseFloat(item.price.replace(/[^\d.-]/g, '')) * item.quantity).toLocaleString()+ " ₫"}</td>
                 <td>
                   <button onClick={() => handleRemoveItem(item.id)} className="remove-button">Xóa</button>
                 </td>
-
               </tr>
             ))
-          )}
+          }
+
         </tbody>
       </table>
       <div className="cart-summary">

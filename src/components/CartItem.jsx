@@ -157,7 +157,7 @@ const Cart = () => {
                   <button onClick={() => handleIncrement(item.id)}>+</button>
                 </td>
                 <td>
-                    {(parseFloat(item.price.replace(/[^\d.-]/g, '')) * item.quantity).toLocaleString()} ₫
+                  {(parseInt(item.price.replace(/\D/g, ''), 10)* item.quantity).toLocaleString("vi-VN") + " ₫"}
                 </td>
                 <td>
                   <button onClick={() => handleRemoveItem(item.id)} className="remove-button">Xóa</button>

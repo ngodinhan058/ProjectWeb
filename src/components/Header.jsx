@@ -76,6 +76,9 @@ const Header = () => {
     return cartItems.items.reduce((total, item) => total + parseFloat(item.price.replace(' ₫', '').replace(',', '')) * item.quantity, 0).toFixed(2) ;
   };
 
+
+const Header = () => {
+
   // State to track if the screen width is mobile
   const [isMobile, setIsMobile] = useState(false);
   // State to track if search bar is visible (only for mobile)
@@ -202,6 +205,7 @@ const Header = () => {
                     {!isMobile && <span>Language</span>}
                   </a>
                 </div>
+
 
                 {/* Cart */}
                 <div>

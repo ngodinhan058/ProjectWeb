@@ -1,0 +1,88 @@
+.cart-summary {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .customer-input {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+  }
+  
+  .customer-input:focus {
+    outline: none;
+    border-color: #4CAF50; /* Màu viền khi tập trung */
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.3); /* Tạo hiệu ứng đổ bóng */
+  }
+  
+  .error-message {
+    color: #ff0000;
+    font-size: 14px;
+    margin-top: 5px;
+  }
+  
+  .checkout {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .checkout:disabled {
+    background-color: #ddd;
+    cursor: not-allowed;
+  }
+  
+  .checkout:hover:not(:disabled) {
+    background-color: #45a049;
+  }
+  
+  .continue-shopping {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #f0f0f0;
+    color: #333;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+    margin-right: 10px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .continue-shopping:hover {
+    background-color: #ddd;
+  }
+
+  .error-input {
+  border: 2px solid red;
+  }
+  
+  .cart-table button {
+    padding: 5px 10px;
+    margin: 0 5px; /* Thêm khoảng cách giữa các nút */
+    border: 1px solid #ccc;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  .product-image {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .cart-table button:hover {
+    background-color: #ddd;
+  }

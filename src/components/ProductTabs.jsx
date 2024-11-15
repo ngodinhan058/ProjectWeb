@@ -9,6 +9,7 @@ const ProductTabs = ({ image, id }) => {
   const [loading, setLoading] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false); // Đặt mặc định là false để rút gọn
   const [productsState, setProductsState] = useState([]);
+  const [productsImage, setProductsImage] = useState([]);
   
 
   useEffect(() => {
@@ -21,7 +22,10 @@ const ProductTabs = ({ image, id }) => {
       })
       .then((response) => {
         const productData = response.data.data;
+        const productImg= response.data.data.productImages;
+
         setProductsState(productData);
+        setProductsImage(productImg);
         setLoading(false);
       })
       .catch((error) => {
@@ -31,32 +35,23 @@ const ProductTabs = ({ image, id }) => {
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
-
+  console.log(productsImage);
+  
   const descriptionMarkdown = `
 
 ### Description
 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliq.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-![Product Image](../${image[0]?.["productImagePath"]}) 
+![Product Image](../${productsImage[0]?.["productImagePath"]}) 
 
-### Description 2
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 
-![Product Image](../${image[1]?.["productImagePath"]}) 
-### Detail
-#### Từ : Việt Nam
-#### Material : Polime
-#### Địa Chỉ : Thành Phố Hồ Chí Minh
-
-![Product Image](../${image[2]?.[`productImagePath`]}) 
 ### Kết Thúc Mô Tả
   `;
   const markdownToHtml = (markdown) => {
     
     return markdown
-    .replace(/!\[(.*?)\]\(`(.*?)`\)/g, (index , altText, imgPath) => {
+    .replace(/!\[(.*?)\]\((.*?)\)/g, (index , altText, imgPath) => {
       // Chuyển đổi cú pháp ảnh Markdown thành thẻ HTML <img>
-      return `<img alt="${altText}" src="../${image[imgPath]?.["productImagePath"]}" style="width:300px; height:250px; display:inline-block;" />`;
+      return `<img alt="${altText}" src="../${productsImage[imgPath]?.["productImagePath"]}" style="width:300px; height:250px; display:inline-block;" />`;
     })
       .replace(/#### (.*?)\n/g, '<h4>$1</h4>') // Chuyển đổi #### thành <h4>
       .replace(/### (.*?)\n/g, '<h3>$1</h3>')  // Chuyển đổi ### thành <h3>

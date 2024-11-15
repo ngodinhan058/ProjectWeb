@@ -44,7 +44,7 @@ const CartPage = () => {
     // Lưu thông tin khách hàng vào localStorage với key là 'user'
     const userInfo = { name: customerName, phone: customerPhone };
     localStorage.setItem('user', JSON.stringify(userInfo));
-
+    localStorage.removeItem('cart'); 
     alert('Đặt hàng thành công!');
   };
 

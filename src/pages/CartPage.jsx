@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import CartItem from '../components/CartItem.jsx';
+import Skeleton from 'react-loading-skeleton';
 
 const CartPage = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -57,7 +58,7 @@ const CartPage = () => {
     }
 
     loadCartFromStorage();
-    setTimeout(() => setIsLoading(false), 1000); 
+    setTimeout(() => setIsLoading(false), 1000);
   }, []);  // Chạy 1 lần khi component mount
 
   useEffect(() => {
@@ -71,8 +72,12 @@ const CartPage = () => {
 
       <div className="cart-summary">
         <p>
-          Tổng tiền: 
-          <span className="total-price"> {calculateTotal().toLocaleString()} ₫</span>
+          Tổng tiền:
+          {isLoading ? (
+            <span className="total-price"> <Skeleton width={80} /></span> // Hiển thị khi dữ liệu đang tải
+          ) : (
+            <span className="total-price"> {calculateTotal().toLocaleString()} ₫</span> // Hiển thị tổng tiền khi đã tải xong
+          )}
         </p>
 
         <input

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import CartItem from '../components/CartItem.jsx';
+import CartMobie from '../components/CartItemMobie.jsx';
 import Skeleton from 'react-loading-skeleton';
 
 const CartPage = () => {
@@ -8,7 +9,21 @@ const CartPage = () => {
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [error, setError] = useState('');
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); // Trạng thái theo dõi kích thước màn hình
 
+  // Cập nhật lại trạng thái isMobile khi thay đổi kích thước màn hình
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768); // Kiểm tra nếu màn hình nhỏ hơn hoặc bằng 768px
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    // Clean up khi component unmount
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Hàm để tải giỏ hàng từ localStorage
   const loadCartFromStorage = () => {
     const storedCart = localStorage.getItem('cart');
     if (storedCart) {
@@ -19,7 +34,6 @@ const CartPage = () => {
         setCartItems([]); // Nếu không phải mảng, gán giỏ hàng là mảng rỗng
       }
     } else {
-      console.log("No cart items found in localStorage.");  // Nếu không có dữ liệu
       setCartItems([]); // Giỏ hàng rỗng nếu không có gì trong localStorage
     }
   };
@@ -28,11 +42,13 @@ const CartPage = () => {
     return cartItems.reduce((total, item) => {
       const quantity = item.quantity || 0; // Nếu quantity là null hoặc undefined, gán 0
       if (quantity > 0) {
-        return total + parseFloat(item.price.replace(/[^\d.-]/g, '')) * quantity;
+        const itemPrice = parseInt(item.price.replace(/\D/g, ''), 10); 
+        return total + itemPrice * quantity;
       }
-      return total; // Bỏ qua sản phẩm nếu quantity <= 0
+      return total;
     }, 0);
   };
+  
 
   const handlePlaceOrder = () => {
     if (!customerName || !customerPhone) {
@@ -61,22 +77,33 @@ const CartPage = () => {
     setTimeout(() => setIsLoading(false), 1000);
   }, []);  // Chạy 1 lần khi component mount
 
-  useEffect(() => {
-    loadCartFromStorage();
-    setTimeout(() => setIsLoading(false), 1000); // Giả lập thời gian tải dữ liệu
-  }, []);
-
+   // Hàm cập nhật số lượng sản phẩm trong giỏ hàng
+  const handleQuantityChange = (id, newQuantity) => {
+    if (newQuantity < 1) return; // Không cho phép số lượng nhỏ hơn 1
+    setCartItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === id ? { ...item, quantity: newQuantity } : item
+      )
+    );
+  };
   return (
     <div className="cart-page">
-      <CartItem />
+      {/* Hiển thị CartItem hoặc CartMobie dựa trên kích thước màn hình */}
+      {isMobile ? (
+        <CartMobie />
+      ) : (
+        <CartItem />
+      )}
 
       <div className="cart-summary">
         <p>
           Tổng tiền:
           {isLoading ? (
-            <span className="total-price"> <Skeleton width={80} /></span> // Hiển thị khi dữ liệu đang tải
+            <span className="total-price">
+              <Skeleton width={80} />
+            </span> // Hiển thị khi dữ liệu đang tải
           ) : (
-            <span className="total-price"> {calculateTotal().toLocaleString()} ₫</span> // Hiển thị tổng tiền khi đã tải xong
+            <span className="total-price"> {calculateTotal().toLocaleString("vi-VN")} ₫</span> // Hiển thị tổng tiền khi đã tải xong
           )}
         </p>
 

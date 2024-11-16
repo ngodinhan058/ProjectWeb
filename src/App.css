@@ -1,3 +1,16 @@
+/* Cart mobie */
+.titleCart {
+  display: flex;
+  width: 150%;
+  flex-wrap: wrap-reverse;
+  justify-content: center;
+}
+
+.quantity-input {
+  margin: 15px 0;
+}
+
+
 /* Khoảng cách chỗ Sort */
 .store-sort {
   display: flex;
@@ -69,7 +82,7 @@
 @media (max-width: 768px) {
   .tab-nav {
     gap: 10px;
-    flex-wrap: nowrap; /* Không cho xuống dòng */
+    flex-wrap: wrap; /* Không cho xuống dòng */
   }
 
   .tab-nav button {
@@ -87,7 +100,7 @@
   .tab-nav {
     flex-direction: row; 
     gap: 5px;
-    flex-wrap: nowrap; 
+    flex-wrap: wrap; 
   }
 
   .tab-nav button {
@@ -102,6 +115,28 @@
 
   .btn-see-more {
     font-size: 12px;
+  }
+}
+
+@media (max-width: 400px) {
+  .tab-nav {
+    flex-direction: row; 
+    gap: 4px;
+    flex-wrap: wrap; 
+  }
+
+  .tab-nav button {
+    font-size: 10px;
+    padding: 3px 5px; 
+    white-space: nowrap; 
+  }
+
+  .description-content.collapsed {
+    max-height: 70px;
+  }
+
+  .btn-see-more {
+    font-size: 8px;
   }
 }
 

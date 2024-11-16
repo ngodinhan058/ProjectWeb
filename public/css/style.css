@@ -46,6 +46,10 @@ Table OF Contents
 11 > SLICK STYLE
 12 > RESPONSIVE
 ------------------------------------*/
+#root {
+  width: 100%;
+  overflow-x: hidden;
+}
 .cart {
   max-width: 800px;
   margin: 0 auto;

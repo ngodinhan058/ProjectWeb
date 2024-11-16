@@ -110,7 +110,7 @@ const Header = () => {
   };
 
   return (
-    <header>
+    <header style={{ overflow: 'hidden' }}>
       {/* TOP HEADER */}
       <div id="top-header">
         <div className="container">

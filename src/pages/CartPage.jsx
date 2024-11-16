@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import CartItem from '../components/CartItem.jsx';
 import Skeleton from 'react-loading-skeleton';
 
@@ -19,20 +19,24 @@ const CartPage = () => {
         setCartItems([]); // Nếu không phải mảng, gán giỏ hàng là mảng rỗng
       }
     } else {
-      console.log("No cart items found in localStorage.");  // Nếu không có dữ liệu
+      console.log('No cart items found in localStorage.'); // Nếu không có dữ liệu
       setCartItems([]); // Giỏ hàng rỗng nếu không có gì trong localStorage
     }
   };
 
-  const calculateTotal = () => {
+  const calculateTotal = useMemo(() => {
     return cartItems.reduce((total, item) => {
       const quantity = item.quantity || 0; // Nếu quantity là null hoặc undefined, gán 0
       if (quantity > 0) {
-        return total + parseFloat(item.price.replace(/[^\d.-]/g, '')) * quantity;
+        return (
+          total + parseFloat(item.price.replace(/[^\d.-]/g, '')) * quantity
+        );
       }
       return total; // Bỏ qua sản phẩm nếu quantity <= 0
     }, 0);
-  };
+  }, [cartItems]);
+
+  console.log(calculateTotal);
 
   const handlePlaceOrder = () => {
     if (!customerName || !customerPhone) {
@@ -53,13 +57,13 @@ const CartPage = () => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       const userInfo = JSON.parse(storedUser);
-      setCustomerName(userInfo.name || '');  // Nạp tên khách hàng vào
+      setCustomerName(userInfo.name || ''); // Nạp tên khách hàng vào
       setCustomerPhone(userInfo.phone || ''); // Nạp số điện thoại khách hàng vào
     }
 
     loadCartFromStorage();
     setTimeout(() => setIsLoading(false), 1000);
-  }, []);  // Chạy 1 lần khi component mount
+  }, []); // Chạy 1 lần khi component mount
 
   useEffect(() => {
     loadCartFromStorage();
@@ -68,15 +72,21 @@ const CartPage = () => {
 
   return (
     <div className="cart-page">
-      <CartItem />
+      <CartItem cartItems={cartItems} onSetCartItems={setCartItems} />
 
       <div className="cart-summary">
         <p>
           Tổng tiền:
           {isLoading ? (
-            <span className="total-price"> <Skeleton width={80} /></span> // Hiển thị khi dữ liệu đang tải
+            <span className="total-price">
+              {' '}
+              <Skeleton width={80} />
+            </span> // Hiển thị khi dữ liệu đang tải
           ) : (
-            <span className="total-price"> {calculateTotal().toLocaleString()} ₫</span> // Hiển thị tổng tiền khi đã tải xong
+            <span className="total-price">
+              {' '}
+              {calculateTotal.toLocaleString()} ₫
+            </span> // Hiển thị tổng tiền khi đã tải xong
           )}
         </p>
 
@@ -85,14 +95,18 @@ const CartPage = () => {
           placeholder="Nhập tên của bạn"
           value={customerName}
           onChange={(e) => setCustomerName(e.target.value)}
-          className={`customer-input ${error && !customerName ? 'error-input' : ''}`}
+          className={`customer-input ${
+            error && !customerName ? 'error-input' : ''
+          }`}
         />
         <input
           type="text"
           placeholder="Nhập số điện thoại của bạn"
           value={customerPhone}
           onChange={(e) => setCustomerPhone(e.target.value)}
-          className={`customer-input ${error && !customerPhone ? 'error-input' : ''}`}
+          className={`customer-input ${
+            error && !customerPhone ? 'error-input' : ''
+          }`}
         />
         {error && <p className="error-message">{error}</p>}
 

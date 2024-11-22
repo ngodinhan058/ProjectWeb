@@ -63,12 +63,14 @@ const ProductDetail = () => {
           'ngrok-skip-browser-warning': 'true',
         },
       });
-      return response.data.data.content; // Trả về dữ liệu sản phẩm liên quan
+      return response.data.data; // Trả về dữ liệu sản phẩm liên quan
     } catch (error) {
       console.error('Lỗi khi lấy sản phẩm liên quan:', error);
       throw error; // Ném lỗi để xử lý ở nơi gọi
     }
   };
+
+  
   const fetchAllCategories = async () => {
     const categoriesApiUrl = `${BASE_URL}categories`; // API lấy sản phẩm liên quan theo categoryId
     try {
@@ -144,7 +146,7 @@ const ProductDetail = () => {
   }, [selectedSize, quantity])
   useEffect(() => {
     const savedCart = localStorage.getItem('cart');
-  
+
     if (savedCart) {
       const { items, expiry } = JSON.parse(savedCart);
       if (Date.now() > expiry) {
@@ -197,12 +199,12 @@ const ProductDetail = () => {
 
     // Kiểm tra nếu số lượng yêu cầu vượt quá số lượng tồn kho
     const availableQuantity = selectedProductSize.productSizeQuantity.productSizeQuantity;
-    if (quantity > availableQuantity) {
-      setError(`Số lượng yêu cầu vượt quá số lượng tồn kho (${availableQuantity} sản phẩm)`);
-      setErrorCheckQuantity(false);
-      setTimeout(() => setErrorCheckQuantity(true), 0);
-      return;
-    }
+    // if (quantity > availableQuantity) {
+    //   setError(`Số lượng yêu cầu vượt quá số lượng tồn kho (${availableQuantity} sản phẩm)`);
+    //   setErrorCheckQuantity(false);
+    //   setTimeout(() => setErrorCheckQuantity(true), 0);
+    //   return;
+    // }
 
     // Nếu vượt qua các kiểm tra, tiến hành thêm sản phẩm vào giỏ hàng
     setError('');
@@ -252,7 +254,7 @@ const ProductDetail = () => {
     const value = parseInt(event.target.value, 10);
     if (!isNaN(value) && value >= 1) {
       setQuantity(value);
-    } else {  
+    } else {
       setQuantity(1); // Nếu giá trị nhập không hợp lệ thì đặt về 1
     }
   };
@@ -625,7 +627,6 @@ const ProductDetail = () => {
       <div>
         {/* container */}
         <div className="container">
-          {/* row */}
           <div className="row">
             <div className="section-title text-center">
               <h3 className="title">Related Products</h3>
@@ -685,22 +686,7 @@ const ProductDetail = () => {
                   </button>
                 </div>
               ) : (
-                <div className="product-grid">
-                  {productsRelate.map((product) => (
-                    <div className="product-item" key={product.productId}>
-                      <Product
-                        id={product.productId}
-                        name={product.productName}
-                        price={product.productPriceSale}
-                        oldPrice={product.productPrice}
-                        images={product.productImages}
-                        rating={product.productRating}
-                        sale={product.productSale}
-                        isLoading={false}
-                      />
-                    </div>
-                  ))}
-                </div>
+                null
               )
             ) : (
               <div className="product-grid">
@@ -721,7 +707,6 @@ const ProductDetail = () => {
               </div>
             )}
           </div>
-          {/* /row */}
         </div>
         {/* /container */}
       </div>

@@ -23,20 +23,27 @@ const CartPage = () => {
       setCartItems([]); // Giỏ hàng rỗng nếu không có gì trong localStorage
     }
   };
+  
+  useEffect(() => {
+    loadCartFromStorage();
+  }, [cartItems]);
 
   const calculateTotal = useMemo(() => {
     return cartItems.reduce((total, item) => {
+      console.log("total",total);
+      
       const quantity = item.quantity || 0; // Nếu quantity là null hoặc undefined, gán 0
       if (quantity > 0) {
         return (
-          total + parseFloat(item.price.replace(/[^\d.-]/g, '')) * quantity
+          total + parseFloat(item.price.replace(/\D/g, ''),10) * quantity
         );
       }
       return total; // Bỏ qua sản phẩm nếu quantity <= 0
     }, 0);
   }, [cartItems]);
 
-  console.log(calculateTotal);
+  console.log("calculateTotal",calculateTotal);
+  // const basePrice = parseInt(productsState.productPriceSale.replace(/\D/g, ''), 10);
 
   const handlePlaceOrder = () => {
     if (!customerName || !customerPhone) {
@@ -80,7 +87,7 @@ const CartPage = () => {
           {isLoading ? (
             <span className="total-price">
               {' '}
-              <Skeleton width={80} />
+              <Skeleton width={80} height={20}/>
             </span> // Hiển thị khi dữ liệu đang tải
           ) : (
             <span className="total-price">

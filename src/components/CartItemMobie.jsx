@@ -151,11 +151,7 @@ const CartMobie = () => {
                                              <p>Giá: {item.price}</p>
                                         </td>
                                         <td>
-                                             {/* <button onClick={() => handleDecrement(item.id, item.size)}>-</button>
-                                             {item.quantity}
-                                             <button onClick={() => handleIncrement(item.id, item.size)}>+</button> */}
-
-                                             <input type="number" value={item.quantity} onChange={(e) => handleQuantityChange(item.id, e.target.value)} min="1" className="quantity-input"
+                                          <input type="number" value={item.quantity} onChange={(e) => handleQuantityChange(item.id, e.target.value)} min="1" className="quantity-input"
                                              />
                                              <br />
                                              <button onClick={() => handleRemoveItem(item.id)} className="remove-button">Xóa</button>

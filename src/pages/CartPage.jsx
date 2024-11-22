@@ -24,14 +24,12 @@ const CartPage = () => {
     }
   };
   
-  useEffect(() => {
-    loadCartFromStorage();
-  }, [cartItems]);
+  // useEffect(() => {
+  //   loadCartFromStorage();
+  // }, [cartItems]);
 
   const calculateTotal = useMemo(() => {
-    return cartItems.reduce((total, item) => {
-      console.log("total",total);
-      
+    return cartItems.reduce((total, item) => {      
       const quantity = item.quantity || 0; // Nếu quantity là null hoặc undefined, gán 0
       if (quantity > 0) {
         return (
@@ -42,7 +40,6 @@ const CartPage = () => {
     }, 0);
   }, [cartItems]);
 
-  console.log("calculateTotal",calculateTotal);
   // const basePrice = parseInt(productsState.productPriceSale.replace(/\D/g, ''), 10);
 
   const handlePlaceOrder = () => {
@@ -56,6 +53,7 @@ const CartPage = () => {
     const userInfo = { name: customerName, phone: customerPhone };
     localStorage.setItem('user', JSON.stringify(userInfo));
     localStorage.removeItem('cart'); 
+    loadCartFromStorage();
     alert('Đặt hàng thành công!');
   };
 
@@ -72,10 +70,10 @@ const CartPage = () => {
     setTimeout(() => setIsLoading(false), 1000);
   }, []); // Chạy 1 lần khi component mount
 
-  useEffect(() => {
-    loadCartFromStorage();
-    setTimeout(() => setIsLoading(false), 1000); // Giả lập thời gian tải dữ liệu
-  }, []);
+  // useEffect(() => {
+  //   loadCartFromStorage();
+  //   setTimeout(() => setIsLoading(false), 1000); // Giả lập thời gian tải dữ liệu
+  // }, []);
 
   return (
     <div className="cart-page">

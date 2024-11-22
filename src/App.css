@@ -1,3 +1,70 @@
+/* Giỏ hàng */
+.cart {
+  padding: 10px;
+  font-family: Arial, sans-serif;
+}
+
+.titleCart {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.cart-item-mobile {
+  display: flex; /* Sử dụng Flexbox để hiển thị các phần tử theo hàng ngang */
+  align-items: center; /* Căn giữa các phần tử theo chiều dọc */
+  justify-content: space-between; /* Căn chỉnh các phần tử ở 2 bên */
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.product-image {
+  width: 50px;
+  height: 50px;
+  object-fit: cover; 
+  margin-right: 15px;
+}
+
+.cart-item-mobile div {
+  flex: 1;
+}
+
+.quantity-input {
+  width: 60px; 
+  padding: 5px;
+  text-align: center;
+  margin-right: 10px;
+}
+
+button {
+  padding: 5px 10px;
+  background-color: #ff6f61; 
+  color: rgb(167, 165, 165);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #ff4e3d;
+}
+
+button:focus {
+  outline: none;
+}
+
+.remove-button {
+  background-color: #d9534f; 
+}
+
+.remove-button:hover {
+  background-color: #c9302c;
+}
+
+
 /* Khoảng cách chỗ Sort */
 .store-sort {
   display: flex;
@@ -69,7 +136,7 @@
 @media (max-width: 768px) {
   .tab-nav {
     gap: 10px;
-    flex-wrap: nowrap; /* Không cho xuống dòng */
+    flex-wrap: wrap; /* Không cho xuống dòng */
   }
 
   .tab-nav button {
@@ -87,7 +154,7 @@
   .tab-nav {
     flex-direction: row; 
     gap: 5px;
-    flex-wrap: nowrap; 
+    flex-wrap: wrap; 
   }
 
   .tab-nav button {
@@ -102,6 +169,28 @@
 
   .btn-see-more {
     font-size: 12px;
+  }
+}
+
+@media (max-width: 400px) {
+  .tab-nav {
+    flex-direction: row; 
+    gap: 4px;
+    flex-wrap: wrap; 
+  }
+
+  .tab-nav button {
+    font-size: 10px;
+    padding: 3px 5px; 
+    white-space: nowrap; 
+  }
+
+  .description-content.collapsed {
+    max-height: 70px;
+  }
+
+  .btn-see-more {
+    font-size: 8px;
   }
 }
 

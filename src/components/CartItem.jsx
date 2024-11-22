@@ -5,6 +5,8 @@ import 'react-loading-skeleton/dist/skeleton.css';
 const Cart = ({ cartItems, onSetCartItems: setCartItems }) => {
   const [isLoading, setIsLoading] = useState(true);
   //const [cartItems, setCartItems] = useState([]);
+  const [isMobile, setIsMobile] = useState(false);
+
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [error, setError] = useState('');
@@ -132,7 +134,65 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems }) => {
     setTimeout(() => setIsLoading(false), 1000); // Giả lập thời gian tải dữ liệu
   }, []);
 
-  return (
+   // Kiểm tra kích thước màn hình
+   useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);  // Nếu chiều rộng màn hình nhỏ hơn 768px, set isMobile = true
+    };
+
+    handleResize(); // Kiểm tra ngay khi component được mount
+    window.addEventListener('resize', handleResize);  // Lắng nghe sự kiện thay đổi kích thước màn hình
+
+    return () => {
+      window.removeEventListener('resize', handleResize); // Dọn dẹp khi component unmount
+    };
+  }, []);
+
+  useEffect(() => {
+    loadCartFromStorage();
+    setTimeout(() => setIsLoading(false), 1000); // Giả lập thời gian tải dữ liệu
+  }, []); 
+
+  // Giao diện mobile
+  const mobileLayout = (
+    <div className="cart">
+      <div className="titleCart">GIỎ HÀNG CỦA BẠN</div>
+      <div>
+        {isLoading ? (
+          cartItems.map((_, index) => (
+            <div key={index} className="cart-item-mobile">
+              <Skeleton height={75} width={75} />
+              <Skeleton width={150} height={20} />
+              <Skeleton width={100} height={15} />
+              <Skeleton width={50} height={30} />
+              <Skeleton width={60} height={30} />
+            </div>
+          ))
+        ) : (
+          cartItems.map((item) => (
+            <div key={item.id} className="cart-item-mobile">
+              <img src={item.image} alt={item.name} className="product-image" />
+              <div>{item.name}</div>
+              <div>{item.price}</div>
+              <div>
+                <input
+                  type="number"
+                  value={item.quantity}
+                  onChange={(e) => handleQuantityChange(item.id, e.target.value)}
+                  min="1"
+                  className="quantity-input"
+                />
+                <button onClick={() => handleRemoveItem(item.id, item.size)}>Xóa</button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+
+  // Giao diện Desktop
+  const desktopLayout = (
     <div className="cart">
       <table className="cart-table">
         <thead>
@@ -150,49 +210,25 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems }) => {
           {isLoading
             ? Array.from({ length: cartItems.length }).map((_, index) => (
                 <tr key={index}>
-                  <td>
-                    <Skeleton height={75} width={80} />
-                  </td>
-                  <td>
-                    <Skeleton width={70} height={15} />
-                  </td>
-                  <td>
-                    <Skeleton width={60} height={15} />
-                  </td>
-                  <td>
-                    <Skeleton width={20} height={15} />
-                  </td>
-                  <td>
-                    <Skeleton width={90} height={34.8} />
-                  </td>
-                  <td>
-                    <Skeleton width={80} height={15} />
-                  </td>
-                  <td>
-                    <Skeleton width={50.5} height={34.8} />
-                  </td>
+                  <td><Skeleton height={75} width={80} /></td>
+                  <td><Skeleton width={70} height={15} /></td>
+                  <td><Skeleton width={60} height={15} /></td>
+                  <td><Skeleton width={20} height={15} /></td>
+                  <td><Skeleton width={90} height={34.8} /></td>
+                  <td><Skeleton width={80} height={15} /></td>
+                  <td><Skeleton width={50.5} height={34.8} /></td>
                 </tr>
               ))
             : cartItems.map((item) => (
                 <tr key={item.id}>
-                  <td>
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="product-image"
-                    />
-                  </td>
+                  <td><img src={item.image} alt={item.name} className="product-image" /></td>
                   <td>{item.name}</td>
                   <td>{item.price}</td>
                   <td>{item.size}</td>
                   <td>
-                    <button onClick={() => handleDecrement(item.id, item.size)}>
-                      -
-                    </button>
+                    <button onClick={() => handleDecrement(item.id, item.size)}>-</button>
                     {item.quantity}
-                    <button onClick={() => handleIncrement(item.id, item.size)}>
-                      +
-                    </button>
+                    <button onClick={() => handleIncrement(item.id, item.size)}>+</button>
                   </td>
                   <td>
                     {(
@@ -201,12 +237,7 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems }) => {
                     ).toLocaleString('vi-VN') + ' ₫'}
                   </td>
                   <td>
-                    <button
-                      onClick={() => handleRemoveItem(item.id, item.size)}
-                      className="remove-button"
-                    >
-                      Xóa
-                    </button>
+                    <button onClick={() => handleRemoveItem(item.id, item.size)} className="remove-button">Xóa</button>
                   </td>
                 </tr>
               ))}
@@ -214,6 +245,7 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems }) => {
       </table>
     </div>
   );
-};
 
+  return isMobile ? mobileLayout : desktopLayout;
+};
 export default Cart;

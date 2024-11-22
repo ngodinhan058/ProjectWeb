@@ -17,6 +17,7 @@ const Header = () => {
 
   // Hàm để lấy giỏ hàng từ localStorage và thiết lập state
   useEffect(() => {
+    
     const cartData = localStorage.getItem('cart');
   
     if (cartData) {
@@ -37,7 +38,7 @@ const Header = () => {
       }
     }
     getTotalQuantity()
-  }, [cartItems]);
+  }, []);
 
     // Lắng nghe sự kiện nhấp chuột ra ngoài menu
     useEffect(() => {

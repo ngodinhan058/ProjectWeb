@@ -14,7 +14,8 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems }) => {
   // Hàm lưu giỏ hàng vào localStorage
   const saveCartToStorage = (items) => {
     console.log('Saving to localStorage:', items);
-    localStorage.setItem('cart', JSON.stringify({ items })); // Lưu dưới key 'cart'
+    localStorage.setItem('cart', JSON.stringify({ items }));
+    window.location.reload() // Lưu dưới key 'cart'
   };
 
   // Hàm tải giỏ hàng từ localStorage
@@ -59,7 +60,8 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems }) => {
 
       console.log('Updated', updatedItems);
 
-      saveCartToStorage(updatedItems); // Lưu giỏ hàng đã cập nhật vào localStorage
+      saveCartToStorage(updatedItems);
+      // Lưu giỏ hàng đã cập nhật vào localStorage
       return updatedItems;
     });
   };
@@ -72,7 +74,8 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems }) => {
         }
         return item; // Giữ nguyên nếu số lượng = 1
       });
-      saveCartToStorage(updatedItems); // Lưu giỏ hàng đã cập nhật vào localStorage
+      saveCartToStorage(updatedItems);
+      // Lưu giỏ hàng đã cập nhật vào localStorage
       return updatedItems;
     });
   };
@@ -84,7 +87,8 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems }) => {
           ? { ...item, quantity: item.quantity + 1 }
           : item
       );
-      saveCartToStorage(updatedItems); // Lưu giỏ hàng đã cập nhật vào localStorage
+      saveCartToStorage(updatedItems);
+      // Lưu giỏ hàng đã cập nhật vào localStorage
       return updatedItems;
     });
   };
@@ -134,8 +138,8 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems }) => {
     setTimeout(() => setIsLoading(false), 1000); // Giả lập thời gian tải dữ liệu
   }, []);
 
-   // Kiểm tra kích thước màn hình
-   useEffect(() => {
+  // Kiểm tra kích thước màn hình
+  useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);  // Nếu chiều rộng màn hình nhỏ hơn 768px, set isMobile = true
     };
@@ -151,7 +155,7 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems }) => {
   useEffect(() => {
     loadCartFromStorage();
     setTimeout(() => setIsLoading(false), 1000); // Giả lập thời gian tải dữ liệu
-  }, []); 
+  }, []);
 
   // Giao diện mobile
   const mobileLayout = (
@@ -172,7 +176,7 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems }) => {
           cartItems.map((item) => (
             <div key={item.id} className="cart-item-mobile">
               <img src={item.image} alt={item.name} className="product-image" />
-              <div>{item.name}</div>
+
               <div>{item.price}</div>
               <div>
                 <input
@@ -209,38 +213,40 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems }) => {
         <tbody>
           {isLoading
             ? Array.from({ length: cartItems.length }).map((_, index) => (
-                <tr key={index}>
-                  <td><Skeleton height={75} width={80} /></td>
-                  <td><Skeleton width={70} height={15} /></td>
-                  <td><Skeleton width={60} height={15} /></td>
-                  <td><Skeleton width={20} height={15} /></td>
-                  <td><Skeleton width={90} height={34.8} /></td>
-                  <td><Skeleton width={80} height={15} /></td>
-                  <td><Skeleton width={50.5} height={34.8} /></td>
-                </tr>
-              ))
+              <tr key={index}>
+                <td><Skeleton height={75} width={80} /></td>
+                <td><Skeleton width={90} height={30} /></td>
+                <td><Skeleton width={60} height={15} /></td>
+                <td><Skeleton width={20} height={15} /></td>
+                <td><Skeleton width={90} height={34.8} /></td>
+                <td><Skeleton width={80} height={15} /></td>
+                <td><Skeleton width={50.5} height={34.8} /></td>
+              </tr>
+            ))
             : cartItems.map((item) => (
-                <tr key={item.id}>
-                  <td><img src={item.image} alt={item.name} className="product-image" /></td>
-                  <td>{item.name}</td>
-                  <td>{item.price}</td>
-                  <td>{item.size}</td>
-                  <td>
-                    <button onClick={() => handleDecrement(item.id, item.size)}>-</button>
-                    {item.quantity}
-                    <button onClick={() => handleIncrement(item.id, item.size)}>+</button>
-                  </td>
-                  <td>
-                    {(
-                      parseInt(item.price.replace(/\D/g, ''), 10) *
-                      item.quantity
-                    ).toLocaleString('vi-VN') + ' ₫'}
-                  </td>
-                  <td>
-                    <button onClick={() => handleRemoveItem(item.id, item.size)} className="remove-button">Xóa</button>
-                  </td>
-                </tr>
-              ))}
+              <tr key={item.id}>
+                <td><img src={item.image} alt={item.name} className="product-image" /></td>
+                <td style={{ wordWrap: 'break-word', whiteSpace: 'normal', maxWidth: '100px' }}>
+                  {item.name}
+                </td>
+                <td>{item.price}</td>
+                <td>{item.size}</td>
+                <td>
+                  <button onClick={() => handleDecrement(item.id, item.size)}>-</button>
+                  {item.quantity}
+                  <button onClick={() => handleIncrement(item.id, item.size)}>+</button>
+                </td>
+                <td>
+                  {(
+                    parseInt(item.price.replace(/\D/g, ''), 10) *
+                    item.quantity
+                  ).toLocaleString('vi-VN') + ' ₫'}
+                </td>
+                <td>
+                  <button onClick={() => handleRemoveItem(item.id, item.size)} className="remove-button">Xóa</button>
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>

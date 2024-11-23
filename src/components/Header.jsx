@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';  // Import Link from react-router-dom
+import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 
 const Header = () => {
-  const [cartItems, setCartItems] = useState({ items: [] });  // Default to an object with an empty 'items' array
+  const [cartItems, setCartItems] = useState({ items: [] }); // Default to an object with an empty 'items' array
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
@@ -11,54 +11,56 @@ const Header = () => {
   };
 
   // Cập nhật trạng thái isMobile khi thay đổi kích thước cửa sổ
-  window.addEventListener("resize", () => {
+  window.addEventListener('resize', () => {
     setIsMobile(window.innerWidth <= 991);
   });
 
   // Hàm để lấy giỏ hàng từ localStorage và thiết lập state
   useEffect(() => {
-    
     const cartData = localStorage.getItem('cart');
-  
+
     if (cartData) {
       try {
         const parsedData = JSON.parse(cartData);
-        console.log(parsedData);  // Kiểm tra xem dữ liệu có đúng không
+        console.log(parsedData); // Kiểm tra xem dữ liệu có đúng không
 
         // Kiểm tra xem parsedData có phải là mảng hay không
         if (parsedData && parsedData.items && Array.isArray(parsedData.items)) {
-          setCartItems(parsedData);  // Set entire cart object
+          setCartItems(parsedData); // Set entire cart object
         } else {
-          console.error("cartData is not an array:", parsedData);
-          setCartItems({ items: [] });  // Reset to empty items array
+          console.error('cartData is not an array:', parsedData);
+          setCartItems({ items: [] }); // Reset to empty items array
         }
       } catch (error) {
-        console.error("Error parsing cart data:", error);
-        setCartItems({ items: [] });  // Reset to empty items array if error occurs
+        console.error('Error parsing cart data:', error);
+        setCartItems({ items: [] }); // Reset to empty items array if error occurs
       }
     }
-    getTotalQuantity()
+    getTotalQuantity();
   }, []);
 
-    // Lắng nghe sự kiện nhấp chuột ra ngoài menu
-    useEffect(() => {
-      const handleClickOutside = (event) => {
-        if (menuRef.current && !menuRef.current.contains(event.target)) {
-          setIsMenuOpen(false); // Đóng menu khi nhấp ra ngoài
-        }
-      };
-  
-      document.addEventListener("mousedown", handleClickOutside);
-      
-      // Clean up khi component unmount
-      return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-      };
-    }, []);
+  // Lắng nghe sự kiện nhấp chuột ra ngoài menu
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsMenuOpen(false); // Đóng menu khi nhấp ra ngoài
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    // Clean up khi component unmount
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   // Tính tổng số lượng sản phẩm trong giỏ
   const getTotalQuantity = () => {
-    return cartItems.items.reduce((total, item) => total + (item.quantity || 0), 0);
+    return cartItems.items.reduce(
+      (total, item) => total + (item.quantity || 0),
+      0
+    );
   };
 
   const handleLanguageSelect = (language) => {
@@ -99,18 +101,38 @@ const Header = () => {
   };
 
   return (
-    <header style={{ overflow: 'hidden' }}>
+    <header>
       {/* TOP HEADER */}
       <div id="top-header">
         <div className="container">
           <ul className="header-links pull-left">
-            <li><a href="#"><i className="fa fa-phone"></i> +021-95-51-84</a></li>
-            <li><a href="#"><i className="fa fa-envelope-o"></i> email@email.com</a></li>
-            <li><a href="#"><i className="fa fa-map-marker"></i> 1734 Stonecoal Road</a></li>
+            <li>
+              <a href="#">
+                <i className="fa fa-phone"></i> +021-95-51-84
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <i className="fa fa-envelope-o"></i> email@email.com
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <i className="fa fa-map-marker"></i> 1734 Stonecoal Road
+              </a>
+            </li>
           </ul>
           <ul className="header-links pull-right">
-            <li><a href="#"><i className="fa fa-dollar"></i> USD</a></li>
-            <li><a href="#"><i className="fa fa-user-o"></i> My Account</a></li>
+            <li>
+              <a href="#">
+                <i className="fa fa-dollar"></i> USD
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <i className="fa fa-user-o"></i> My Account
+              </a>
+            </li>
           </ul>
         </div>
       </div>
@@ -142,7 +164,10 @@ const Header = () => {
                       <option value="1">Category 01</option>
                       <option value="2">Category 02</option>
                     </select>
-                    <input className="input input-desktop" placeholder="Search here" />
+                    <input
+                      className="input input-desktop"
+                      placeholder="Search here"
+                    />
                     <button className="search-btn">Search</button>
                   </form>
                 </div>
@@ -151,7 +176,13 @@ const Header = () => {
             {/* /SEARCH BAR */}
 
             {/* ICONS AND MENU */}
-            <div className={isMobile ? "col-12 d-flex justify-content-end align-items-center header-ctn-mobile" : "col-md-3 clearfix"}>
+            <div
+              className={
+                isMobile
+                  ? 'col-12 d-flex justify-content-end align-items-center header-ctn-mobile'
+                  : 'col-md-3 clearfix'
+              }
+            >
               {/* Menu Toggle (for mobile) */}
               {isMobile && (
                 <div className="col-md-3 header-ctn-mobile">
@@ -165,14 +196,26 @@ const Header = () => {
 
               {/* Menu */}
               {isMobile && (
-              <nav id="responsive-nav" className={isMenuOpen ? "active" : "none"} ref={menuRef}>
-                <ul className="main-nav">
-                  <li><a href="#">Home</a></li>
-                  <li><a href="#">Shop</a></li>
-                  <li><a href="#">Contact</a></li>
-                  <li><a href="#">About</a></li>
-                </ul>
-              </nav>
+                <nav
+                  id="responsive-nav"
+                  className={isMenuOpen ? 'active' : 'none'}
+                  ref={menuRef}
+                >
+                  <ul className="main-nav">
+                    <li>
+                      <a href="#">Home</a>
+                    </li>
+                    <li>
+                      <a href="#">Shop</a>
+                    </li>
+                    <li>
+                      <a href="#">Contact</a>
+                    </li>
+                    <li>
+                      <a href="#">About</a>
+                    </li>
+                  </ul>
+                </nav>
               )}
 
               {/* LOGO */}
@@ -189,23 +232,22 @@ const Header = () => {
                 <div className="col-md-8 header-ctn ">
                   {/* Language Icon */}
                   <div className="language-dropdown">
-
                     <a href="#" onClick={toggleDropdown}>
                       <i className="fa fa-solid fa-language"></i>
                       {!isMobile && <span>Language</span>}
                     </a>
                     {isDropdownOpen && (
                       <ul className="dropdown-menu">
-                        <li onClick={() => handleLanguageSelect("English")}>
+                        <li onClick={() => handleLanguageSelect('English')}>
                           <button>English</button>
                         </li>
-                        <li onClick={() => handleLanguageSelect("Spanish")}>
+                        <li onClick={() => handleLanguageSelect('Spanish')}>
                           <button>Spanish</button>
                         </li>
-                        <li onClick={() => handleLanguageSelect("French")}>
+                        <li onClick={() => handleLanguageSelect('French')}>
                           <button>French</button>
                         </li>
-                        <li onClick={() => handleLanguageSelect("German")}>
+                        <li onClick={() => handleLanguageSelect('German')}>
                           <button>German</button>
                         </li>
                       </ul>
@@ -217,7 +259,8 @@ const Header = () => {
                     <Link to="/cart" className="cart-link">
                       <i className="fa fa-shopping-cart"></i>
                       {!isMobile && <span>Your cart</span>}
-                      <div className="qty">{getTotalQuantity()}</div> {/* Hiển thị tổng số lượng sản phẩm */}
+                      <div className="qty">{getTotalQuantity()}</div>{' '}
+                      {/* Hiển thị tổng số lượng sản phẩm */}
                     </Link>
                   </div>
                   {/* /Cart */}
@@ -240,16 +283,16 @@ const Header = () => {
                     </a>
                     {isDropdownOpen && (
                       <ul className="dropdown-menu">
-                        <li onClick={() => handleLanguageSelect("English")}>
+                        <li onClick={() => handleLanguageSelect('English')}>
                           <button>English</button>
                         </li>
-                        <li onClick={() => handleLanguageSelect("Spanish")}>
+                        <li onClick={() => handleLanguageSelect('Spanish')}>
                           <button>Spanish</button>
                         </li>
-                        <li onClick={() => handleLanguageSelect("French")}>
+                        <li onClick={() => handleLanguageSelect('French')}>
                           <button>French</button>
                         </li>
-                        <li onClick={() => handleLanguageSelect("German")}>
+                        <li onClick={() => handleLanguageSelect('German')}>
                           <button>German</button>
                         </li>
                       </ul>
@@ -274,7 +317,10 @@ const Header = () => {
               <div className="col-12 d-inline-block justify-content-center ">
                 <div className="header-search">
                   <form className="d-flex">
-                    <input className="input input-mobile" placeholder="Search here" />
+                    <input
+                      className="input input-mobile"
+                      placeholder="Search here"
+                    />
                     <button className="search-btn">Search</button>
                   </form>
                 </div>
@@ -285,7 +331,6 @@ const Header = () => {
         </div>
       </div>
       {/* /MAIN HEADER */}
-
     </header>
   );
 };

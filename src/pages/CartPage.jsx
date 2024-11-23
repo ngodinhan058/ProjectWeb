@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import CartItem from '../components/CartItem.jsx';
 import Skeleton from 'react-loading-skeleton';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const CartPage = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -23,18 +25,16 @@ const CartPage = () => {
       setCartItems([]); // Giỏ hàng rỗng nếu không có gì trong localStorage
     }
   };
-  
+
   // useEffect(() => {
   //   loadCartFromStorage();
   // }, [cartItems]);
 
   const calculateTotal = useMemo(() => {
-    return cartItems.reduce((total, item) => {      
+    return cartItems.reduce((total, item) => {
       const quantity = item.quantity || 0; // Nếu quantity là null hoặc undefined, gán 0
       if (quantity > 0) {
-        return (
-          total + parseFloat(item.price.replace(/\D/g, ''),10) * quantity
-        );
+        return total + parseFloat(item.price.replace(/\D/g, ''), 10) * quantity;
       }
       return total; // Bỏ qua sản phẩm nếu quantity <= 0
     }, 0);
@@ -44,17 +44,91 @@ const CartPage = () => {
 
   const handlePlaceOrder = () => {
     if (!customerName || !customerPhone) {
-      setError('Vui lòng nhập đầy đủ tên và số điện thoại');
+      setError('Please enter your name and phone number');
       return;
     }
     setError('');
 
-    // Lưu thông tin khách hàng vào localStorage với key là 'user'
-    const userInfo = { name: customerName, phone: customerPhone };
-    localStorage.setItem('user', JSON.stringify(userInfo));
-    localStorage.removeItem('cart'); 
-    loadCartFromStorage();
-    alert('Đặt hàng thành công!');
+    // Show confirmation using a toast
+    const toastId = toast.info('Are you sure you want to place this order?', {
+      position: 'top-right',
+      autoClose: false, // Keep it open until the user takes action
+      closeOnClick: false,
+      draggable: false,
+      progress: undefined,
+      onClose: () => {
+        // This is triggered when the toast is closed
+      },
+    });
+
+    // Create buttons to confirm or cancel
+    const confirmButton = document.createElement('button');
+    confirmButton.innerText = 'Confirm';
+    confirmButton.onclick = () => {
+      // Handle confirmation
+      handleOrderSuccess();
+      toast.dismiss(); // Dismiss the toast
+    };
+
+    const cancelButton = document.createElement('button');
+    cancelButton.innerText = 'Cancel';
+    cancelButton.onclick = () => {
+      toast.dismiss(); // Dismiss the toast
+      toast.info('Order placement cancelled', {
+        position: 'top-right',
+        autoClose: 3000,
+      });
+    };
+
+    // Append buttons to the toast
+    toast.update(toastId, {
+      render: (
+        <div>
+          <span>Are you sure you want to place this order?</span>
+          {confirmButton}
+          {cancelButton}
+        </div>
+      ),
+      autoClose: false,
+      closeOnClick: false,
+      draggable: false,
+    });
+  };
+
+  const handleOrderSuccess = () => {
+    // Simulate API success response
+    const isOrderSuccess = true; // Simulate success or failure
+
+    if (isOrderSuccess) {
+      toast.success(
+        'Đơn hàng đã được ghi nhận, nhân viên chúng tôi sẽ liên hệ quý khách sớm nhất có thể để xác nhận đơn',
+        {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        }
+      );
+
+      const userInfo = { name: customerName, phone: customerPhone };
+      localStorage.setItem('user', JSON.stringify(userInfo));
+      //localStorage.removeItem('cart');
+      loadCartFromStorage();
+    } else {
+      toast.error(
+        'Có lỗi trong quá trình ghi nhận đơn đặt hàng, xin thử lại hoặc liên hệ số hotline để được hỗ trợ',
+        {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        }
+      );
+    }
   };
 
   useEffect(() => {
@@ -85,7 +159,7 @@ const CartPage = () => {
           {isLoading ? (
             <span className="total-price">
               {' '}
-              <Skeleton width={80} height={20}/>
+              <Skeleton width={80} height={20} />
             </span> // Hiển thị khi dữ liệu đang tải
           ) : (
             <span className="total-price">
@@ -123,6 +197,7 @@ const CartPage = () => {
         >
           Đặt hàng
         </button>
+        <ToastContainer />
       </div>
     </div>
   );

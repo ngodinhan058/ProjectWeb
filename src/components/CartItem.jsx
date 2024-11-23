@@ -193,7 +193,7 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems }) => {
                   <button className='btn-tang' onClick={() => handleIncrement(item.id, item.size)}>+</button>
                   <br />
                   <button className="remove-button" onClick={() => handleRemoveItem(item.id, item.size)}>
-                  <i className="fas fa-trash-alt"></i> 
+                    <i className="fas fa-trash-alt"></i>
                   </button>
 
                 </div>

@@ -16,6 +16,8 @@ import Breadcrumb from '../components/Breadcrumb';
 import axios from 'axios';
 import PopupImage from '../components/PopupImage';
 
+
+
 // Hàm tính toán thời gian hết hạn (ở đây là 1 tuần)
 const ONE_WEEK = 7 * 24 * 60 * 60 * 1000; // 1 tuần (mili giây)
 const getExpiryTime = () => Date.now() + ONE_WEEK;
@@ -103,7 +105,7 @@ const ProductDetail = () => {
       setIsLoading(false);
 
     } catch (error) {
-      console.error('Lỗi khi lấy dữ liệu:', error); // Log lỗi nếu có
+      console.error('Lỗi khi lấy dữ liệu:', error);
     }
   };
   useEffect(() => {
@@ -170,67 +172,60 @@ const ProductDetail = () => {
   }, [cart]);
 
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!selectedSize) {
       setError('Vui lòng chọn kích thước sản phẩm');
       setErrorCheck(false);
       setTimeout(() => setErrorCheck(true), 0);
       return;
     }
-
+  
     if (quantity < 1) {
       setError('Vui lòng chọn số lượng hợp lệ');
       setErrorCheck(false);
       setTimeout(() => setErrorCheck(true), 0);
       return;
     }
-
+  
     // Lấy thông tin kích thước đã chọn từ productSizes
     const selectedProductSize = productsState.productSizes.find(
       (size) => size.productSizeName === selectedSize
     );
-
+  
     if (!selectedProductSize) {
       setError('Kích thước sản phẩm không tồn tại');
       setErrorCheck(false);
       setTimeout(() => setErrorCheck(true), 0);
       return;
     }
-
-    // Kiểm tra nếu số lượng yêu cầu vượt quá số lượng tồn kho
-    const availableQuantity = selectedProductSize.productSizeQuantity.productSizeQuantity;
-    // if (quantity > availableQuantity) {
-    //   setError(`Số lượng yêu cầu vượt quá số lượng tồn kho (${availableQuantity} sản phẩm)`);
-    //   setErrorCheckQuantity(false);
-    //   setTimeout(() => setErrorCheckQuantity(true), 0);
-    //   return;
-    // }
-
+  
     // Nếu vượt qua các kiểm tra, tiến hành thêm sản phẩm vào giỏ hàng
     setError('');
     setErrorCheck(false);
     setErrorCheckQuantity(false);
-
+  
     const basePrice = parseInt(productsState.productPriceSale.replace(/\D/g, ''), 10);
-
+  
     const existingProductIndex = cart.findIndex(
       (item) => item.id === id && item.size === selectedSize
     );
-
+  
+    let updatedCart;
     if (existingProductIndex !== -1) {
-      const updatedCart = cart.map((item, index) =>
+      // Cập nhật sản phẩm có trong giỏ hàng
+      updatedCart = cart.map((item, index) =>
         index === existingProductIndex
           ? {
-            ...item,
-            quantity: item.quantity + quantity,
-            price: basePrice.toLocaleString() + " ₫",
-            total: (basePrice * (item.quantity + quantity)).toLocaleString() + " ₫",
-            image: selectedImage,
-          }
+              ...item,
+              quantity: item.quantity + quantity,
+              price: basePrice.toLocaleString() + " ₫",
+              total: (basePrice * (item.quantity + quantity)).toLocaleString() + " ₫",
+              image: selectedImage,
+            }
           : item
       );
-      setCart(updatedCart);
     } else {
+      // Thêm sản phẩm mới vào giỏ hàng
       const newProduct = {
         id,
         name: productsState.productName,
@@ -240,16 +235,47 @@ const ProductDetail = () => {
         total: (basePrice * quantity).toLocaleString() + " ₫",
         image: selectedImage,
       };
-      setCart([...cart, newProduct]);
+      updatedCart = [...cart, newProduct];
     }
-    
+  
+    // Cập nhật giỏ hàng vào state và localStorage
+    setCart(updatedCart);
+    const cartData = {
+      items: updatedCart,
+      expiry: getExpiryTime(), // Lấy thời gian hết hạn mới
+    };
+    localStorage.setItem('cart', JSON.stringify(cartData)); // Lưu giỏ hàng vào localStorage
+  
+    // Dữ liệu gửi đến API
+    const cartItemData = {
+      cartItem: {
+        productQuantity: quantity,
+        productId: id,
+        sizeId: selectedProductSize.productSizeId,
+      },
+    };
+  
+    console.log("response",cartItemData);
+    try {
+      // Gửi yêu cầu PUT đến API để thêm sản phẩm vào giỏ hàng
+      const response = await axios.post(`${BASE_URL}cart/guest`, cartItemData);
+      
+      if (response.status === 200) {
+        console.log("Sản phẩm đã được thêm vào giỏ hàng:", response.data);
+      } else {
+        console.error("Không thể thêm sản phẩm vào giỏ hàng:", response.data.message);
+      }
+    } catch (error) {
+      console.error('Lỗi khi thêm sản phẩm vào giỏ hàng:', error);
+    }
+  
+    // Điều hướng và reload trang
     setTimeout(() => {
       navigate("/cart");
-      // Sau khi đã điều hướng đến trang cart, reload trang một lần
-      window.location.reload();
+      // window.location.reload();
     }, 100);
-    
   };
+  
 
   const handleQuantityChange = (change) => {
     setQuantity((prevQuantity) => Math.max(1, prevQuantity + change));

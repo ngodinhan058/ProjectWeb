@@ -242,7 +242,13 @@ const ProductDetail = () => {
       };
       setCart([...cart, newProduct]);
     }
-    setTimeout(() => navigate("/cart"), 100);
+    
+    setTimeout(() => {
+      navigate("/cart");
+      // Sau khi đã điều hướng đến trang cart, reload trang một lần
+      window.location.reload();
+    }, 100);
+    
   };
 
   const handleQuantityChange = (change) => {

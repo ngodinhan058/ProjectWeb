@@ -1,79 +1,71 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';  // Import Link from react-router-dom
+import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 
 const Header = () => {
-  const [cartItems, setCartItems] = useState({ items: [] });  // Default to an object with an empty 'items' array
+  const [cartItems, setCartItems] = useState({ items: [] }); // Default to an object with an empty 'items' array
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  // Cập nhật trạng thái isMobile khi thay đổi kích thước cửa sổ
+  window.addEventListener('resize', () => {
+    setIsMobile(window.innerWidth <= 991);
+  });
 
   // Hàm để lấy giỏ hàng từ localStorage và thiết lập state
   useEffect(() => {
     const cartData = localStorage.getItem('cart');
-  
+
     if (cartData) {
       try {
         const parsedData = JSON.parse(cartData);
-        console.log(parsedData);  // Kiểm tra xem dữ liệu có đúng không
+        console.log(parsedData); // Kiểm tra xem dữ liệu có đúng không
 
         // Kiểm tra xem parsedData có phải là mảng hay không
         if (parsedData && parsedData.items && Array.isArray(parsedData.items)) {
-          setCartItems(parsedData);  // Set entire cart object
+          setCartItems(parsedData); // Set entire cart object
         } else {
-          console.error("cartData is not an array:", parsedData);
-          setCartItems({ items: [] });  // Reset to empty items array
+          console.error('cartData is not an array:', parsedData);
+          setCartItems({ items: [] }); // Reset to empty items array
         }
       } catch (error) {
-        console.error("Error parsing cart data:", error);
-        setCartItems({ items: [] });  // Reset to empty items array if error occurs
+        console.error('Error parsing cart data:', error);
+        setCartItems({ items: [] }); // Reset to empty items array if error occurs
       }
     }
+    getTotalQuantity();
   }, []);
 
-  // Hàm cập nhật số lượng sản phẩm trong giỏ hàng
-  const updateQuantity = (itemId, newQuantity, e) => {
-    // Ngừng sự kiện để không đóng dropdown
-    e.stopPropagation();
+  // Lắng nghe sự kiện nhấp chuột ra ngoài menu
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsMenuOpen(false); // Đóng menu khi nhấp ra ngoài
+      }
+    };
 
-    let updatedItems = [...cartItems.items];
+    document.addEventListener('mousedown', handleClickOutside);
 
-    // Nếu số lượng mới <= 0, xóa sản phẩm khỏi giỏ
-    if (newQuantity <= 0) {
-      updatedItems = updatedItems.filter(item => item.id !== itemId);
-    } else {
-      // Nếu số lượng hợp lệ, chỉ cập nhật số lượng
-      updatedItems = updatedItems.map(item => {
-        if (item.id === itemId) {
-          item.quantity = newQuantity;  // Cập nhật số lượng mới
-        }
-        return item;
-      });
-    }
-
-    // Cập nhật lại state và localStorage
-    const updatedCart = { items: updatedItems };
-    setCartItems(updatedCart);
-    localStorage.setItem('cart', JSON.stringify(updatedCart));
-  };
-
-  // Hàm xóa sản phẩm khỏi giỏ hàng
-  const removeItem = (itemId, e) => {
-    // Ngừng sự kiện để không đóng dropdown
-    e.stopPropagation();
-
-    const updatedItems = cartItems.items.filter(item => item.id !== itemId);
-
-    // Cập nhật state và lưu vào localStorage
-    const updatedCart = { items: updatedItems };
-    setCartItems(updatedCart);
-    localStorage.setItem('cart', JSON.stringify(updatedCart));
-  };
+    // Clean up khi component unmount
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   // Tính tổng số lượng sản phẩm trong giỏ
   const getTotalQuantity = () => {
-    return cartItems.items.reduce((total, item) => total + (item.quantity || 0), 0);
+    return cartItems.items.reduce(
+      (total, item) => total + (item.quantity || 0),
+      0
+    );
   };
 
-  // Tính tổng giá trị giỏ hàng
-  const getTotalPrice = () => {
-    return cartItems.items.reduce((total, item) => total + parseFloat(item.price.replace(' ₫', '').replace(',', '')) * item.quantity, 0).toFixed(2) ;
+  const handleLanguageSelect = (language) => {
+    console.log('Selected language: ${language}');
+    setDropdownOpen(false); // Đóng dropdown sau khi chọn
   };
 
   // State to track if the screen width is mobile
@@ -81,7 +73,7 @@ const Header = () => {
   // State to track if search bar is visible (only for mobile)
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   // State to track if the language modal is visible
-  const [isLanguageModalVisible, setIsLanguageModalVisible] = useState(false);
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
 
   // Update the state based on window width
   const updateWindowDimensions = () => {
@@ -92,7 +84,7 @@ const Header = () => {
   useEffect(() => {
     updateWindowDimensions(); // Check initial window size
     window.addEventListener('resize', updateWindowDimensions); // Add resize event listener
-    
+
     // Cleanup the event listener on unmount
     return () => window.removeEventListener('resize', updateWindowDimensions);
   }, []);
@@ -104,24 +96,43 @@ const Header = () => {
     }
   };
 
-  // Toggle the language modal visibility
-  const toggleLanguageModal = () => {
-    setIsLanguageModalVisible(!isLanguageModalVisible);
+  const toggleDropdown = () => {
+    setDropdownOpen(!isDropdownOpen);
   };
 
   return (
-    <header style={{ overflow: 'hidden' }}>
+    <header>
       {/* TOP HEADER */}
       <div id="top-header">
         <div className="container">
           <ul className="header-links pull-left">
-            <li><a href="#"><i className="fa fa-phone"></i> +021-95-51-84</a></li>
-            <li><a href="#"><i className="fa fa-envelope-o"></i> email@email.com</a></li>
-            <li><a href="#"><i className="fa fa-map-marker"></i> 1734 Stonecoal Road</a></li>
+            <li>
+              <a href="#">
+                <i className="fa fa-phone"></i> +021-95-51-84
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <i className="fa fa-envelope-o"></i> email@email.com
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <i className="fa fa-map-marker"></i> 1734 Stonecoal Road
+              </a>
+            </li>
           </ul>
           <ul className="header-links pull-right">
-            <li><a href="#"><i className="fa fa-dollar"></i> USD</a></li>
-            <li><a href="#"><i className="fa fa-user-o"></i> My Account</a></li>
+            <li>
+              <a href="#">
+                <i className="fa fa-dollar"></i> USD
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <i className="fa fa-user-o"></i> My Account
+              </a>
+            </li>
           </ul>
         </div>
       </div>
@@ -132,13 +143,15 @@ const Header = () => {
         <div className="container">
           <div className="row">
             {/* LOGO */}
-            <div className={isMobile ? "col-4 d-flex justify-content-start align-items-center" : "col-md-3"}>
-              <div className="header-logo">
-                <a href="http://localhost:3000/" className="logo">
-                  <img src="../img/logo.png" alt="Logo" />
-                </a>
+            {!isMobile && (
+              <div className="col-3 d-flex justify-content-start align-items-center">
+                <div className="header-logo">
+                  <a href="http://localhost:3000/" className="logo">
+                    <img src="../img/logo.png" alt="Logo" />
+                  </a>
+                </div>
               </div>
-            </div>
+            )}
             {/* /LOGO */}
 
             {/* SEARCH BAR (only for desktop) */}
@@ -151,20 +164,10 @@ const Header = () => {
                       <option value="1">Category 01</option>
                       <option value="2">Category 02</option>
                     </select>
-                    <input className="input input-desktop" placeholder="Search here" />
-                    <button className="search-btn">Search</button>
-                  </form>
-                </div>
-              </div>
-            )}
-            {/* /SEARCH BAR */}
-
-            {/* SEARCH BAR (only for mobile, toggle visibility) */}
-            {isMobile && isSearchVisible && (
-              <div className="col-12 d-inline-block justify-content-center ">
-                <div className="header-search">
-                  <form className="d-flex">
-                    <input className="input input-mobile" placeholder="Search here" />
+                    <input
+                      className="input input-desktop"
+                      placeholder="Search here"
+                    />
                     <button className="search-btn">Search</button>
                   </form>
                 </div>
@@ -173,69 +176,161 @@ const Header = () => {
             {/* /SEARCH BAR */}
 
             {/* ICONS AND MENU */}
-            <div className={isMobile ? "col-8 row d-flex justify-content-end align-items-center" : "col-md-3 clearfix"}>
+            <div
+              className={
+                isMobile
+                  ? 'col-12 d-flex justify-content-end align-items-center header-ctn-mobile'
+                  : 'col-md-3 clearfix'
+              }
+            >
               {/* Menu Toggle (for mobile) */}
-              <div className="col-md-3 header-three-line">
-                {isMobile && (
-                  <div className="menu-toggle float-left">
-                    <a href="#" onClick={toggleSearch}>
+              {isMobile && (
+                <div className="col-md-3 header-ctn-mobile">
+                  <div className="menu-toggle float-left" onClick={toggleMenu}>
+                    <a href="#">
                       <i className="fa fa-bars"></i>
                     </a>
                   </div>
-                )}
-              </div>
+                </div>
+              )}
 
-              <div className="col-md-9 header-ctn">
-                {/* Search Icon (only for mobile) */}
-                {isMobile && (
+              {/* Menu */}
+              {isMobile && (
+                <nav
+                  id="responsive-nav"
+                  className={isMenuOpen ? 'active' : 'none'}
+                  ref={menuRef}
+                >
+                  <ul className="main-nav">
+                    <li>
+                      <a href="#">Home</a>
+                    </li>
+                    <li>
+                      <a href="#">Shop</a>
+                    </li>
+                    <li>
+                      <a href="#">Contact</a>
+                    </li>
+                    <li>
+                      <a href="#">About</a>
+                    </li>
+                  </ul>
+                </nav>
+              )}
+
+              {/* LOGO */}
+              {isMobile && (
+                <div className="col-md-6 header-ctn-mobile">
+                  <a href="http://localhost:3000/" className="logo">
+                    <img src="../img/logo.png" alt="Logo" />
+                  </a>
+                </div>
+              )}
+              {/* /LOGO */}
+
+              {!isMobile && (
+                <div className="col-md-8 header-ctn ">
+                  {/* Language Icon */}
+                  <div className="language-dropdown">
+                    <a href="#" onClick={toggleDropdown}>
+                      <i className="fa fa-solid fa-language"></i>
+                      {!isMobile && <span>Language</span>}
+                    </a>
+                    {isDropdownOpen && (
+                      <ul className="dropdown-menu">
+                        <li onClick={() => handleLanguageSelect('English')}>
+                          <button>English</button>
+                        </li>
+                        <li onClick={() => handleLanguageSelect('Spanish')}>
+                          <button>Spanish</button>
+                        </li>
+                        <li onClick={() => handleLanguageSelect('French')}>
+                          <button>French</button>
+                        </li>
+                        <li onClick={() => handleLanguageSelect('German')}>
+                          <button>German</button>
+                        </li>
+                      </ul>
+                    )}
+                  </div>
+
+                  {/* Cart */}
                   <div>
+                    <Link to="/cart" className="cart-link">
+                      <i className="fa fa-shopping-cart"></i>
+                      {!isMobile && <span>Your cart</span>}
+                      <div className="qty">{getTotalQuantity()}</div>{' '}
+                      {/* Hiển thị tổng số lượng sản phẩm */}
+                    </Link>
+                  </div>
+                  {/* /Cart */}
+                </div>
+              )}
+
+              {isMobile && (
+                <div className="col-md-3 header-ctn-mobile ">
+                  <div className="icon-mobile">
                     <a href="#" onClick={toggleSearch}>
                       <i className="fa fa-solid fa-search"></i>
                     </a>
                   </div>
-                )}
 
-                {/* Language Icon */}
-                <div>
-                  <a href="#" onClick={toggleLanguageModal}>
-                    <i className="fa fa-solid fa-language"></i>
-                    {!isMobile && <span>Language</span>}
-                  </a>
-                </div>
+                  {/* Language Icon */}
+                  <div className="language-dropdown-mobile icon-mobile">
+                    <a href="#" onClick={toggleDropdown}>
+                      <i className="fa fa-solid fa-language"></i>
+                      {!isMobile && <span>Language</span>}
+                    </a>
+                    {isDropdownOpen && (
+                      <ul className="dropdown-menu">
+                        <li onClick={() => handleLanguageSelect('English')}>
+                          <button>English</button>
+                        </li>
+                        <li onClick={() => handleLanguageSelect('Spanish')}>
+                          <button>Spanish</button>
+                        </li>
+                        <li onClick={() => handleLanguageSelect('French')}>
+                          <button>French</button>
+                        </li>
+                        <li onClick={() => handleLanguageSelect('German')}>
+                          <button>German</button>
+                        </li>
+                      </ul>
+                    )}
+                  </div>
 
-                {/* Cart */}
-                <div>
-                  <Link to="/cart" className="cart-link">
-                    <i className="fa fa-shopping-cart"></i>
-                    {!isMobile && <span>Your cart</span>}
-                    <div className="qty">{getTotalQuantity()}</div> {/* Hiển thị tổng số lượng sản phẩm */}
-                  </Link>
+                  {/* Cart */}
+                  <div>
+                    <Link to="/cart" className="cart-link icon-mobile">
+                      <i className="fa fa-shopping-cart"></i>
+                      {!isMobile && <span>Your cart</span>}
+                    </Link>
+                  </div>
+                  {/* /Cart */}
                 </div>
-                {/* /Cart */}
-              </div>
+              )}
             </div>
             {/* /ICON AND MENU */}
+
+            {/* SEARCH BAR (only for mobile, toggle visibility) */}
+            {isMobile && isSearchVisible && (
+              <div className="col-12 d-inline-block justify-content-center ">
+                <div className="header-search">
+                  <form className="d-flex">
+                    <input
+                      className="input input-mobile"
+                      placeholder="Search here"
+                    />
+                    <button className="search-btn">Search</button>
+                  </form>
+                </div>
+              </div>
+            )}
+            {/* /SEARCH BAR */}
           </div>
         </div>
       </div>
       {/* /MAIN HEADER */}
-
-      {/* LANGUAGE SELECTION MODAL */}
-      {isLanguageModalVisible && (
-        <div className="language-modal">
-          <div className="modal-content">
-            <span className="close-btn" onClick={toggleLanguageModal}>&times;</span>
-            <h3>Select Language</h3>
-            <ul>
-              <li><button>English</button></li>
-              <li><button>Spanish</button></li>
-              <li><button>French</button></li>
-              <li><button>German</button></li>
-            </ul>
-          </div>
-        </div>
-      )}
-      {/* /LANGUAGE SELECTION MODAL */}
     </header>
   );
 };

@@ -162,7 +162,7 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems }) => {
           cartItems.map((_, index) => (
             <div key={index} className="cart-item-mobile">
               <div className="cart-item-column image">
-                <Skeleton height={75} width={75} />
+               <Skeleton height={75} width={80} />
               </div>
               <div className="cart-item-column info">
                 <Skeleton width={160} height={20} />
@@ -193,7 +193,7 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems }) => {
                   <button className='btn-tang' onClick={() => handleIncrement(item.id, item.size)}>+</button>
                   <br />
                   <button className="remove-button" onClick={() => handleRemoveItem(item.id, item.size)}>
-                  <i className="fas fa-trash-alt"></i> 
+                    <i className="fas fa-trash-alt"></i>
                   </button>
 
                 </div>
@@ -225,8 +225,8 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems }) => {
           {isLoading
             ? Array.from({ length: cartItems.length }).map((_, index) => (
               <tr key={index}>
-                <td><Skeleton height={75} width={80} /></td>
-                <td><Skeleton width={70} height={15} /></td>
+                <td><Skeleton height={75} width={75} /></td>
+                <td><Skeleton width={190} height={15} /></td>
                 <td><Skeleton width={60} height={15} /></td>
                 <td><Skeleton width={20} height={15} /></td>
                 <td><Skeleton width={90} height={34.8} /></td>

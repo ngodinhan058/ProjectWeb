@@ -108,7 +108,6 @@
     justify-content: space-between;
     margin-bottom: 15px;
     padding: 10px;
-    border: 1px solid #ccc;
     border-radius: 8px;
   }
   
@@ -130,12 +129,6 @@
     flex: 3; /* Cột bên phải cho các nút hành động */
   }
   
-  .product-image {
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
-    margin-right: 15px;
-  }
   
   .cart-item-mobile div {
     flex: 1;
@@ -149,10 +142,10 @@
   }
   
  .remove-button {
-  color: #f0f0f0;
-  background: #484848;
+  color: #ef1c1c;
   margin: 4px 7px;
-  padding: 4px 10px;
+  padding-left: 40px;
+  font-size: 1.2em;
  }
   
   
@@ -169,8 +162,14 @@
 .cart-table td.price-column {
   font-size: 1.2em; /* Tăng kích thước chữ */
   font-weight: bold; /* Làm chữ đậm */
-  text-align: center; /* Căn giữa giá */
-  padding: 8px; /* Thêm khoảng cách để dễ nhìn hơn */
+}
+
+.btn-giam {
+  margin-right: 4px;
+}
+
+.btn-tang {
+  margin-left: 4px;
 }
 
   

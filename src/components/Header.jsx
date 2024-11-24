@@ -40,20 +40,34 @@ const Header = () => {
   }, []);
 
   // Lắng nghe sự kiện nhấp chuột ra ngoài menu
+  // useEffect(() => {
+  //   const handleClickOutside = (event) => {
+  //     if (menuRef.current && !menuRef.current.contains(event.target)) {
+  //       setIsMenuOpen(false); // Đóng menu khi nhấp ra ngoài
+  //     }
+  //   };
+
+  //   document.addEventListener('mousedown', handleClickOutside);
+
+  //   // Clean up khi component unmount
+  //   return () => {
+  //     document.removeEventListener('mousedown', handleClickOutside);
+  //   };
+  // }, []);
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setIsMenuOpen(false); // Đóng menu khi nhấp ra ngoài
-      }
-    };
+  const handleClickOutside = (event) => {
+    if (menuRef.current && !menuRef.current.contains(event.target)) {
+      setDropdownOpen(false); // Đóng dropdown khi nhấp ra ngoài
+    }
+  };
 
-    document.addEventListener('mousedown', handleClickOutside);
+  document.addEventListener('mousedown', handleClickOutside);
 
-    // Clean up khi component unmount
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+  // Cleanup khi component unmount
+  return () => {
+    document.removeEventListener('mousedown', handleClickOutside);
+  };
+}, []);
 
   // Tính tổng số lượng sản phẩm trong giỏ
   const getTotalQuantity = () => {
@@ -231,7 +245,7 @@ const Header = () => {
               {!isMobile && (
                 <div className="col-md-8 header-ctn ">
                   {/* Language Icon */}
-                  <div className="language-dropdown">
+                  <div ref={menuRef} className="language-dropdown">
                     <a href="#" onClick={toggleDropdown}>
                       <i className="fa fa-solid fa-language"></i>
                       {!isMobile && <span>Language</span>}

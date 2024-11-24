@@ -14,8 +14,7 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems }) => {
   // Hàm lưu giỏ hàng vào localStorage
   const saveCartToStorage = (items) => {
     console.log('Saving to localStorage:', items);
-    localStorage.setItem('cart', JSON.stringify({ items }));
-    window.location.reload() // Lưu dưới key 'cart'
+    localStorage.setItem('cart', JSON.stringify({ items })); // Lưu dưới key 'cart'
   };
 
   // Hàm tải giỏ hàng từ localStorage
@@ -60,8 +59,7 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems }) => {
 
       console.log('Updated', updatedItems);
 
-      saveCartToStorage(updatedItems);
-      // Lưu giỏ hàng đã cập nhật vào localStorage
+      saveCartToStorage(updatedItems); // Lưu giỏ hàng đã cập nhật vào localStorage
       return updatedItems;
     });
   };
@@ -74,8 +72,7 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems }) => {
         }
         return item; // Giữ nguyên nếu số lượng = 1
       });
-      saveCartToStorage(updatedItems);
-      // Lưu giỏ hàng đã cập nhật vào localStorage
+      saveCartToStorage(updatedItems); // Lưu giỏ hàng đã cập nhật vào localStorage
       return updatedItems;
     });
   };
@@ -87,8 +84,7 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems }) => {
           ? { ...item, quantity: item.quantity + 1 }
           : item
       );
-      saveCartToStorage(updatedItems);
-      // Lưu giỏ hàng đã cập nhật vào localStorage
+      saveCartToStorage(updatedItems); // Lưu giỏ hàng đã cập nhật vào localStorage
       return updatedItems;
     });
   };
@@ -165,28 +161,42 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems }) => {
         {isLoading ? (
           cartItems.map((_, index) => (
             <div key={index} className="cart-item-mobile">
-              <Skeleton height={75} width={75} />
-              <Skeleton width={150} height={20} />
-              <Skeleton width={100} height={15} />
-              <Skeleton width={50} height={30} />
-              <Skeleton width={60} height={30} />
+              <div className="cart-item-column image">
+               <Skeleton height={75} width={80} />
+              </div>
+              <div className="cart-item-column info">
+                <Skeleton width={160} height={20} />
+                <Skeleton width={50} height={15} />
+                <Skeleton width={100} height={15} />
+              </div>
+              <div className="cart-item-column actions">
+                <Skeleton width={50} height={30} />
+                <Skeleton width={50} height={30} />
+              </div>
             </div>
           ))
         ) : (
           cartItems.map((item) => (
             <div key={item.id} className="cart-item-mobile">
-              <img src={item.image} alt={item.name} className="product-image" />
+              <div className="cart-item-column image">
+                <img src={item.image} alt={item.name} className="product-image" />
+              </div>
+              <div className="cart-item-column info">
+                <div>{item.name}</div>
+                <div>Size: {item.size}</div>
+                <div className="cart-price1">Giá: {item.price}</div>
+              </div>
+              <div className="cart-item-column actions">
+                <div>
+                  <button className='btn-giam' onClick={() => handleDecrement(item.id, item.size)}>-</button>
+                  {item.quantity}
+                  <button className='btn-tang' onClick={() => handleIncrement(item.id, item.size)}>+</button>
+                  <br />
+                  <button className="remove-button" onClick={() => handleRemoveItem(item.id, item.size)}>
+                    <i className="fas fa-trash-alt"></i>
+                  </button>
 
-              <div>{item.price}</div>
-              <div>
-                <input
-                  type="number"
-                  value={item.quantity}
-                  onChange={(e) => handleQuantityChange(item.id, e.target.value)}
-                  min="1"
-                  className="quantity-input"
-                />
-                <button onClick={() => handleRemoveItem(item.id, item.size)}>Xóa</button>
+                </div>
               </div>
             </div>
           ))
@@ -194,6 +204,7 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems }) => {
       </div>
     </div>
   );
+
 
   // Giao diện Desktop
   const desktopLayout = (
@@ -214,8 +225,8 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems }) => {
           {isLoading
             ? Array.from({ length: cartItems.length }).map((_, index) => (
               <tr key={index}>
-                <td><Skeleton height={75} width={80} /></td>
-                <td><Skeleton width={90} height={30} /></td>
+                <td><Skeleton height={75} width={75} /></td>
+                <td><Skeleton width={190} height={15} /></td>
                 <td><Skeleton width={60} height={15} /></td>
                 <td><Skeleton width={20} height={15} /></td>
                 <td><Skeleton width={90} height={34.8} /></td>
@@ -226,10 +237,8 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems }) => {
             : cartItems.map((item) => (
               <tr key={item.id}>
                 <td><img src={item.image} alt={item.name} className="product-image" /></td>
-                <td style={{ wordWrap: 'break-word', whiteSpace: 'normal', maxWidth: '100px' }}>
-                  {item.name}
-                </td>
-                <td>{item.price}</td>
+                <td>{item.name}</td>
+                <td className="price-column">{item.price}</td>
                 <td>{item.size}</td>
                 <td>
                   <button onClick={() => handleDecrement(item.id, item.size)}>-</button>
@@ -243,7 +252,7 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems }) => {
                   ).toLocaleString('vi-VN') + ' ₫'}
                 </td>
                 <td>
-                  <button onClick={() => handleRemoveItem(item.id, item.size)} className="remove-button">Xóa</button>
+                  <button onClick={() => handleRemoveItem(item.id, item.size)} className="remove-button1">Xóa</button>
                 </td>
               </tr>
             ))}

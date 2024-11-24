@@ -1,3 +1,4 @@
+
 .cart-summary {
     margin-top: 20px;
     display: flex;
@@ -86,3 +87,89 @@
   .cart-table button:hover {
     background-color: #ddd;
   }
+
+
+  /* Giỏ hàng mobie*/
+  .cart {
+    padding: 10px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .titleCart {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  
+  .cart-item-mobile {
+    display: flex; /* Sử dụng Flexbox để chia các phần tử thành các cột */
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 8px;
+  }
+  
+  .cart-item-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .cart-item-column.image {
+    flex: 3; /* Cột bên trái cho ảnh */
+  }
+  
+  .cart-item-column.info {
+    flex: 6; /* Cột giữa cho thông tin sản phẩm */
+  }
+  
+  .cart-item-column.actions {
+    flex: 3; /* Cột bên phải cho các nút hành động */
+  }
+  
+  
+  .cart-item-mobile div {
+    flex: 1;
+  }
+  
+  .quantity-input {
+    width: 60px;
+    padding: 5px;
+    text-align: center;
+    margin-right: 10px;
+  }
+  
+ .remove-button {
+  color: #ef1c1c;
+  margin: 4px 7px;
+  padding-left: 40px;
+  font-size: 1.2em;
+ }
+  
+  
+  button:focus {
+    outline: none;
+  }
+
+  .cart-price1 {
+    font-weight: bold; 
+    font-size: 1.1em;  
+  }
+
+  /* Định dạng cho cột giá */
+.cart-table td.price-column {
+  font-size: 1.2em; /* Tăng kích thước chữ */
+  font-weight: bold; /* Làm chữ đậm */
+}
+
+.btn-giam {
+  margin-right: 4px;
+}
+
+.btn-tang {
+  margin-left: 4px;
+}
+
+  

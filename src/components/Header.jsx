@@ -156,7 +156,7 @@ const Header = () => {
 
             {/* SEARCH BAR (only for desktop) */}
             {!isMobile && (
-              <div className="col-md-6">
+              <div className="col-md-7">
                 <div className="header-search ml-5">
                   <form>
                     <select className="input-select">

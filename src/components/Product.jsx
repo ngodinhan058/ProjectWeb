@@ -30,9 +30,10 @@ const Product = ({
   const image = [images];
   const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
+  const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
 
   const handleClick = () => {
-    navigate(`/chi-tiet/${id}`, {
+    navigate(`/product-detail/${id}`, {
       state: {
         id,
         images,
@@ -133,7 +134,7 @@ const Product = ({
         </div>
       </div>
 
-      {isLoading ? (
+      {isMobile ? (
         <></>
       ) : (
         <div className="add-to-cart">

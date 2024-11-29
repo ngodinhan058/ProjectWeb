@@ -597,8 +597,7 @@ const ProductDetail = () => {
                   ) : (
                     <>
                       <li>Category: </li>
-                      {/* {getCategoryItems(categories)} */}
-                      <Link to={`/${productsState.categories[0].categoryId}`}>
+                      <Link to={`product-list/${productsState.categories[0].categoryId}`}>
                         <li key={productsState.categories[0].categoryId}>
                           <a href={`#${productsState.categories[0].categoryId}`}> {productsState.categories[0].categoryName}</a>
                         </li>

@@ -31,7 +31,9 @@ const Product = ({
   const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
-
+  const truncateName = (text) => {
+    return text.length > 15 ? text.substring(0, 15) + '...' : text;
+};
   const handleClick = () => {
     navigate(`/product-detail/${id}`, {
       state: {
@@ -91,7 +93,7 @@ const Product = ({
       <div className="product-body">
         {/* <p className="product-category">{isLoading ? <Skeleton width={80} /> : categories}</p> */}
         <h3 className="product-name">
-          {isLoading ? <Skeleton width={150} /> : <a href="">{name}</a>}
+          {isLoading ? <Skeleton width={150} /> : <a href="">{truncateName(name)}</a>}
         </h3>
         <h4 className="product-price">
           {isLoading ? (

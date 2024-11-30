@@ -46,7 +46,7 @@ const Breadcrumb = ({ categoryId, allCategories }) => {
         </li>
         {breadcrumbPath.map((cat, index) => (
           <li key={cat.categoryId}>
-            <Link to={`product-list/${cat.categoryId}`}>
+            <Link to={`/product-list/${cat.categoryId}`}>
               {cat.categoryName}
             </Link>
             {index < breadcrumbPath.length - 1 }

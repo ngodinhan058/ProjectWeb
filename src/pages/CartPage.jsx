@@ -142,9 +142,10 @@ const CartPage = () => {
       userAddress: "",
       userDistrict: "",
       userCity: "",
-      userWard: ""
+      userWard: "",
+      totalPrice: calculateTotal,
     };
-    console.log(orderData);
+    // console.log(orderData);
 
     try { 
       // Make the API call to place the order

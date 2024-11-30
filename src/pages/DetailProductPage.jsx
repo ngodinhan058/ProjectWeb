@@ -175,124 +175,121 @@ const ProductDetail = () => {
       setTimeout(() => setErrorCheck(true), 0);
       return;
     }
-
+  
     if (quantity < 1) {
       setError('Vui lòng chọn số lượng hợp lệ');
       setErrorCheck(false);
       setTimeout(() => setErrorCheck(true), 0);
       return;
     }
-
+  
     // Lấy thông tin kích thước đã chọn từ productSizes
     const selectedProductSize = productsState.productSizes.find(
       (size) => size.productSizeName === selectedSize
     );
-
+  
     if (!selectedProductSize) {
       setError('Kích thước sản phẩm không tồn tại');
       setErrorCheck(false);
       setTimeout(() => setErrorCheck(true), 0);
       return;
     }
-
+  
     // Nếu vượt qua các kiểm tra, tiến hành thêm sản phẩm vào giỏ hàng
     setError('');
     setErrorCheck(false);
     setErrorCheckQuantity(false);
-
+  
     const basePrice = parseInt(productsState.productPriceSale.replace(/\D/g, ''), 10);
-
+  
     const existingProductIndex = cart.findIndex(
       (item) => item.id === id && item.size === selectedSize
     );
-
+  
     let updatedCart;
     if (existingProductIndex !== -1) {
       // Cập nhật sản phẩm có trong giỏ hàng
       updatedCart = cart.map((item, index) =>
         index === existingProductIndex
           ? {
-            ...item,
-            quantity: item.quantity + quantity,
-            price: basePrice.toLocaleString() + " ₫",
-            total: (basePrice * (item.quantity + quantity)).toLocaleString() + " ₫",
-            image: selectedImage,
-          }
+              ...item,
+              quantity: item.quantity + quantity,
+              price: basePrice.toLocaleString() + ' ₫',
+              total: (basePrice * (item.quantity + quantity)).toLocaleString() + ' ₫',
+              image: selectedImage,
+            }
           : item
       );
     } else {
-
+      // Thêm sản phẩm mới vào giỏ hàng
       const newProduct = {
         id,
         name: productsState.productName,
         size: selectedSize,
         quantity,
-        price: basePrice.toLocaleString() + " ₫",
-        total: (basePrice * quantity).toLocaleString() + " ₫",
+        price: basePrice.toLocaleString() + ' ₫',
+        total: (basePrice * quantity).toLocaleString() + ' ₫',
         image: selectedImage,
         sizeId: selectedProductSize.productSizeId,
       };
-
-      let updatedCart = [...cart, newProduct]; // Ensure you update the cart
-
-      setCart(updatedCart);
-      const cartData = {
-        items: updatedCart,
-      };
-      localStorage.setItem('cart', JSON.stringify(cartData)); // Lưu giỏ hàng vào localStorage
-
-      // Dữ liệu gửi đến API
-      const cartItemData = {
-        cartItem: {
-          productQuantity: quantity,
-          productId: id,
-          sizeId: selectedProductSize.productSizeId,
-        },
-      };
-      // console.log("cartItemData",cartItemData);
-      
-      try {
-        // Fetch cart using GET request
-        const cartResponse = await axios.get(`${BASE_URL}carts/guest/${uuid}`);
-        
-        if (cartResponse.status === 200) {
-          const cartId = cartResponse.data.data.cartId;
-          
-          // If cartId exists, update the cart with the new product
-          if (cartId) {
-            await axios.put(`${BASE_URL}cart/${cartId}`, cartItemData);
-            console.log("Sản phẩm đã được thêm vào giỏ hàng");
-          } else {
-            console.error("Cart ID not found in the response.");
-          }
+      updatedCart = [...cart, newProduct];
+    }
+    const cartItemDataUUID = {
+      cartItem: {
+        productQuantity: quantity,
+        productId: id,
+        sizeId: selectedProductSize.productSizeId,
+      },
+      guestId: uuid,
+    };
+    const cartItemData = {
+      cartItem: {
+        productQuantity: quantity,
+        productId: id,
+        sizeId: selectedProductSize.productSizeId,
+      },
+    };
+    // Cập nhật state và lưu vào localStorage
+    setCart(updatedCart);
+    localStorage.setItem('cart', JSON.stringify({ items: updatedCart }));
+    try {
+      const cartResponse = await axios.get(`${BASE_URL}carts/guest/${uuid}`);
+      if (cartResponse.status === 200) {
+        const cartId = cartResponse.data.data.cartId;
+  
+        if (cartId) {
+          // Nếu đã có cartId, cập nhật giỏ hàng
+          await axios.put(`${BASE_URL}cart/${cartId}`, cartItemData);
+          console.log('Sản phẩm đã được thêm vào giỏ hàng');
         } else {
-          console.error("Unexpected response status:", cartResponse.status, cartResponse);
+          console.log('Cart ID không tồn tại trong phản hồi.');
         }
-      } catch (error) {
-        // If cart doesn't exist (400), create a new cart and then add the product
-        const createCartResponse = await axios.post(`${BASE_URL}cart/create_guest/${uuid}`, cartItemData);
-        console.log(createCartResponse);
-    
+      } else {
+        console.log('Unexpected response status:', cartResponse.status, cartResponse);
+      }
+    } catch (error) {
+      try {
+        const createCartResponse = await axios.post(`${BASE_URL}cart/create_guest`, cartItemDataUUID);
+  
         if (createCartResponse.status === 201 || createCartResponse.status === 200) {
           const newCartId = createCartResponse.data.data.cartId;
-          localStorage.setItem("cartId", newCartId);
-          console.log("Cart created successfully:", newCartId);
-    
-          // Add product to the newly created cart
-          await axios.put(`${BASE_URL}cart/${newCartId}`, cartItemData);
-          console.log("Sản phẩm đã được thêm vào giỏ hàng");
+          localStorage.setItem('cartId', newCartId);
+          console.log('Giỏ hàng được tạo thành công:', newCartId);
+  
+          await axios.put(`${BASE_URL}cart/${newCartId}`, cartItemDataUUID);
+          console.log('Sản phẩm đã được thêm vào giỏ hàng');
         }
+      } catch (createError) {
+        console.error('Lỗi khi tạo giỏ hàng:', createError);
       }
-      
-      
     }
-
-    // Điều hướng và reload trang
+  
+    // Điều hướng đến trang giỏ hàng
     setTimeout(() => {
-      navigate("/cart");
-      // window.location.reload();
+      navigate('/cart');
     }, 100);
   };
+  
 
 
   const handleQuantityChange = (change) => {

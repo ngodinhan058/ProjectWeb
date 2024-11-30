@@ -156,6 +156,7 @@ const CartPage = () => {
         localStorage.setItem('user', JSON.stringify(userInfo));
         localStorage.removeItem('cart');
         localStorage.removeItem("cartId");
+        localStorage.removeItem("guestId");
         alert('Đơn hàng đã được ghi nhận, nhân viên chúng tôi sẽ liên hệ quý khách sớm nhất có thể để xác nhận đơn');
         window.location.reload()
         console.log('Success', 'Order placed successfully!');

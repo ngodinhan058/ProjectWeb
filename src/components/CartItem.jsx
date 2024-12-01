@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
-const Cart = ({ cartItems, onSetCartItems: setCartItems }) => {
+const Cart = ({ cartItems, onSetCartItems: setCartItems, onQuantityChange, onDelete}) => {
   const [isLoading, setIsLoading] = useState(true);
   //const [cartItems, setCartItems] = useState([]);
   const [isMobile, setIsMobile] = useState(false);
@@ -33,20 +33,10 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems }) => {
     }
   };
 
-  console.log('Cart', cartItems);
+  // console.log('Cart', cartItems);
 
-  const handleQuantityChange = (id, newQuantity) => {
-    if (newQuantity < 1) return; // Không cho phép số lượng dưới 1
-    setCartItems((prevItems) => {
-      const updatedItems = prevItems.map((item) =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      );
-      saveCartToStorage(updatedItems); // Lưu giỏ hàng đã cập nhật vào localStorage
-      return updatedItems;
-    });
-  };
 
-  const handleRemoveItem = (id, size) => {
+  const handleRemoveItem = (id, size, sizeId) => {
     const dupItems = cartItems.filter(
       (item) => item.id === id && item.size !== size
     );
@@ -60,11 +50,12 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems }) => {
       console.log('Updated', updatedItems);
 
       saveCartToStorage(updatedItems); // Lưu giỏ hàng đã cập nhật vào localStorage
+      onDelete(id, sizeId)
       return updatedItems;
     });
   };
 
-  const handleDecrement = (id, size) => {
+  const handleDecrement = (id, size, sizeId) => {
     setCartItems((prevItems) => {
       const updatedItems = prevItems.map((item) => {
         if (item.id === id && item.quantity > 1 && item.size == size) {
@@ -72,48 +63,26 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems }) => {
         }
         return item; // Giữ nguyên nếu số lượng = 1
       });
+      onQuantityChange(id, true, sizeId);
       saveCartToStorage(updatedItems); // Lưu giỏ hàng đã cập nhật vào localStorage
       return updatedItems;
     });
   };
 
-  const handleIncrement = (id, size) => {
+  const handleIncrement = (id, size, sizeId) => {
     setCartItems((prevItems) => {
       const updatedItems = prevItems.map((item) =>
         item.id === id && item.size == size
           ? { ...item, quantity: item.quantity + 1 }
           : item
       );
+      onQuantityChange(id, false, sizeId);
+
       saveCartToStorage(updatedItems); // Lưu giỏ hàng đã cập nhật vào localStorage
       return updatedItems;
     });
   };
 
-  const calculateTotal = () => {
-    return cartItems.reduce((total, item) => {
-      const quantity = item.quantity || 0; // Nếu quantity là null hoặc undefined, gán 0
-      if (quantity > 0) {
-        return (
-          total + parseFloat(item.price.replace(/[^\d.-]/g, '')) * quantity
-        );
-      }
-      return total; // Bỏ qua sản phẩm nếu quantity <= 0
-    }, 0);
-  };
-
-  const handlePlaceOrder = () => {
-    if (!customerName || !customerPhone) {
-      setError('Vui lòng nhập đầy đủ tên và số điện thoại');
-      return;
-    }
-    setError('');
-
-    // Lưu thông tin khách hàng vào localStorage với key là 'user'
-    const userInfo = { name: customerName, phone: customerPhone };
-    localStorage.setItem('user', JSON.stringify(userInfo));
-
-    alert('Đặt hàng thành công!');
-  };
 
   useEffect(() => {
     // Kiểm tra xem có thông tin khách hàng trong localStorage không
@@ -188,11 +157,11 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems }) => {
               </div>
               <div className="cart-item-column actions">
                 <div>
-                  <button className='btn-giam' onClick={() => handleDecrement(item.id, item.size)}>-</button>
+                  <button className='btn-giam' onClick={() => handleDecrement(item.id, item.size, item.sizeId)}>-</button>
                   {item.quantity}
-                  <button className='btn-tang' onClick={() => handleIncrement(item.id, item.size)}>+</button>
+                  <button className='btn-tang' onClick={() => handleIncrement(item.id, item.size, item.sizeId)}>+</button>
                   <br />
-                  <button className="remove-button" onClick={() => handleRemoveItem(item.id, item.size)}>
+                  <button className="remove-button" onClick={() => handleRemoveItem(item.id, item.size, item.sizeId)}>
                     <i className="fas fa-trash-alt"></i>
                   </button>
 
@@ -241,9 +210,9 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems }) => {
                 <td className="price-column">{item.price}</td>
                 <td>{item.size}</td>
                 <td>
-                  <button onClick={() => handleDecrement(item.id, item.size)}>-</button>
+                  <button onClick={() => handleDecrement(item.id, item.size, item.sizeId)}>-</button>
                   {item.quantity}
-                  <button onClick={() => handleIncrement(item.id, item.size)}>+</button>
+                  <button onClick={() => handleIncrement(item.id, item.size, item.sizeId)}>+</button>
                 </td>
                 <td>
                   {(
@@ -252,7 +221,7 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems }) => {
                   ).toLocaleString('vi-VN') + ' ₫'}
                 </td>
                 <td>
-                  <button onClick={() => handleRemoveItem(item.id, item.size)} className="remove-button1">Xóa</button>
+                  <button onClick={() => handleRemoveItem(item.id, item.size, item.sizeId)} className="remove-button1">Xóa</button>
                 </td>
               </tr>
             ))}

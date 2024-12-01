@@ -35,7 +35,7 @@ const ProductTabs = ({ image, id }) => {
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
-  console.log(productsImage);
+  // console.log(productsImage);
   
   const descriptionMarkdown = `
 

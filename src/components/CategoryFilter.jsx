@@ -71,7 +71,7 @@ const CategoryFilter = ({ isLoading, onCategoryChange }) => {
           ) : (
             <div key={category.categoryId} style={{ position: 'relative' }}>
               <Link
-                to={isCategorySelected(category.categoryId) ? `/` : `/product-list/${category.categoryId}`}
+                to={isCategorySelected(category.categoryId) ? `/product-list` : `/product-list/${category.categoryId}`}
                 onClick={() => handleCategorySelect(category.categoryId)}
                 className={`category-item ${isCategorySelected(category.categoryId) ? 'selected' : ''}`}
               >
@@ -95,7 +95,7 @@ const CategoryFilter = ({ isLoading, onCategoryChange }) => {
                   <div className="subcategory">
                     {category.categoryChildren.map((subcategory) => (
                       <Link
-                        to={isSubcategorySelected(subcategory.categoryId) ? `/` : `/product-list/${subcategory.categoryId}`}
+                        to={isSubcategorySelected(subcategory.categoryId) ? `/product-list` : `/product-list/${subcategory.categoryId}`}
                         key={`${category.categoryId}-${subcategory.categoryId}`}
                         onClick={() => handleCategorySelect(subcategory.categoryId)}
                       >

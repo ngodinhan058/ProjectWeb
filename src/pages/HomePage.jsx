@@ -1,10 +1,74 @@
 import React, { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
 import DesktopCollections from "../components/DesktopCollections";
 import MobileCollections from "../components/MobileCollections";
+import { BASE_URL } from "../components/api/config";
+
+const mockCategories = [
+  {
+    id: 1,
+    name: "iPhone",
+    image:
+      "https://tse4.mm.bing.net/th?id=OIP.PQq5MUTxoGd6MApr4b0Q-QHaHp&pid=Api&P=0&h=220",
+  },
+  {
+    id: 2,
+    name: "Samsung",
+    image:
+      "https://tse3.mm.bing.net/th?id=OIP.Pwk7-Y4ditgSVjOR1hdePAHaHa&pid=Api&P=0&h=220",
+  },
+  {
+    id: 3,
+    name: "Xiaomi",
+    image:
+      "https://pos.nvncdn.com/be3294-43017/campaign/20241123_WLCk6DeD.jpeg",
+  },
+  {
+    id: 4,
+    name: "Oppo",
+    image:
+      "https://tse1.mm.bing.net/th?id=OIP.WkHz-L6z6pJ6jEUcRF-E_wHaHa&pid=Api&P=0&h=220",
+  },
+  {
+    id: 5,
+    name: "Vivo",
+    image:
+      "https://tse3.mm.bing.net/th?id=OIP.Pwk7-Y4ditgSVjOR1hdePAHaHa&pid=Api&P=0&h=220",
+  },
+  {
+    id: 6,
+    name: "Realme",
+    image:
+      "https://tse3.mm.bing.net/th?id=OIP.Pwk7-Y4ditgSVjOR1hdePAHaHa&pid=Api&P=0&h=220",
+  },
+  {
+    id: 7,
+    name: "MacBook",
+    image:
+      "https://cdn.tgdd.vn/Products/Images/42/313889/xiaomi-14-ultra-1-750x500.jpg",
+  },
+  {
+    id: 8,
+    name: "Asus",
+    image:
+      "https://tse3.mm.bing.net/th?id=OIP.7rCQ26DZrrR-xJnWRO0p6QHaHa&pid=Api&P=0&h=220",
+  },
+  {
+    id: 9,
+    name: "HP",
+    image:
+      "https://tse1.mm.bing.net/th?id=OIP.3TFKnNO0oWvmg9IhNsPTLwHaHa&pid=Api&P=0&h=220",
+  },
+  {
+    id: 10,
+    name: "Dell",
+    image:
+      "https://tse1.mm.bing.net/th?id=OIP._4TLQU2Grw-1tz1IR-vBXgHaHa&pid=Api&P=0&h=220",
+  },
+];
+
 
 const mockCollections = [
   {
@@ -16,6 +80,7 @@ const mockCollections = [
       {
         id: "00f81ac1-1e15-4e26-9aac-a44c2873f4e8",
         name: "iPhone 16",
+        brand: "iPhone",
         image:
           "https://cdnv2.tgdd.vn/mwg-static/tgdd/Products/Images/42/329149/iphone-16-pro-max-titan-den-1-638638962017739954-750x500.jpg",
         price: "234đ",
@@ -23,6 +88,7 @@ const mockCollections = [
       {
         id: "31360000-0000-0000-0000-000000000000",
         name: "Xiaomi 14 Ultra",
+        brand: "Xiaomi",
         image:
           "https://cdn.tgdd.vn/Products/Images/42/313889/xiaomi-14-ultra-1-750x500.jpg",
         price: "180.000 ₫",
@@ -30,6 +96,7 @@ const mockCollections = [
       {
         id: "50038924-ade1-48bc-8336-73b11255bfb5",
         name: "MacBook Air M1",
+        brand: "MacBook",
         image:
           "https://cdn.tgdd.vn/Products/Images/44/231244/grey-1-750x500.jpg",
         price: "190.000 ₫",
@@ -37,6 +104,7 @@ const mockCollections = [
       {
         id: "31380000-0000-0000-0000-000000000000",
         name: "Xiaomi 14T Pro",
+        brand: "Xiaomi",
         image:
           "https://cdn.tgdd.vn/Products/Images/42/313889/xiaomi-14-ultra-1-750x500.jpg",
         price: "1.090.000 ₫",
@@ -44,6 +112,7 @@ const mockCollections = [
       {
         id: "32e0ed13-66fd-4608-b783-b999cecfbd40",
         name: "Laptop Gaming MSI GF63",
+        brand: "MSI",
         image:
           "https://cdn.tgdd.vn/Products/Images/44/231244/grey-1-750x500.jpg",
         price: "1.430.000 đ",
@@ -51,6 +120,7 @@ const mockCollections = [
       {
         id: "a547c7cf-f93e-4833-99fc-b82ffd1c0242",
         name: "iPhone 16 Pro Max",
+        brand: "iPhone",
         image:
           "https://cdnv2.tgdd.vn/mwg-static/tgdd/Products/Images/42/329149/iphone-16-pro-max-titan-den-1-638638962017739954-750x500.jpg",
         price: "1.490.00 đ",
@@ -66,6 +136,7 @@ const mockCollections = [
       {
         id: "dd65a34e-f646-462e-a3ce-8d78d28460fe",
         name: "Samsung Galaxy S24 Ultra",
+        brand: "Samsung",
         image:
           "https://cdn.tgdd.vn/Products/Images/42/326348/samsung-galaxy-z-fold6-xanh-navy-1-750x500.jpg",
         price: "1.499.000 ₫",
@@ -73,6 +144,7 @@ const mockCollections = [
       {
         id: "d7b72420-5642-48f7-895e-6204b572dc51",
         name: "Samsung Galaxy A06",
+        brand: "Samsung",
         image:
           "https://cdn.tgdd.vn/Products/Images/42/326348/samsung-galaxy-z-fold6-xanh-navy-1-750x500.jpg",
         price: "1.490.000 đ",
@@ -80,6 +152,7 @@ const mockCollections = [
       {
         id: "baf72de3-9128-453e-8a20-dcecce3f3305",
         name: "iPhone 15 Pro Max",
+        brand: "iPhone",
         image:
           "https://cdnv2.tgdd.vn/mwg-static/tgdd/Products/Images/42/329149/iphone-16-pro-max-titan-den-1-638638962017739954-750x500.jpg",
         price: "1.590.000 đ",
@@ -87,6 +160,7 @@ const mockCollections = [
       {
         id: "1d489d11-4245-4fc9-b5f3-a37e85c91b6d",
         name: "iPhone 16 Plus",
+        brand: "iPhone",
         image:
           "https://cdnv2.tgdd.vn/mwg-static/tgdd/Products/Images/42/329149/iphone-16-pro-max-titan-den-1-638638962017739954-750x500.jpg",
         price: "1.990.000 đ",
@@ -94,6 +168,7 @@ const mockCollections = [
       {
         id: "778640d8-1429-4255-aa82-8374d5342a13",
         name: "Samsung Galaxy Z Flip 6",
+        brand: "Samsung",
         image:
           "https://cdn.tgdd.vn/Products/Images/42/326348/samsung-galaxy-z-fold6-xanh-navy-1-750x500.jpg",
         price: "1.990.000 đ",
@@ -101,6 +176,7 @@ const mockCollections = [
       {
         id: "9bd60040-5503-4dff-95a9-cc5112f49313",
         name: "Samsung Galaxy Z Fold 6",
+        brand: "Samsung",
         image:
           "https://cdn.tgdd.vn/Products/Images/42/326348/samsung-galaxy-z-fold6-xanh-navy-1-750x500.jpg",
         price: "1.890.000 đ",
@@ -112,35 +188,67 @@ const mockCollections = [
 const HomePage = () => {
   const [collections, setCollections] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  const [offset, setOffset] = useState(0); // Offset để điều chỉnh vị trí
   const isDesktop = useMediaQuery({ minWidth: 481 });
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     setTimeout(() => {
       setCollections(mockCollections);
+      setCategories(mockCategories);
       setLoading(false);
     }, 1000);
   }, []);
 
+  useEffect(() => {
+    if (categories.length > 6) {
+      const interval = setInterval(() => {
+        setOffset((prevOffset) => (prevOffset + 1) % categories.length);
+      }, 6000); // Mỗi 6 giây
+
+      return () => clearInterval(interval); // Dọn dẹp khi component unmount
+    }
+  }, [categories]);
+
+  const displayedCategories = categories.slice(
+    offset,
+    offset + 6
+  );
+
   return (
-    <div className="section">
-      <div className="container">
-        <div className="row">
-          <div className="col-md-12">
-            <div className="section-title">
-              <h3 className="title">Collections</h3>
-            </div>
+    <>
+      <div className="logo-container" style={{ display: "flex", overflow: "hidden" }}>
+        {displayedCategories.map((category) => (
+          <div key={category.id} className="logo-item" style={{ flex: "0 0 auto" }}>
+            <img
+              src={category.image}
+              alt={category.name}
+              className="logo-image"
+              style={{ width: "150px", height: "150px", margin: "0 10px" }}
+            />
           </div>
-          {loading ? (
-            <Skeleton count={3} height={200} />
-          ) : isDesktop ? (
-            <DesktopCollections collections={collections} />
-          ) : (
-            <MobileCollections collections={collections} />
-          )}
+        ))}
+      </div>
+
+      <div className="section">
+        <div className="container">
+          <div className="row">
+            <div className="col-md-12">
+              <div className="section-title">
+                <h3 className="title">Collections</h3>
+              </div>
+            </div>
+            {loading ? (
+              <Skeleton count={3} height={200} />
+            ) : isDesktop ? (
+              <DesktopCollections collections={collections} />
+            ) : (
+              <MobileCollections collections={collections} />
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

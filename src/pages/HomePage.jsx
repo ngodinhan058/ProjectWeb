@@ -1,50 +1,217 @@
-import React, { useEffect, useState } from 'react';
-
+import React, { useEffect, useState, useRef } from 'react';
 import 'react-loading-skeleton/dist/skeleton.css';
+import Product from '../components/Product';
+import Slider from 'react-slick';
+import { useMediaQuery } from 'react-responsive';
 
 
 const HomePage = () => {
-    <div className="section">
-        <div className="container">
-            <div className="row">
-                <div className="col-md-12">
-                    <div className="section-title">
+    const sliderRefNew = useRef(null);
+    const sliderRefSale = useRef(null);
+    const [isLoadingNew, setIsLoadingNew] = useState(true);
+    const [isLoadingSale, setIsLoadingSale] = useState(true);
+    const isDesktop = useMediaQuery({ minWidth: 769 }); // Desktop: màn hình >= 769px
+    const isMobile = useMediaQuery({ query: '(max-width: 768px)' }); // Mobile: màn hình <= 768px
+    const [newProducts, setNewProducts] = useState([]);
+    const [saleOffProducts, setSaleOffProducts] = useState([]);
+
+    // Cấu hình slider
+    const sliderSettings = {
+        infinite: true,
+        speed: 100,
+        slidesToShow: 4, // Hiển thị 4 sản phẩm trên desktop
+        slidesToScroll: 1,
+        autoplay: true,
+        autoplaySpeed: 2000,
+        arrows: false,
+    };
+
+    // Giả lập tải dữ liệu từ API
+    useEffect(() => {
+        setTimeout(() => {
+            const mockNewProducts = Array(6)
+                .fill(null)
+                .map((_, index) => ({
+                    productId: index + 1,
+                    productName: `New Product ${index + 1}`,
+                    productPriceSale: 100 + index * 10,
+                    productPrice: 150 + index * 15,
+                    categories: ['Category 1', 'Category 2'],
+                    productImages: [`https://via.placeholder.com/150?text=New+Product+${index + 1}`],
+                    productRating: 4.5,
+                    productSale: 10,
+                }));
+            setNewProducts(mockNewProducts);
+            setIsLoadingNew(false);
+        }, 1000);
+
+        setTimeout(() => {
+            const mockSaleOffProducts = Array(6)
+                .fill(null)
+                .map((_, index) => ({
+                    productId: index + 1,
+                    productName: `Sale Product ${index + 1}`,
+                    productPriceSale: 50 + index * 5,
+                    productPrice: 100 + index * 10,
+                    categories: ['Category A', 'Category B'],
+                    productImages: [`https://via.placeholder.com/150?text=Sale+Product+${index + 1}`],
+                    productRating: 4.0,
+                    productSale: 20,
+                }));
+            setSaleOffProducts(mockSaleOffProducts);
+            setIsLoadingSale(false);
+        }, 1000);
+    }, []);
+
+    return (
+        <div className="section">
+            <div className="container">
+                {/* New Products Section */}
+                <div className="row">
+                    <div className="section-title text-center">
                         <h3 className="title">New Products</h3>
                     </div>
-                </div>
-                <div className="col-md-12">
-                    <div className="row">
-                        <div className="products-tabs">
-                            <div id="tab1" className="tab-pane active">
-                                <div className="products-slick" data-nav="#slick-nav-1">
-                                    {/* <Product
-                                        imgSrc="./img/product01.png"
-                                        isNew={true}
-                                        isOnSale={true}
-                                        name="Product name goes here"
-                                        category="Category"
-                                        price={980}
-                                        oldPrice={990}
-                                        rating={5}
-                                    />
-                                    <Product
-                                        imgSrc="./img/product02.png"
-                                        isNew={true}
-                                        isOnSale={false}
-                                        name="Product name goes here"
-                                        category="Category"
-                                        price={980}
-                                        oldPrice={990}
-                                        rating={4}
-                                    /> */}
+                    {isLoadingNew ? (
+                        Array(isDesktop ? 4 : 2)
+                            .fill()
+                            .map((_, index) => (
+                                <div className={isMobile ? "product-item" : "col-md-3 col-xs-6"} key={index}>
+                                    <Product isLoading={true} />
                                 </div>
-                                <div id="slick-nav-1" className="products-slick-nav"></div>
-                            </div>
+                            ))
+                    ) : isDesktop ? (
+                        <div className="slider-container">
+                            <button
+                                className="custom-prev-btn"
+                                onClick={() => sliderRefNew.current.slickPrev()}
+                            >
+                                <i className="fa fa-chevron-left" style={{ fontSize: 20, marginRight: 3 }}></i>
+                            </button>
+                            <Slider ref={sliderRefNew} {...sliderSettings}>
+                                {newProducts.map((product) => (
+                                    <div className="col-md-3 col-xs-6 marginBottom" key={product.productId}>
+                                        <Product
+                                            id={product.productId}
+                                            name={product.productName}
+                                            price={product.productPriceSale}
+                                            oldPrice={product.productPrice}
+                                            categories={product.categories}
+                                            images={product.productImages}
+                                            rating={product.productRating}
+                                            sale={product.productSale}
+                                            isLoading={false}
+                                        />
+                                    </div>
+                                ))}
+                            </Slider>
+                            <button
+                                className="custom-next-btn"
+                                onClick={() => sliderRefNew.current.slickNext()}
+                            >
+                                <i className="fa fa-chevron-right" style={{ fontSize: 20, marginLeft: 3 }}></i>
+                            </button>
                         </div>
+                    ) : (
+                        <div className="product-grid">
+                            {newProducts.map((product) => (
+                                <div className="product-item" key={product.productId}>
+                                    <Product
+                                        id={product.productId}
+                                        name={product.productName}
+                                        price={product.productPriceSale}
+                                        oldPrice={product.productPrice}
+                                        images={product.productImages}
+                                        rating={product.productRating}
+                                        sale={product.productSale}
+                                        isLoading={false}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                {/* Sale Off Products Section */}
+                <div className="row">
+                    <div className="section-title text-center">
+                        <h3 className="title">Sale Off Products</h3>
+                    </div>
+                    {isLoadingSale ? (
+                        Array(isDesktop ? 4 : 2)
+                            .fill()
+                            .map((_, index) => (
+                                <div className={isMobile ? "product-item" : "col-md-3 col-xs-6"} key={index}>
+                                    <Product isLoading={true} />
+                                </div>
+                            ))
+                    ) : isDesktop ? (
+                        <div className="slider-container">
+                            <button
+                                className="custom-prev-btn"
+                                onClick={() => sliderRefSale.current.slickPrev()}
+                            >
+                                <i className="fa fa-chevron-left" style={{ fontSize: 20, marginRight: 3 }}></i>
+                            </button>
+                            <Slider ref={sliderRefSale} {...sliderSettings}>
+                                {saleOffProducts.map((product) => (
+                                    <div className="col-md-3 col-xs-6 marginBottom" key={product.productId}>
+                                        <Product
+                                            id={product.productId}
+                                            name={product.productName}
+                                            price={product.productPriceSale}
+                                            oldPrice={product.productPrice}
+                                            categories={product.categories}
+                                            images={product.productImages}
+                                            rating={product.productRating}
+                                            sale={product.productSale}
+                                            isLoading={false}
+                                        />
+                                    </div>
+                                ))}
+                            </Slider>
+                            <button
+                                className="custom-next-btn"
+                                onClick={() => sliderRefSale.current.slickNext()}
+                            >
+                                <i className="fa fa-chevron-right" style={{ fontSize: 20, marginLeft: 3 }}></i>
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="product-grid">
+                            {saleOffProducts.map((product) => (
+                                <div className="product-item" key={product.productId}>
+                                    <Product
+                                        id={product.productId}
+                                        name={product.productName}
+                                        price={product.productPriceSale}
+                                        oldPrice={product.productPrice}
+                                        images={product.productImages}
+                                        rating={product.productRating}
+                                        sale={product.productSale}
+                                        isLoading={false}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+                <div className="row policy-bar">
+                    <div className="col-md-4 policy-item">
+                        <i className="bi bi-truck"></i>
+                         MIỄN PHÍ VẬN CHUYỂN (BILL lớn 1M)
+                    </div>
+                    <div className="col-md-4 policy-item">
+                        <i className="bi bi-arrow-repeat"></i>
+                        ĐỔI TRẢ TRONG VÒNG 7 NGÀY
+                    </div>
+                    <div className="col-md-4 policy-item">
+                        <i className="bi bi-shop"></i>
+                        SẢN PHẨM TRẢI NGHIỆM SẴN TẠI STORE
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    );
 };
+
 export default HomePage;

@@ -1,3 +1,50 @@
+/* Home Page */
+.policy-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between; /* Dàn đều các phần tử */
+  align-items: center; /* Căn giữa theo chiều dọc */
+  padding: 16px 0;
+}
+
+.policy-item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: left;
+  flex: 1; /* Chia đều diện tích */
+  padding: 8px 16px;
+  box-sizing: border-box;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+.policy-item i {
+  font-size: 24px; /* Kích thước icon */
+  color: #007bff;
+  margin-right: 8px; /* Khoảng cách giữa icon và text */
+}
+
+@media (max-width: 768px) {
+  .policy-bar {
+    flex-direction: column; /* Hiển thị dọc */
+    align-items: center; /* Căn giữa trên mobile */
+  }
+
+  .policy-item {
+    flex-direction: column; /* Icon bên trên, text bên dưới */
+    align-items: center; /* Canh giữa nội dung */
+    justify-content: center; /* Căn giữa nội dung */
+    text-align: center; /* Text căn giữa */
+    margin-bottom: 16px; /* Khoảng cách giữa các mục */
+  }
+
+  .policy-item i {
+    margin-right: 0; /* Loại bỏ khoảng cách ngang */
+    margin-bottom: 8px; /* Khoảng cách giữa icon và text */
+  }
+}
 
 /* Khoảng cách chỗ Sort */
 .store-sort {

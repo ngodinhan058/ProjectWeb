@@ -110,11 +110,84 @@ import { axiosInstance } from "../components/api/axiosConfig";
 //   },
 // ];
 
+    
+const mockCategories = [
+{
+  id: 1,
+  name: "iPhone",
+  image:
+    "https://tse4.mm.bing.net/th?id=OIP.PQq5MUTxoGd6MApr4b0Q-QHaHp&pid=Api&P=0&h=220",
+},
+{
+  id: 2,
+  name: "Samsung",
+  image:
+    "https://tse3.mm.bing.net/th?id=OIP.Pwk7-Y4ditgSVjOR1hdePAHaHa&pid=Api&P=0&h=220",
+},
+{
+  id: 3,
+  name: "Xiaomi",
+  image:
+    "https://pos.nvncdn.com/be3294-43017/campaign/20241123_WLCk6DeD.jpeg",
+},
+{
+  id: 4,
+  name: "Oppo",
+  image:
+    "https://tse1.mm.bing.net/th?id=OIP.WkHz-L6z6pJ6jEUcRF-E_wHaHa&pid=Api&P=0&h=220",
+},
+{
+  id: 5,
+  name: "Vivo",
+  image:
+    "https://tse3.mm.bing.net/th?id=OIP.Pwk7-Y4ditgSVjOR1hdePAHaHa&pid=Api&P=0&h=220",
+},
+{
+  id: 6,
+  name: "Realme",
+  image:
+    "https://tse3.mm.bing.net/th?id=OIP.Pwk7-Y4ditgSVjOR1hdePAHaHa&pid=Api&P=0&h=220",
+},
+{
+  id: 7,
+  name: "MacBook",
+  image:
+    "https://cdn.tgdd.vn/Products/Images/42/313889/xiaomi-14-ultra-1-750x500.jpg",
+},
+{
+  id: 8,
+  name: "Asus",
+  image:
+    "https://tse3.mm.bing.net/th?id=OIP.7rCQ26DZrrR-xJnWRO0p6QHaHa&pid=Api&P=0&h=220",
+},
+{
+  id: 9,
+  name: "HP",
+  image:
+    "https://tse1.mm.bing.net/th?id=OIP.3TFKnNO0oWvmg9IhNsPTLwHaHa&pid=Api&P=0&h=220",
+},
+{
+  id: 10,
+  name: "Dell",
+  image:
+    "https://tse1.mm.bing.net/th?id=OIP._4TLQU2Grw-1tz1IR-vBXgHaHa&pid=Api&P=0&h=220",
+},
+];
+
 const HomePage = () => {
   const [mockCollections, setAllCollections] = useState({});
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const isDesktop = useMediaQuery({ minWidth: 481 });
+  const [categories, setCategories] = useState([]);
+  const [offset, setOffset] = useState(0); // Offset để điều chỉnh vị trí
+     
+
+  useEffect(() => {
+        // Cập nhật mockCategories khi component mount
+        setCategories(mockCategories);
+      }, []); // Chỉ chạy một lần khi component được mount
+
   useEffect(() => {
     let apiUrl = `${BASE_URL}collection/123e4567-e89b-12d3-a456-426614174000`;
     setLoading(true);
@@ -140,8 +213,37 @@ const HomePage = () => {
         setLoading(false); // Kết thúc loading
       });
   }, []);
+  
+  const displayedCategories = categories.slice(
+    offset,
+    offset + 6
+  );
+
+  useEffect(() => {
+    if (categories.length > 6) {
+      const interval = setInterval(() => {
+        setOffset((prevOffset) => (prevOffset + 1) % categories.length);
+      }, 6000); // Mỗi 6 giây
+
+      return () => clearInterval(interval); // Dọn dẹp khi component unmount
+    }
+  }, [categories]);
 
   return (
+    <>
+    <div className="logo-container" style={{ display: "flex", overflow: "hidden" }}>
+      {displayedCategories.map((category) => (
+        <div key={category.id} className="logo-item" style={{ flex: "0 0 auto" }}>
+          <img
+            src={category.image}
+            alt={category.name}
+            className="logo-image"
+            style={{ width: "150px", height: "150px", margin: "0 10px" }}
+          />
+        </div>
+      ))}
+    </div>
+
     <div className="section">
       <div className="container">
         <div className="row">
@@ -160,6 +262,8 @@ const HomePage = () => {
         </div>
       </div>
     </div>
+
+    </>
   );
 };
 

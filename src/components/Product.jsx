@@ -32,7 +32,7 @@ const Product = ({
   const [isHovered, setIsHovered] = useState(false);
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
   const truncateName = (text) => {
-    return text.length > 15 ? text.substring(0, 15) + '...' : text;
+    return text.length > 13 ? text.substring(0, 13) + '...' : text;
 };
   const handleClick = () => {
     navigate(`/product-detail/${id}`, {

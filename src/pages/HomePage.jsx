@@ -5,6 +5,7 @@ import Slider from 'react-slick';
 import { useMediaQuery } from 'react-responsive';
 
 
+
 const HomePage = () => {
     const sliderRefNew = useRef(null);
     const sliderRefSale = useRef(null);

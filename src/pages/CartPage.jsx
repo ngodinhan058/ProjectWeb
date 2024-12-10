@@ -1,14 +1,17 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useContext } from 'react';
 import CartItem from '../components/CartItem.jsx';
 import Skeleton from 'react-loading-skeleton';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { BASE_URL } from '../components/api/config';
 import axios from 'axios';
+import { CartContext } from '../components/CartContext';
 
 const CartPage = () => {
+  const { cartItems, setCartItems } = useContext(CartContext);
+
   const [isLoading, setIsLoading] = useState(true);
-  const [cartItems, setCartItems] = useState([]);
+  // const [cartItems, setCartItems] = useState([]);
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [error, setError] = useState('');
@@ -34,22 +37,19 @@ const CartPage = () => {
     setCartId(savedCartId)
 
   }, []);
-  // useEffect(() => {
-  //   loadCartFromStorage();
-  // }, [cartItems]);
 
   const calculateTotal = useMemo(() => {
-    return cartItems.reduce((total, item) => {
+    return cartItems.items.reduce((total, item) => {
       const quantity = item.quantity || 0; // Nếu quantity là null hoặc undefined, gán 0
       if (quantity > 0) {
-        return total + parseFloat(item.price.replace(/\D/g, ''), 10) * quantity;
+        return total + parseInt(item.price.replace(/\D/g, ''), 10) * quantity;
       }
       return total; // Bỏ qua sản phẩm nếu quantity <= 0
     }, 0);
   }, [cartItems]);
-  
+
   const handleQuantityChangeUser = async (id, isDecrease, sizeId) => {
-  console.log("ádsadsadsa",id, isDecrease, sizeId);
+    console.log("ádsadsadsa", id, isDecrease, sizeId);
 
     // Chuẩn bị payload
     const cartItemData = {
@@ -75,32 +75,32 @@ const CartPage = () => {
       console.error("Lỗi khi cập nhật giỏ hàng:", error);
     }
   };
-    // Delete item from cart
-    const handleDeleteUser = async (id, size) => {
-      const cartItemData = {
-        cartItem: {
-          productId: id,
-          sizeId: size,
-        },
-      };
-      try {
-        // Gửi yêu cầu xoá sản phẩm
-        const response = await axios.delete(`${BASE_URL}cart/${cartId}`, {
-          data: cartItemData,
-        });
-  
-        if (response.status === 200) {
-          console.log("Sản phẩm đã được xoá:", response.data);
-  
-        
-        } else {
-          console.error("Không thể xoá sản phẩm khỏi giỏ hàng:", response.data.message);
-        }
-      } catch (error) {
-        console.error("Lỗi khi xoá sản phẩm:", error.message);
-      }
+  // Delete item from cart
+  const handleDeleteUser = async (id, size) => {
+    const cartItemData = {
+      cartItem: {
+        productId: id,
+        sizeId: size,
+      },
     };
-  
+    try {
+      // Gửi yêu cầu xoá sản phẩm
+      const response = await axios.delete(`${BASE_URL}cart/${cartId}`, {
+        data: cartItemData,
+      });
+
+      if (response.status === 200) {
+        console.log("Sản phẩm đã được xoá:", response.data);
+
+
+      } else {
+        console.error("Không thể xoá sản phẩm khỏi giỏ hàng:", response.data.message);
+      }
+    } catch (error) {
+      console.error("Lỗi khi xoá sản phẩm:", error.message);
+    }
+  };
+
 
   useEffect(() => {
     // Kiểm tra xem có thông tin khách hàng trong localStorage không
@@ -119,7 +119,7 @@ const CartPage = () => {
     loadCartFromStorage();
     setTimeout(() => setIsLoading(false), 1000); // Giả lập thời gian tải dữ liệu
   }, []);
-  
+
   const handlePlaceOrder = async () => {
     if (!customerName || !customerPhone) {
       setError('Vui lòng nhập đầy đủ tên và số điện thoại');
@@ -129,7 +129,7 @@ const CartPage = () => {
     setIsLoading(true);
     const apiUrl = `${BASE_URL}order/guest`;
     console.log(apiUrl);
-    
+
 
     const orderData = {
       cart: cartId,
@@ -147,7 +147,7 @@ const CartPage = () => {
     };
     // console.log(orderData);
 
-    try { 
+    try {
       // Make the API call to place the order
       const response = await axios.post(apiUrl, orderData);
 
@@ -167,7 +167,7 @@ const CartPage = () => {
       }
     } catch (error) {
       // console.error('Error placing order:', error);
-      console.log('Error', 'Thất Bại '+ error);
+      console.log('Error', 'Thất Bại ' + error);
       alert('Có lỗi trong quá trình ghi nhận đơn đặt hàng, xin thử lại hoặc liên hệ số hotline để được hỗ trợ ');
     } finally {
       setIsLoading(false);
@@ -176,7 +176,7 @@ const CartPage = () => {
 
   return (
     <div className="cart-page">
-      <CartItem cartItems={cartItems} onSetCartItems={setCartItems} onQuantityChange={handleQuantityChangeUser} onDelete={handleDeleteUser}/>
+      <CartItem onQuantityChange={handleQuantityChangeUser} onDelete={handleDeleteUser} />
 
       <div className="cart-summary">
         <p>

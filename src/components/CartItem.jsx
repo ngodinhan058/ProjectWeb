@@ -1,125 +1,69 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext  } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
+import { CartContext } from './CartContext';
 
-const Cart = ({ cartItems, onSetCartItems: setCartItems, onQuantityChange, onDelete}) => {
+const Cart = ({  onQuantityChange, onDelete }) => {
+  const { cartItems, setCartItems } = useContext(CartContext);  
   const [isLoading, setIsLoading] = useState(true);
-  //const [cartItems, setCartItems] = useState([]);
   const [isMobile, setIsMobile] = useState(false);
 
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [error, setError] = useState('');
 
-  // Hàm lưu giỏ hàng vào localStorage
-  const saveCartToStorage = (items) => {
-    console.log('Saving to localStorage:', items);
-    localStorage.setItem('cart', JSON.stringify({ items })); // Lưu dưới key 'cart'
-  };
-
-  // Hàm tải giỏ hàng từ localStorage
-  const loadCartFromStorage = () => {
-    const storedCart = localStorage.getItem('cart');
-    if (storedCart) {
-      const parsedCart = JSON.parse(storedCart);
-      if (parsedCart && Array.isArray(parsedCart.items)) {
-        setCartItems(parsedCart.items); // Lấy danh sách sản phẩm từ trường 'items'
-      } else {
-        setCartItems([]); // Nếu không phải mảng, gán giỏ hàng là mảng rỗng
-      }
-    } else {
-      console.log('No cart items found in localStorage.'); // Nếu không có dữ liệu
-      setCartItems([]); // Giỏ hàng rỗng nếu không có gì trong localStorage
-    }
-  };
-
-  // console.log('Cart', cartItems);
-
-
   const handleRemoveItem = (id, size, sizeId) => {
-    const dupItems = cartItems.filter(
-      (item) => item.id === id && item.size !== size
+    const updatedItems = cartItems.items.filter(
+      (item) => !(item.id === id && item.size === size)
     );
-
-    setCartItems((prevItems) => {
-      const updatedItems = [
-        ...prevItems.filter((item) => item.id !== id),
-        ...dupItems,
-      ];
-
-      console.log('Updated', updatedItems);
-
-      saveCartToStorage(updatedItems); // Lưu giỏ hàng đã cập nhật vào localStorage
-      onDelete(id, sizeId)
-      return updatedItems;
-    });
+    onDelete(id, sizeId);
+    setCartItems(updatedItems); // Cập nhật giỏ hàng
   };
 
   const handleDecrement = (id, size, sizeId) => {
-    setCartItems((prevItems) => {
-      const updatedItems = prevItems.map((item) => {
-        if (item.id === id && item.quantity > 1 && item.size == size) {
-          return { ...item, quantity: item.quantity - 1 };
-        }
-        return item; // Giữ nguyên nếu số lượng = 1
-      });
-      onQuantityChange(id, true, sizeId);
-      saveCartToStorage(updatedItems); // Lưu giỏ hàng đã cập nhật vào localStorage
-      return updatedItems;
-    });
+    const updatedItems = cartItems.items.map((item) =>
+      item.id === id && item.size === size && item.quantity > 1
+        ? { ...item, quantity: item.quantity - 1 }
+        : item
+    );
+    onQuantityChange(id, true, sizeId);
+    setCartItems(updatedItems); // Cập nhật giỏ hàng
   };
 
   const handleIncrement = (id, size, sizeId) => {
-    setCartItems((prevItems) => {
-      const updatedItems = prevItems.map((item) =>
-        item.id === id && item.size == size
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      );
-      onQuantityChange(id, false, sizeId);
-
-      saveCartToStorage(updatedItems); // Lưu giỏ hàng đã cập nhật vào localStorage
-      return updatedItems;
-    });
+    const updatedItems = cartItems.items.map((item) =>
+      item.id === id && item.size === size
+        ? { ...item, quantity: item.quantity + 1 }
+        : item
+    );
+    onQuantityChange(id, false, sizeId);
+    setCartItems(updatedItems); // Cập nhật giỏ hàng
   };
 
 
+
   useEffect(() => {
-    // Kiểm tra xem có thông tin khách hàng trong localStorage không
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       const userInfo = JSON.parse(storedUser);
-      setCustomerName(userInfo.name || ''); // Nạp tên khách hàng vào
-      setCustomerPhone(userInfo.phone || ''); // Nạp số điện thoại khách hàng vào
+      setCustomerName(userInfo.name || '');
+      setCustomerPhone(userInfo.phone || '');
     }
 
-    loadCartFromStorage();
-    setTimeout(() => setIsLoading(false), 1000); // Giả lập thời gian tải dữ liệu
-  }, []); // Chạy 1 lần khi component mount
-
-  // Tải giỏ hàng từ localStorage khi component mount
-  useEffect(() => {
-    loadCartFromStorage();
-    setTimeout(() => setIsLoading(false), 1000); // Giả lập thời gian tải dữ liệu
+    setTimeout(() => setIsLoading(false), 1000);
   }, []);
 
-  // Kiểm tra kích thước màn hình
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);  // Nếu chiều rộng màn hình nhỏ hơn 768px, set isMobile = true
+      setIsMobile(window.innerWidth < 768);
     };
 
-    handleResize(); // Kiểm tra ngay khi component được mount
-    window.addEventListener('resize', handleResize);  // Lắng nghe sự kiện thay đổi kích thước màn hình
+    handleResize();
+    window.addEventListener('resize', handleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize); // Dọn dẹp khi component unmount
+      window.removeEventListener('resize', handleResize);
     };
-  }, []);
-
-  useEffect(() => {
-    loadCartFromStorage();
-    setTimeout(() => setIsLoading(false), 1000); // Giả lập thời gian tải dữ liệu
   }, []);
 
   // Giao diện mobile
@@ -128,10 +72,10 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems, onQuantityChange, onDel
       <div className="titleCart">GIỎ HÀNG CỦA BẠN</div>
       <div>
         {isLoading ? (
-          cartItems.map((_, index) => (
+          cartItems.items.map((_, index) => (
             <div key={index} className="cart-item-mobile">
               <div className="cart-item-column image">
-               <Skeleton height={75} width={80} />
+                <Skeleton height={75} width={80} />
               </div>
               <div className="cart-item-column info">
                 <Skeleton width={160} height={20} />
@@ -145,7 +89,7 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems, onQuantityChange, onDel
             </div>
           ))
         ) : (
-          cartItems.map((item) => (
+          cartItems.items.map((item) => (
             <div key={item.id} className="cart-item-mobile">
               <div className="cart-item-column image">
                 <img src={item.image} alt={item.name} className="product-image" />
@@ -192,7 +136,7 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems, onQuantityChange, onDel
         </thead>
         <tbody>
           {isLoading
-            ? Array.from({ length: cartItems.length }).map((_, index) => (
+            ? Array.from({ length: cartItems.items.length }).map((_, index) => (
               <tr key={index}>
                 <td><Skeleton height={75} width={75} /></td>
                 <td><Skeleton width={190} height={15} /></td>
@@ -203,7 +147,7 @@ const Cart = ({ cartItems, onSetCartItems: setCartItems, onQuantityChange, onDel
                 <td><Skeleton width={50.5} height={34.8} /></td>
               </tr>
             ))
-            : cartItems.map((item) => (
+            : cartItems.items.map((item) => (
               <tr key={item.id}>
                 <td><img src={item.image} alt={item.name} className="product-image" /></td>
                 <td>{item.name}</td>

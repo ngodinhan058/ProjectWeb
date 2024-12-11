@@ -4,7 +4,6 @@ import Product from '../components/Product';
 import Slider from 'react-slick';
 import { useMediaQuery } from 'react-responsive';
 
-
 const HomePage = () => {
     const sliderRefNew = useRef(null);
     const sliderRefSale = useRef(null);
@@ -43,7 +42,7 @@ const HomePage = () => {
                 }));
             setNewProducts(mockNewProducts);
             setIsLoadingNew(false);
-        }, 1000);
+        }, 2000);
 
         setTimeout(() => {
             const mockSaleOffProducts = Array(6)
@@ -60,7 +59,7 @@ const HomePage = () => {
                 }));
             setSaleOffProducts(mockSaleOffProducts);
             setIsLoadingSale(false);
-        }, 1000);
+        }, 2000);
     }, []);
 
     return (
@@ -71,15 +70,17 @@ const HomePage = () => {
                     <div className="section-title text-center">
                         <h3 className="title">New Products</h3>
                     </div>
-                    {isLoadingNew ? (
-                        Array(isDesktop ? 4 : 2)
+                    {isLoadingNew && isDesktop ? (
+                        // Hiển thị skeleton cho desktop
+                        Array(4)
                             .fill()
                             .map((_, index) => (
-                                <div className={isMobile ? "product-item" : "col-md-3 col-xs-6"} key={index}>
+                                <div className="col-md-3 col-xs-6" key={index}>
                                     <Product isLoading={true} />
                                 </div>
                             ))
                     ) : isDesktop ? (
+                        // Hiển thị slider cho desktop
                         <div className="slider-container">
                             <button
                                 className="custom-prev-btn"
@@ -111,7 +112,19 @@ const HomePage = () => {
                                 <i className="fa fa-chevron-right" style={{ fontSize: 20, marginLeft: 3 }}></i>
                             </button>
                         </div>
+                    ) : isLoadingNew && isMobile ? (
+                        // Hiển thị skeleton cho mobile (2 cột và 6 skeleton)
+                        <div className="product-grid">
+                            {Array(6)
+                                .fill()
+                                .map((_, index) => (
+                                    <div className="product-item" key={index}>
+                                        <Product isLoading={true} />
+                                    </div>
+                                ))}
+                        </div>
                     ) : (
+                        // Hiển thị sản phẩm thông thường cho mobile
                         <div className="product-grid">
                             {newProducts.map((product) => (
                                 <div className="product-item" key={product.productId}>
@@ -136,15 +149,17 @@ const HomePage = () => {
                     <div className="section-title text-center">
                         <h3 className="title">Sale Off Products</h3>
                     </div>
-                    {isLoadingSale ? (
-                        Array(isDesktop ? 4 : 2)
+                    {isLoadingSale && isDesktop ? (
+                        // Hiển thị skeleton cho desktop
+                        Array(4)
                             .fill()
                             .map((_, index) => (
-                                <div className={isMobile ? "product-item" : "col-md-3 col-xs-6"} key={index}>
+                                <div className="col-md-3 col-xs-6" key={index}>
                                     <Product isLoading={true} />
                                 </div>
                             ))
                     ) : isDesktop ? (
+                        // Hiển thị slider cho desktop
                         <div className="slider-container">
                             <button
                                 className="custom-prev-btn"
@@ -176,7 +191,19 @@ const HomePage = () => {
                                 <i className="fa fa-chevron-right" style={{ fontSize: 20, marginLeft: 3 }}></i>
                             </button>
                         </div>
+                    ) : isLoadingSale && isMobile ? (
+                        // Hiển thị skeleton cho mobile (2 cột và 6 skeleton)
+                        <div className="product-grid">
+                            {Array(6)
+                                .fill()
+                                .map((_, index) => (
+                                    <div className="product-item" key={index}>
+                                        <Product isLoading={true} />
+                                    </div>
+                                ))}
+                        </div>
                     ) : (
+                        // Hiển thị sản phẩm thông thường cho mobile
                         <div className="product-grid">
                             {saleOffProducts.map((product) => (
                                 <div className="product-item" key={product.productId}>
@@ -195,10 +222,12 @@ const HomePage = () => {
                         </div>
                     )}
                 </div>
+
+                {/* Policy Bar */}
                 <div className="row policy-bar">
                     <div className="col-md-4 policy-item">
                         <i className="bi bi-truck"></i>
-                         MIỄN PHÍ VẬN CHUYỂN (BILL lớn 1M)
+                        MIỄN PHÍ VẬN CHUYỂN (BILL lớn 1M)
                     </div>
                     <div className="col-md-4 policy-item">
                         <i className="bi bi-arrow-repeat"></i>

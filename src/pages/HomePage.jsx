@@ -66,9 +66,9 @@ const HomePage = () => {
         <div className="section">
             <div className="container">
                 {/* New Products Section */}
-                <div className="row">
+                <div className="row row-title">
                     <div className="section-title text-center">
-                        <h3 className="title">New Products</h3>
+                        <h3 className="titlex">New Products</h3>
                     </div>
                     {isLoadingNew && isDesktop ? (
                         // Hiển thị skeleton cho desktop
@@ -145,9 +145,9 @@ const HomePage = () => {
                 </div>
 
                 {/* Sale Off Products Section */}
-                <div className="row">
+                <div className="row row-title">
                     <div className="section-title text-center">
-                        <h3 className="title">Sale Off Products</h3>
+                        <h3 className="titlex">Sale Off Products</h3>
                     </div>
                     {isLoadingSale && isDesktop ? (
                         // Hiển thị skeleton cho desktop

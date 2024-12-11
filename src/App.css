@@ -1,4 +1,23 @@
 /* Home Page */
+/* Căn giữa tiêu đề cho màn hình mobile */
+@media (max-width: 768px) {
+  .section-title {
+      margin-bottom: 20px; /* Thêm khoảng cách dưới */
+  }
+
+  .titlex {
+    display: inline;
+      font-size: 2.5rem; /* Điều chỉnh kích thước chữ nếu cần */
+      font-weight: bold; /* Căn chỉnh chữ đậm */
+      text-align: center; /* Căn giữa tiêu đề */
+
+  }
+  
+}
+
+.row-title {
+  display: inline;
+}
 
 /* --- */
 .policy-bar {

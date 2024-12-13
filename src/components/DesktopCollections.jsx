@@ -17,7 +17,7 @@ const DesktopCollections = ({ collections }) => {
           </div>
           <div className="col-md-6">
             <div className="row">
-              {collections?.products.map((product) => (
+              {collections?.products?.length > 0 ? collections?.products?.map((product) => (
                 <div key={product.productId} className="col-md-4">
                   <Product
                     id={product.productId}
@@ -31,7 +31,7 @@ const DesktopCollections = ({ collections }) => {
                     supplier={product.productSupplier.productSupplierName}
                   />
                 </div>
-              ))}
+              )) : null}
             </div>
           </div>
         </div>

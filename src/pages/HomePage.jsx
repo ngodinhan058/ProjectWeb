@@ -120,16 +120,9 @@ const HomePage = () => {
         slidesToShow: 6,
         slidesToScroll: 1,
         autoplay: true,
-        autoplaySpeed: 2000,
+        autoplaySpeed: 6000,
         arrows: false,
         responsive: [
-            {
-                breakpoint: 400,
-                settings: {
-                    slidesToShow: 2,
-                    slidesToScroll: 1,
-                },
-            },
             {
                 breakpoint: 769,
                 settings: {
@@ -202,10 +195,12 @@ const HomePage = () => {
                                     <img
                                         src={supplier.productSupplierLogo}
                                         alt={supplier.productSupplierName}
+                                        
                                         style={{
-                                            width: "100px",
-                                            height: "100px",
-                                            margin: "25%",
+                                            width: isDesktop ? "100px" : "70px",
+                                            height: isDesktop ? "100px" : "70px",
+                                            margin: isDesktop ? "25%" : "5%",
+                                            marginTop: isDesktop ? 0 : "20%",
                                             cursor: 'pointer',
                                         }}
                                     />
@@ -216,7 +211,7 @@ const HomePage = () => {
                         <div className="section-title text-center">
                             <h3 className="titlex">New Products</h3>
                         </div>
-                        {isLoadingNew && isDesktop ? (
+                        {loading && isDesktop ? (
                             // Hiển thị skeleton cho desktop
                             Array(4)
                                 .fill()
@@ -258,7 +253,7 @@ const HomePage = () => {
                                     <i className="fa fa-chevron-right" style={{ fontSize: 20, marginLeft: 3 }}></i>
                                 </button>
                             </div>
-                        ) : isLoadingNew && isMobile ? (
+                        ) : loading && isMobile ? (
                             // Hiển thị skeleton cho mobile (2 cột và 6 skeleton)
                             <div className="product-grid">
                                 {Array(6)
@@ -337,7 +332,7 @@ const HomePage = () => {
                                     <i className="fa fa-chevron-right" style={{ fontSize: 20, marginLeft: 3 }}></i>
                                 </button>
                             </div>
-                        ) : isLoadingSale && isMobile ? (
+                        ) : loading && isMobile ? (
                             // Hiển thị skeleton cho mobile (2 cột và 6 skeleton)
                             <div className="product-grid">
                                 {Array(6)

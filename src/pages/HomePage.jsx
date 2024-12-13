@@ -8,6 +8,9 @@ import { useMediaQuery } from 'react-responsive';
 import Banner from "../components/Banner";
 import { BASE_URL } from "../components/api/config";
 import { axiosInstance } from "../components/api/axiosConfig";
+import { useNavigate } from 'react-router-dom';
+import DesktopCollections from "../components/DesktopCollections";
+import MobileCollections from "../components/MobileCollections";
 const HomePage = () => {
     const [mockCollections, setAllCollections] = useState({});
     const sliderRefNew = useRef(null);
@@ -20,6 +23,9 @@ const HomePage = () => {
     const [newProducts, setNewProducts] = useState([]);
     const [saleOffProducts, setSaleOffProducts] = useState([]);
     const [banners, setBanner] = useState([]);
+    const [suppliers, setSuppliers] = useState([]);
+    const [offset, setOffset] = useState(0); // Offset để điều chỉnh vị trí
+    const navigate = useNavigate();
     useEffect(() => {
         let apiUrl = `${BASE_URL}collection/123e4567-e89b-12d3-a456-426614174000`;
         setLoading(true);
@@ -117,9 +123,117 @@ const HomePage = () => {
             setIsLoadingSale(false);
         }, 2000);
     }, []);
+  useEffect(() => {
+    let apiUrl = `${BASE_URL}product-suppliers/category`;
+    setLoading(true);
+    axiosInstance
+      .get(apiUrl, {
+        headers: {
+          'ngrok-skip-browser-warning': 'true',
+        },
+      })
+      .then((response) => {
+        const dataSuppliers = response.data.data;
+        setSuppliers(dataSuppliers);
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 400) {
+          setSuppliers([]); // Lỗi 400, coi như không có sản phẩm
+          setLoading(true);
+        } else {
+          console.error('Error fetching data:', error);
+        }
+      })
+      .finally(() => {
+        setLoading(false); // Kết thúc loading
+      });
+  }, []);
+  const displayedsuppliers = suppliers.slice(
+    offset,
+    offset + 6
+  );
+  const handleClick = (supplier) => {
+    navigate(`/product-list/${supplier.productSupplierSd}`, {
+      state: {
+        supplierName: supplier.productSupplierName,
+        supplierLogo: supplier.productSupplierLogo,
+      },
+    });
+    window.scrollTo(0, 0);
+  };
 
-    return (
-        <div className="section">
+  useEffect(() => {
+    if (suppliers.length > 4) {
+      const interval = setInterval(() => {
+        const container = document.querySelector(".logo-container");
+        if (container) {
+          console.log("Container width:", container.offsetWidth);
+          console.log("Scroll width:", container.scrollWidth);
+          console.log("Current scrollLeft:", container.scrollLeft);
+  
+          const maxScrollLeft = container.scrollWidth - container.offsetWidth;
+          if (container.scrollLeft >= maxScrollLeft) {
+            container.scrollLeft = 0;
+          } else {
+            container.scrollLeft += container.offsetWidth;
+          }
+        }
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [suppliers]);
+  
+  
+  
+  
+  return (
+    <>
+      <div
+        className="logo-container"
+        style={{
+          display: "flex",
+          overflow: "hidden",
+          whiteSpace: "nowrap", 
+          transition: "scroll-left 1s ease-in-out",
+        }}
+      >
+        {displayedsuppliers.map((suppliers) => (
+          <div key={suppliers.productSupplierSd} className="logo-item" style={{ flex: "0 0 auto", marginRight: "70px" }}>
+            <img
+              src={suppliers.productSupplierLogo}
+              alt={suppliers.productSupplierName}
+              className="logo-image"
+              style={{
+                width: "150px",
+                height: "150px",
+                margin: "0 20px", 
+              }}
+              onClick={() => {
+                window.location.href = `/product-list/${suppliers.productSupplierSd}`;
+              }}
+            />
+          </div>
+        ))}
+      </div>
+      <div className="section">
+        <div className="container">
+          <div className="row">
+            <div className="col-md-12">
+              <div className="section-title">
+                <h3 className="title" style={{ textAlign: 'center' }}>Collections</h3>
+              </div>
+            </div>
+            {loading ? (
+              <Skeleton count={3} height={200} />
+            ) : isDesktop ? (
+              <DesktopCollections collections={mockCollections} />
+            ) : (
+              <MobileCollections collections={mockCollections} />
+            )}
+          </div>
+        </div>
+      </div>
+      <div className="section">
             <div className="container">
                 {/* New Products Section */}
                 <div className="row row-title">
@@ -297,6 +411,7 @@ const HomePage = () => {
                 </div>
             </div>
         </div>
+      </>
     );
 };
 

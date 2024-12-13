@@ -7,7 +7,7 @@ import PriceFilter from '../components/PriceFilter';
 import CategoryFilter from '../components/CategoryFilter';
 import SizeFilter from '../components/SizeFilter';
 import { useMediaQuery } from 'react-responsive';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams   } from 'react-router-dom';
 import { BASE_URL } from '../components/api/config';
 import { axiosInstance } from '../components/api/axiosConfig';
 
@@ -29,6 +29,8 @@ const Store = () => {
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [selectedSizes, setSelectedSizes] = useState([]);
 
+  const [searchParams] = useSearchParams();
+  const supplierId = searchParams.get('supplierIds');
   useEffect(() => {
     let apiUrl = `${BASE_URL}products/filters?`;
     // Khởi tạo danh sách query params
@@ -43,8 +45,13 @@ const Store = () => {
       queryParams.push(`minPrice=${minPrice}`);
     if (maxPrice !== null && maxPrice !== undefined)
       queryParams.push(`maxPrice=${maxPrice}`);
-    if (selectedBrands.length !== 0) {
-      queryParams.push(`supplierIds=${selectedBrands.concat(',')}`);
+    if (supplierId || selectedBrands.length !== 0) {
+      // Gộp supplierId và selectedBrands
+      const allSupplierIds = supplierId
+        ? [supplierId, ...selectedBrands].join(',')
+        : selectedBrands.join(',');
+
+      queryParams.push(`supplierIds=${allSupplierIds}`);
     }
     if (selectedSizes.length !== 0) {
       queryParams.push(`sizeIds=${selectedSizes.concat(',')}`);

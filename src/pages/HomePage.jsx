@@ -9,6 +9,7 @@ import Banner from "../components/Banner";
 import { BASE_URL } from "../components/api/config";
 import { axiosInstance } from "../components/api/axiosConfig";
 const HomePage = () => {
+    const [mockCollections, setAllCollections] = useState({});
     const sliderRefNew = useRef(null);
     const sliderRefSale = useRef(null);
     const [isLoadingNew, setIsLoadingNew] = useState(true);

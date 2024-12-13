@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext  } from 'react';
 import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 import axios from 'axios';
 import { BASE_URL } from './api/config';
-
+import { CartContext } from './CartContext';
 
 const Header = () => {
-  const [cartItems, setCartItems] = useState({ items: [] }); // Default to an object with an empty 'items' array
+  const { cartItems } = useContext(CartContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
@@ -50,28 +50,14 @@ const Header = () => {
   });
 
   // Hàm để lấy giỏ hàng từ localStorage và thiết lập state
-  useEffect(() => {
-    const cartData = localStorage.getItem('cart');
+  // useEffect(() => {
+  //   const cartData = localStorage.getItem('cart');
+  //   console.log(cartData.totalQuantity);
 
-    if (cartData) {
-      try {
-        const parsedData = JSON.parse(cartData);
-        console.log(parsedData); // Kiểm tra xem dữ liệu có đúng không
-
-        // Kiểm tra xem parsedData có phải là mảng hay không
-        if (parsedData && parsedData.items && Array.isArray(parsedData.items)) {
-          setCartItems(parsedData); // Set entire cart object
-        } else {
-          console.error('cartData is not an array:', parsedData);
-          setCartItems({ items: [] }); // Reset to empty items array
-        }
-      } catch (error) {
-        console.error('Error parsing cart data:', error);
-        setCartItems({ items: [] }); // Reset to empty items array if error occurs
-      }
-    }
-    getTotalQuantity();
-  }, []);
+  //   if (cartData) {
+  //     setCartItems(cartData.totalQuantity)
+  //   }
+  // }, []);
 
   // Lắng nghe sự kiện nhấp chuột ra ngoài menu
   // useEffect(() => {
@@ -105,12 +91,12 @@ const Header = () => {
   }, []);
 
   // Tính tổng số lượng sản phẩm trong giỏ
-  const getTotalQuantity = () => {
-    return cartItems.items.reduce(
-      (total, item) => total + (item.quantity || 0),
-      0
-    );
-  };
+  // const getTotalQuantity = () => {
+  //   return cartItems.items.reduce(
+  //     (total, item) => total + (item.quantity || 0),
+  //     0
+  //   );
+  // };
 
   const handleLanguageSelect = (language) => {
     console.log('Selected language: ${language}');
@@ -148,6 +134,7 @@ const Header = () => {
   const toggleDropdown = () => {
     setDropdownOpen(!isDropdownOpen);
   };
+  console.log(cartItems.totalQuantity);
 
   return (
     <>
@@ -287,7 +274,7 @@ const Header = () => {
                       <Link to="/cart" className="cart-link">
                         <i className="fa fa-shopping-cart"></i>
                         {!isMobile && <span>Your cart</span>}
-                        <div className="qty">{getTotalQuantity()}</div>{' '}
+                        <div className="qty">{cartItems.totalQuantity}</div>{' '}
                         {/* Hiển thị tổng số lượng sản phẩm */}
                       </Link>
                     </div>

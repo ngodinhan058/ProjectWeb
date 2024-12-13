@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef} from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Animated, useWindowDimensions, } from 'react';
 import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css';
@@ -11,7 +11,6 @@ import { axiosInstance } from "../components/api/axiosConfig";
 import { useNavigate } from 'react-router-dom';
 import DesktopCollections from "../components/DesktopCollections";
 import MobileCollections from "../components/MobileCollections";
-
 const HomePage = () => {
     const [mockCollections, setAllCollections] = useState({});
     const sliderRefNew = useRef(null);
@@ -27,9 +26,6 @@ const HomePage = () => {
     const [suppliers, setSuppliers] = useState([]);
     const [offset, setOffset] = useState(0); // Offset để điều chỉnh vị trí
     const navigate = useNavigate();
-
-    
-
     useEffect(() => {
         let apiUrl = `${BASE_URL}collection/123e4567-e89b-12d3-a456-426614174000`;
         setLoading(true);
@@ -416,7 +412,6 @@ const HomePage = () => {
             </div>
         </div>
       </>
-       
     );
 };
 

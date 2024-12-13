@@ -1,166 +1,246 @@
-import React, { useEffect, useState } from "react";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
-import { useNavigate } from "react-router-dom";
-import { useMediaQuery } from "react-responsive";
-import DesktopCollections from "../components/DesktopCollections";
-import MobileCollections from "../components/MobileCollections";
-import { BASE_URL } from "../components/api/config";
-import { axiosInstance } from "../components/api/axiosConfig";
-// const mockCollections = [
-//   {
-//     id: 1,
-//     name: "Collections Top 1",
-//     image:
-//       "https://pos.nvncdn.com/be3294-43017/campaign/20240524_oNYjSZ5b.jpeg",
-//     products: [
-//       {
-//         id: "00f81ac1-1e15-4e26-9aac-a44c2873f4e8",
-//         name: "iPhone 16",
-//         image:
-//           "https://cdnv2.tgdd.vn/mwg-static/tgdd/Products/Images/42/329149/iphone-16-pro-max-titan-den-1-638638962017739954-750x500.jpg",
-//         price: "234đ",
-//       },
-//       {
-//         id: "31360000-0000-0000-0000-000000000000",
-//         name: "Xiaomi 14 Ultra",
-//         image:
-//           "https://cdn.tgdd.vn/Products/Images/42/313889/xiaomi-14-ultra-1-750x500.jpg",
-//         price: "180.000 ₫",
-//       },
-//       {
-//         id: "50038924-ade1-48bc-8336-73b11255bfb5",
-//         name: "MacBook Air M1",
-//         image:
-//           "https://cdn.tgdd.vn/Products/Images/44/231244/grey-1-750x500.jpg",
-//         price: "190.000 ₫",
-//       },
-//       {
-//         id: "31380000-0000-0000-0000-000000000000",
-//         name: "Xiaomi 14T Pro",
-//         image:
-//           "https://cdn.tgdd.vn/Products/Images/42/313889/xiaomi-14-ultra-1-750x500.jpg",
-//         price: "1.090.000 ₫",
-//       },
-//       {
-//         id: "32e0ed13-66fd-4608-b783-b999cecfbd40",
-//         name: "Laptop Gaming MSI GF63",
-//         image:
-//           "https://cdn.tgdd.vn/Products/Images/44/231244/grey-1-750x500.jpg",
-//         price: "1.430.000 đ",
-//       },
-//       {
-//         id: "a547c7cf-f93e-4833-99fc-b82ffd1c0242",
-//         name: "iPhone 16 Pro Max",
-//         image:
-//           "https://cdnv2.tgdd.vn/mwg-static/tgdd/Products/Images/42/329149/iphone-16-pro-max-titan-den-1-638638962017739954-750x500.jpg",
-//         price: "1.490.00 đ",
-//       },
-//     ],
-//   },
-//   {
-//     id: 2,
-//     name: "Collection Trending",
-//     image:
-//       "https://pos.nvncdn.com/be3294-43017/campaign/20241123_WLCk6DeD.jpeg",
-//     products: [
-//       {
-//         id: "dd65a34e-f646-462e-a3ce-8d78d28460fe",
-//         name: "Samsung Galaxy S24 Ultra",
-//         image:
-//           "https://cdn.tgdd.vn/Products/Images/42/326348/samsung-galaxy-z-fold6-xanh-navy-1-750x500.jpg",
-//         price: "1.499.000 ₫",
-//       },
-//       {
-//         id: "d7b72420-5642-48f7-895e-6204b572dc51",
-//         name: "Samsung Galaxy A06",
-//         image:
-//           "https://cdn.tgdd.vn/Products/Images/42/326348/samsung-galaxy-z-fold6-xanh-navy-1-750x500.jpg",
-//         price: "1.490.000 đ",
-//       },
-//       {
-//         id: "baf72de3-9128-453e-8a20-dcecce3f3305",
-//         name: "iPhone 15 Pro Max",
-//         image:
-//           "https://cdnv2.tgdd.vn/mwg-static/tgdd/Products/Images/42/329149/iphone-16-pro-max-titan-den-1-638638962017739954-750x500.jpg",
-//         price: "1.590.000 đ",
-//       },
-//       {
-//         id: "1d489d11-4245-4fc9-b5f3-a37e85c91b6d",
-//         name: "iPhone 16 Plus",
-//         image:
-//           "https://cdnv2.tgdd.vn/mwg-static/tgdd/Products/Images/42/329149/iphone-16-pro-max-titan-den-1-638638962017739954-750x500.jpg",
-//         price: "1.990.000 đ",
-//       },
-//       {
-//         id: "778640d8-1429-4255-aa82-8374d5342a13",
-//         name: "Samsung Galaxy Z Flip 6",
-//         image:
-//           "https://cdn.tgdd.vn/Products/Images/42/326348/samsung-galaxy-z-fold6-xanh-navy-1-750x500.jpg",
-//         price: "1.990.000 đ",
-//       },
-//       {
-//         id: "9bd60040-5503-4dff-95a9-cc5112f49313",
-//         name: "Samsung Galaxy Z Fold 6",
-//         image:
-//           "https://cdn.tgdd.vn/Products/Images/42/326348/samsung-galaxy-z-fold6-xanh-navy-1-750x500.jpg",
-//         price: "1.890.000 đ",
-//       },
-//     ],
-//   },
-// ];
+import React, { useEffect, useState, useRef } from 'react';
+import 'react-loading-skeleton/dist/skeleton.css';
+import Product from '../components/Product';
+import Slider from 'react-slick';
+import { useMediaQuery } from 'react-responsive';
 
 const HomePage = () => {
-  const [mockCollections, setAllCollections] = useState({});
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
-  const isDesktop = useMediaQuery({ minWidth: 481 });
-  useEffect(() => {
-    let apiUrl = `${BASE_URL}collection/123e4567-e89b-12d3-a456-426614174000`;
-    setLoading(true);
-    axiosInstance
-      .get(apiUrl, {
-        headers: {
-          'ngrok-skip-browser-warning': 'true',
-        },
-      })
-      .then((response) => {
-        const dataColletion = response.data.data;
-        setAllCollections(dataColletion);
-      })
-      .catch((error) => {
-        if (error.response && error.response.status === 400) {
-          setAllCollections([]); // Lỗi 400, coi như không có sản phẩm
-          setLoading(true);
-        } else {
-          console.error('Error fetching data:', error);
-        }
-      })
-      .finally(() => {
-        setLoading(false); // Kết thúc loading
-      });
-  }, []);
+    const sliderRefNew = useRef(null);
+    const sliderRefSale = useRef(null);
+    const [isLoadingNew, setIsLoadingNew] = useState(true);
+    const [isLoadingSale, setIsLoadingSale] = useState(true);
+    const isDesktop = useMediaQuery({ minWidth: 769 }); // Desktop: màn hình >= 769px
+    const isMobile = useMediaQuery({ query: '(max-width: 768px)' }); // Mobile: màn hình <= 768px
+    const [newProducts, setNewProducts] = useState([]);
+    const [saleOffProducts, setSaleOffProducts] = useState([]);
 
-  return (
-    <div className="section">
-      <div className="container">
-        <div className="row">
-          <div className="col-md-12">
-            <div className="section-title">
-              <h3 className="title" style={{ textAlign: 'center' }}>Collections</h3>
+    // Cấu hình slider
+    const sliderSettings = {
+        infinite: true,
+        speed: 100,
+        slidesToShow: 4, // Hiển thị 4 sản phẩm trên desktop
+        slidesToScroll: 1,
+        autoplay: true,
+        autoplaySpeed: 2000,
+        arrows: false,
+    };
+
+    // Giả lập tải dữ liệu từ API
+    useEffect(() => {
+        setTimeout(() => {
+            const mockNewProducts = Array(6)
+                .fill(null)
+                .map((_, index) => ({
+                    productId: index + 1,
+                    productName: `New Product ${index + 1}`,
+                    productPriceSale: 100 + index * 10,
+                    productPrice: 150 + index * 15,
+                    categories: ['Category 1', 'Category 2'],
+                    productImages: [`https://via.placeholder.com/150?text=New+Product+${index + 1}`],
+                    productRating: 4.5,
+                    productSale: 10,
+                }));
+            setNewProducts(mockNewProducts);
+            setIsLoadingNew(false);
+        }, 2000);
+
+        setTimeout(() => {
+            const mockSaleOffProducts = Array(6)
+                .fill(null)
+                .map((_, index) => ({
+                    productId: index + 1,
+                    productName: `Sale Product ${index + 1}`,
+                    productPriceSale: 50 + index * 5,
+                    productPrice: 100 + index * 10,
+                    categories: ['Category A', 'Category B'],
+                    productImages: [`https://via.placeholder.com/150?text=Sale+Product+${index + 1}`],
+                    productRating: 4.0,
+                    productSale: 20,
+                }));
+            setSaleOffProducts(mockSaleOffProducts);
+            setIsLoadingSale(false);
+        }, 2000);
+    }, []);
+
+    return (
+        <div className="section">
+            <div className="container">
+                {/* New Products Section */}
+                <div className="row row-title">
+                    <div className="section-title text-center">
+                        <h3 className="titlex">New Products</h3>
+                    </div>
+                    {isLoadingNew && isDesktop ? (
+                        // Hiển thị skeleton cho desktop
+                        Array(4)
+                            .fill()
+                            .map((_, index) => (
+                                <div className="col-md-3 col-xs-6" key={index}>
+                                    <Product isLoading={true} />
+                                </div>
+                            ))
+                    ) : isDesktop ? (
+                        // Hiển thị slider cho desktop
+                        <div className="slider-container">
+                            <button
+                                className="custom-prev-btn"
+                                onClick={() => sliderRefNew.current.slickPrev()}
+                            >
+                                <i className="fa fa-chevron-left" style={{ fontSize: 20, marginRight: 3 }}></i>
+                            </button>
+                            <Slider ref={sliderRefNew} {...sliderSettings}>
+                                {newProducts.map((product) => (
+                                    <div className="col-md-3 col-xs-6 marginBottom" key={product.productId}>
+                                        <Product
+                                            id={product.productId}
+                                            name={product.productName}
+                                            price={product.productPriceSale}
+                                            oldPrice={product.productPrice}
+                                            categories={product.categories}
+                                            images={product.productImages}
+                                            rating={product.productRating}
+                                            sale={product.productSale}
+                                            isLoading={false}
+                                        />
+                                    </div>
+                                ))}
+                            </Slider>
+                            <button
+                                className="custom-next-btn"
+                                onClick={() => sliderRefNew.current.slickNext()}
+                            >
+                                <i className="fa fa-chevron-right" style={{ fontSize: 20, marginLeft: 3 }}></i>
+                            </button>
+                        </div>
+                    ) : isLoadingNew && isMobile ? (
+                        // Hiển thị skeleton cho mobile (2 cột và 6 skeleton)
+                        <div className="product-grid">
+                            {Array(6)
+                                .fill()
+                                .map((_, index) => (
+                                    <div className="product-item" key={index}>
+                                        <Product isLoading={true} />
+                                    </div>
+                                ))}
+                        </div>
+                    ) : (
+                        // Hiển thị sản phẩm thông thường cho mobile
+                        <div className="product-grid">
+                            {newProducts.map((product) => (
+                                <div className="product-item" key={product.productId}>
+                                    <Product
+                                        id={product.productId}
+                                        name={product.productName}
+                                        price={product.productPriceSale}
+                                        oldPrice={product.productPrice}
+                                        images={product.productImages}
+                                        rating={product.productRating}
+                                        sale={product.productSale}
+                                        isLoading={false}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                {/* Sale Off Products Section */}
+                <div className="row row-title">
+                    <div className="section-title text-center">
+                        <h3 className="titlex">Sale Off Products</h3>
+                    </div>
+                    {isLoadingSale && isDesktop ? (
+                        // Hiển thị skeleton cho desktop
+                        Array(4)
+                            .fill()
+                            .map((_, index) => (
+                                <div className="col-md-3 col-xs-6" key={index}>
+                                    <Product isLoading={true} />
+                                </div>
+                            ))
+                    ) : isDesktop ? (
+                        // Hiển thị slider cho desktop
+                        <div className="slider-container">
+                            <button
+                                className="custom-prev-btn"
+                                onClick={() => sliderRefSale.current.slickPrev()}
+                            >
+                                <i className="fa fa-chevron-left" style={{ fontSize: 20, marginRight: 3 }}></i>
+                            </button>
+                            <Slider ref={sliderRefSale} {...sliderSettings}>
+                                {saleOffProducts.map((product) => (
+                                    <div className="col-md-3 col-xs-6 marginBottom" key={product.productId}>
+                                        <Product
+                                            id={product.productId}
+                                            name={product.productName}
+                                            price={product.productPriceSale}
+                                            oldPrice={product.productPrice}
+                                            categories={product.categories}
+                                            images={product.productImages}
+                                            rating={product.productRating}
+                                            sale={product.productSale}
+                                            isLoading={false}
+                                        />
+                                    </div>
+                                ))}
+                            </Slider>
+                            <button
+                                className="custom-next-btn"
+                                onClick={() => sliderRefSale.current.slickNext()}
+                            >
+                                <i className="fa fa-chevron-right" style={{ fontSize: 20, marginLeft: 3 }}></i>
+                            </button>
+                        </div>
+                    ) : isLoadingSale && isMobile ? (
+                        // Hiển thị skeleton cho mobile (2 cột và 6 skeleton)
+                        <div className="product-grid">
+                            {Array(6)
+                                .fill()
+                                .map((_, index) => (
+                                    <div className="product-item" key={index}>
+                                        <Product isLoading={true} />
+                                    </div>
+                                ))}
+                        </div>
+                    ) : (
+                        // Hiển thị sản phẩm thông thường cho mobile
+                        <div className="product-grid">
+                            {saleOffProducts.map((product) => (
+                                <div className="product-item" key={product.productId}>
+                                    <Product
+                                        id={product.productId}
+                                        name={product.productName}
+                                        price={product.productPriceSale}
+                                        oldPrice={product.productPrice}
+                                        images={product.productImages}
+                                        rating={product.productRating}
+                                        sale={product.productSale}
+                                        isLoading={false}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                {/* Policy Bar */}
+                <div className="row policy-bar">
+                    <div className="col-md-4 policy-item">
+                        <i className="bi bi-truck"></i>
+                        MIỄN PHÍ VẬN CHUYỂN (BILL lớn 1M)
+                    </div>
+                    <div className="col-md-4 policy-item">
+                        <i className="bi bi-arrow-repeat"></i>
+                        ĐỔI TRẢ TRONG VÒNG 7 NGÀY
+                    </div>
+                    <div className="col-md-4 policy-item">
+                        <i className="bi bi-shop"></i>
+                        SẢN PHẨM TRẢI NGHIỆM SẴN TẠI STORE
+                    </div>
+                </div>
             </div>
-          </div>
-          {loading ? (
-            <Skeleton count={3} height={200} />
-          ) : isDesktop ? (
-            <DesktopCollections collections={mockCollections} />
-          ) : (
-            <MobileCollections collections={mockCollections} />
-          )}
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default HomePage;

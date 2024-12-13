@@ -16,18 +16,14 @@ const HomePage = () => {
     const [mockCollections, setAllCollections] = useState({});
     const sliderRefNew = useRef(null);
     const sliderRefSale = useRef(null);
-    const [isLoadingNew, setIsLoadingNew] = useState(true);
-    const [isLoadingSale, setIsLoadingSale] = useState(true);
     const [loading, setLoading] = useState(true);
-    const isDesktop = useMediaQuery({ minWidth: 769 }); // Desktop: màn hình >= 769px
-    const isMobile = useMediaQuery({ query: '(max-width: 768px)' }); // Mobile: màn hình <= 768px
+    const isDesktop = useMediaQuery({ minWidth: 769 });
+    const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
     const [newProducts, setNewProducts] = useState([]);
     const [saleOffProducts, setSaleOffProducts] = useState([]);
     const [banners, setBanner] = useState([]);
     const [suppliers, setSuppliers] = useState([]);
-    const [offset, setOffset] = useState(0); // Offset để điều chỉnh vị trí
     const navigate = useNavigate();
-    // console.log(suppliers);
 
     useEffect(() => {
         let apiUrl = `${BASE_URL}collection/123e4567-e89b-12d3-a456-426614174000`;
@@ -104,6 +100,31 @@ const HomePage = () => {
                 setLoading(false);
             });
     }, []);
+    useEffect(() => {
+        let apiUrl = `${BASE_URL}products/new/created`;
+        setLoading(true);
+        axiosInstance
+            .get(apiUrl, {
+                headers: {
+                    'ngrok-skip-browser-warning': 'true',
+                },
+            })
+            .then((response) => {
+                const dataColletion = response.data.data;
+                setNewProducts(dataColletion);
+            })
+            .catch((error) => {
+                if (error.response && error.response.status === 400) {
+                    setNewProducts([]);
+                    setLoading(true);
+                } else {
+                    console.error('Error fetching data:', error);
+                }
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }, []);
     // Cấu hình slider
     const sliderSettings = {
         infinite: true,
@@ -132,25 +153,6 @@ const HomePage = () => {
             }
         ],
     };
-    // Giả lập tải dữ liệu từ API
-    useEffect(() => {
-        setTimeout(() => {
-            const mockNewProducts = Array(6)
-                .fill(null)
-                .map((_, index) => ({
-                    productId: index + 1,
-                    productName: `New Product ${index + 1}`,
-                    productPriceSale: 100 + index * 10,
-                    productPrice: 150 + index * 15,
-                    categories: ['Category 1', 'Category 2'],
-                    productImages: [`https://via.placeholder.com/150?text=New+Product+${index + 1}`],
-                    productRating: 4.5,
-                    productSale: 10,
-                }));
-            setNewProducts(mockNewProducts);
-            setIsLoadingNew(false);
-        }, 2000);
-    }, []);
     useEffect(() => {
         let apiUrl = `${BASE_URL}product-suppliers/category`;
         setLoading(true);
@@ -195,7 +197,7 @@ const HomePage = () => {
                                     <img
                                         src={supplier.productSupplierLogo}
                                         alt={supplier.productSupplierName}
-                                        
+
                                         style={{
                                             width: isDesktop ? "100px" : "70px",
                                             height: isDesktop ? "100px" : "70px",

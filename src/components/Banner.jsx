@@ -2,20 +2,14 @@ import React from "react";
 import { Slide } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";
 import { Link } from 'react-router-dom';
+import Skeleton from 'react-loading-skeleton';
 
 const BannerCarousel = ({ banners, loading }) => {
   if (loading) {
     return (
-      <div className="skeleton-container">
-        <div className="skeleton shimmer"></div>
-      </div>
+      <Skeleton height={390} />
     );
   }
-
-  if (!banners || banners.length === 0) {
-    return <div>No banners available</div>;
-  }
-
   return (
     <div className="carousel">
       <Slide
@@ -34,7 +28,7 @@ const BannerCarousel = ({ banners, loading }) => {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              height: "auto",
+              height: 390,
               backgroundColor: "#f5f5f5",
             }}
           >
@@ -42,7 +36,7 @@ const BannerCarousel = ({ banners, loading }) => {
               <img
                 src={banner.imagePath}
                 alt={`Banner ${index + 1}`}
-                style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
+                style={{ maxWidth: "100%", height: 390, objectFit: "contain" }}
               />
             </Link>
           </div>

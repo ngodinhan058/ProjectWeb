@@ -1,19 +1,75 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { Animated, useWindowDimensions, } from 'react';
+import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css';
 import Product from '../components/Product';
 import Slider from 'react-slick';
 import { useMediaQuery } from 'react-responsive';
-
+import Banner from "../components/Banner";
+import { BASE_URL } from "../components/api/config";
+import { axiosInstance } from "../components/api/axiosConfig";
 const HomePage = () => {
+    const [mockCollections, setAllCollections] = useState({});
     const sliderRefNew = useRef(null);
     const sliderRefSale = useRef(null);
     const [isLoadingNew, setIsLoadingNew] = useState(true);
     const [isLoadingSale, setIsLoadingSale] = useState(true);
+    const [loading, setLoading] = useState(true);
     const isDesktop = useMediaQuery({ minWidth: 769 }); // Desktop: màn hình >= 769px
     const isMobile = useMediaQuery({ query: '(max-width: 768px)' }); // Mobile: màn hình <= 768px
     const [newProducts, setNewProducts] = useState([]);
     const [saleOffProducts, setSaleOffProducts] = useState([]);
-
+    const [banners, setBanner] = useState([]);
+    useEffect(() => {
+        let apiUrl = `${BASE_URL}collection/123e4567-e89b-12d3-a456-426614174000`;
+        setLoading(true);
+        axiosInstance
+            .get(apiUrl, {
+                headers: {
+                    'ngrok-skip-browser-warning': 'true',
+                },
+            })
+            .then((response) => {
+                const dataColletion = response.data.data;
+                setAllCollections(dataColletion);
+            })
+            .catch((error) => {
+                if (error.response && error.response.status === 400) {
+                    setAllCollections([]); // Lỗi 400, coi như không có sản phẩm
+                    setLoading(true);
+                } else {
+                    console.error('Error fetching data:', error);
+                }
+            })
+            .finally(() => {
+                setLoading(false); // Kết thúc loading
+            });
+    }, []);
+    useEffect(() => {
+        let apiUrl = `${BASE_URL}slideshows?content=banner`;
+        setLoading(true);
+        axiosInstance
+            .get(apiUrl, {
+                headers: {
+                    'ngrok-skip-browser-warning': 'true',
+                },
+            })
+            .then((response) => {
+                const dataColletion = response.data.data;
+                setBanner(dataColletion);
+            })
+            .catch((error) => {
+                if (error.response && error.response.status === 400) {
+                    setBanner([]);
+                    setLoading(true);
+                } else {
+                    console.error('Error fetching data:', error);
+                }
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }, []);
     // Cấu hình slider
     const sliderSettings = {
         infinite: true,
@@ -67,6 +123,7 @@ const HomePage = () => {
             <div className="container">
                 {/* New Products Section */}
                 <div className="row row-title">
+                    <Banner banners={banners} loading={loading} />
                     <div className="section-title text-center">
                         <h3 className="titlex">New Products</h3>
                     </div>

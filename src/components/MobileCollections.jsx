@@ -19,7 +19,7 @@ const MobileCollections = ({ collections }) => {
           </div>
           <div className="col-12 d-block d-md-none">
             <div className="row">
-              {collections?.products.map((product) => (
+              {collections.products?.length > 0 ? collections?.products.map((product) => (
                 <div key={product.productId} className="col-6 mb-3">
                   <Product
                     id={product.productId}
@@ -33,7 +33,7 @@ const MobileCollections = ({ collections }) => {
                     supplier={product.productSupplier.productSupplierName}
                   />
                 </div>
-              ))}
+              )) : null}
             </div>
           </div>
         </div>

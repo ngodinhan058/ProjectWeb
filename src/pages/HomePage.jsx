@@ -183,8 +183,10 @@ const HomePage = () => {
                 setLoading(false); // Kết thúc loading
             });
     }, []);
-    const handleClick = () => {
-        navigate(`/product-list/`);
+    const handleClick = (id) => {
+
+        const data = { supplierIds: [id] }; // Dữ liệu cần truyền
+        navigate('/product-list', { state: data }); // Truyền dữ liệu qua state
     };
 
     return (
@@ -196,7 +198,7 @@ const HomePage = () => {
                         <Banner banners={banners} loading={loading} />
                         {loading ? <Skeleton height={150} /> : (<Slider {...settings}>
                             {suppliers.map((supplier) => (
-                                <div key={supplier.productSupplierSd} onClick={handleClick}>
+                                <div key={supplier.productSupplierSd} onClick={() => handleClick(supplier.productSupplierSd)}>
                                     <img
                                         src={supplier.productSupplierLogo}
                                         alt={supplier.productSupplierName}

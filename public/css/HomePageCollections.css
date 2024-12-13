@@ -53,17 +53,19 @@
 
 .logo-container {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap; /* Đảm bảo các logo xuống dòng khi hết chiều rộng */
+  overflow-x: auto; /* Kích hoạt cuộn ngang */
+  white-space: nowrap; /* Ngăn các logo xuống dòng */
   gap: 20px; /* Khoảng cách giữa các logo */
   margin: 20px 0; /* Khoảng cách trên dưới */
+  scroll-behavior: smooth; /* Cuộn mượt */
+  justify-content: center;
+  align-items: center;
 }
-
 .logo-item {
   width: 100px; /* Định nghĩa kích thước cố định cho logo */
   height: 100px;
   display: flex;
+  flex: 0 0 auto; /* Đảm bảo mỗi logo giữ kích thước riêng */
   justify-content: center;
   align-items: center;
   background-color: #fff; /* Nền trắng */

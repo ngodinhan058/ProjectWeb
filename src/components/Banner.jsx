@@ -51,5 +51,4 @@ const BannerCarousel = ({ banners, loading }) => {
     </div>
   );
 };
-
 export default BannerCarousel;

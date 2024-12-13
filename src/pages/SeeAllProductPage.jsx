@@ -7,7 +7,7 @@ import PriceFilter from '../components/PriceFilter';
 import CategoryFilter from '../components/CategoryFilter';
 import SizeFilter from '../components/SizeFilter';
 import { useMediaQuery } from 'react-responsive';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams, useLocation } from 'react-router-dom';
 import { BASE_URL } from '../components/api/config';
 import { axiosInstance } from '../components/api/axiosConfig';
 
@@ -25,9 +25,13 @@ const Store = () => {
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(2000000);
 
-  const { categoryIdFromLink } = useParams(); // Lấy categoryId từ URL
-  const [selectedBrands, setSelectedBrands] = useState([]);
+  const location = useLocation();
+  const supplierId = location.state?.supplierIds || []; // Lấy dữ liệu từ state  
+  // const supplierId = searchParams.get('supplierIds');
+  const { categoryIdFromLink } = useParams();
+  const [selectedBrands, setSelectedBrands] = useState(supplierId || []);
   const [selectedSizes, setSelectedSizes] = useState([]);
+
 
   useEffect(() => {
     let apiUrl = `${BASE_URL}products/filters?`;
@@ -43,8 +47,8 @@ const Store = () => {
       queryParams.push(`minPrice=${minPrice}`);
     if (maxPrice !== null && maxPrice !== undefined)
       queryParams.push(`maxPrice=${maxPrice}`);
-    if (selectedBrands.length !== 0) {
-      queryParams.push(`supplierIds=${selectedBrands.concat(',')}`);
+    if (supplierId || selectedBrands.length !== 0) {
+      queryParams.push(`supplierIds=${selectedBrands}`);
     }
     if (selectedSizes.length !== 0) {
       queryParams.push(`sizeIds=${selectedSizes.concat(',')}`);
@@ -58,7 +62,7 @@ const Store = () => {
 
     apiUrl += queryParams.join('&');
     console.log(apiUrl);
-    
+
     setIsLoading(true);
     axiosInstance
       .get(apiUrl, {
@@ -100,7 +104,6 @@ const Store = () => {
     selectedBrands,
     selectedSizes,
   ]);
-
   // Chuyển trang
   const handlePageChange = (pageNumber) => {
     if (pageNumber >= 0 && pageNumber < totalPages) {
@@ -109,7 +112,7 @@ const Store = () => {
     }
   };
   const handlePricePageChange = (pageNumber) => {
-      setCurrentPage(pageNumber);
+    setCurrentPage(pageNumber);
   };
   const handleSelectChange = (event) => {
     const value = event.target.value.split('|');

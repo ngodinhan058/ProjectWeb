@@ -6,13 +6,6 @@ import { BASE_URL } from './api/config';
 import { axiosInstance } from './api/axiosConfig';
 
 const BrandFilter = ({ isLoading, selectedBrands, onSelectBrands }) => {
-  // const brands = [
-  //   { id: 'brand-1', name: 'Adidas', count: 578 },
-  //   { id: 'brand-2', name: 'Coros', count: 125 },
-  //   { id: 'brand-3', name: 'Black Diamon', count: 755 },
-  //   { id: 'brand-4', name: 'KOO', count: 578 },
-  // ];
-
   const { categoryIdFromLink } = useParams(); // Lấy categoryId từ URL
   const [brands, setBrands] = useState([]);
 
@@ -23,9 +16,6 @@ const BrandFilter = ({ isLoading, selectedBrands, onSelectBrands }) => {
   };
 
   useEffect(() => {
-    //**
-    //@GetMapping(value = {"/product-suppliers/category/{categoryId}", "/product-sizes/category/{categoryId}/"})
-
     let apiUrl = '';
     if (categoryIdFromLink === undefined) {
       apiUrl = `${BASE_URL}product-suppliers/category`;
@@ -61,7 +51,7 @@ const BrandFilter = ({ isLoading, selectedBrands, onSelectBrands }) => {
           isLoading ? (
             // Add key to Skeleton component
             <Skeleton
-              key={brand.id}
+              key={brand['productSupplierSd']}
               height={28}
               // style={{ marginTop: '10px' }}
             />

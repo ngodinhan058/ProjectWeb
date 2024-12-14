@@ -178,11 +178,32 @@ const HomePage = () => {
                 setLoading(false); // Kết thúc loading
             });
     }, []);
+    const [dragging, setDragging] = useState(false);
+    const [startX, setStartX] = useState(0);
+
+    const handleMouseDown = (e) => {
+        setDragging(false);
+        setStartX(e.clientX); // Lưu vị trí bắt đầu
+    };
+
+    const handleMouseMove = (e) => {
+        if (Math.abs(e.clientX - startX) > 5) {
+            setDragging(true); // Nếu khoảng cách kéo lớn hơn 5px => coi như đang kéo
+        }
+    };
+
+    const handleMouseUp = (supplierId) => {
+        if (!dragging) {
+            handleClick(supplierId); // Chỉ gọi handleClick nếu không kéo
+        }
+    };
     const handleClick = (id) => {
 
         const data = { supplierIds: [id] }; // Dữ liệu cần truyền
         navigate('/product-list', { state: data }); // Truyền dữ liệu qua state
     };
+
+
 
     return (
         <>
@@ -193,7 +214,11 @@ const HomePage = () => {
                         <Banner banners={banners} loading={loading} />
                         {loading ? <Skeleton height={150} /> : (<Slider {...settings}>
                             {suppliers.map((supplier) => (
-                                <div key={supplier.productSupplierSd} onClick={() => handleClick(supplier.productSupplierSd)}>
+                                <div 
+                                key={supplier.productSupplierSd}
+                                onMouseDown={handleMouseDown}
+                                onMouseMove={handleMouseMove} 
+                                onClick={() => handleMouseUp(supplier.productSupplierSd)}>
                                     <img
                                         src={supplier.productSupplierLogo}
                                         alt={supplier.productSupplierName}

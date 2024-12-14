@@ -352,7 +352,6 @@ const Header = () => {
         <nav
           id="mobile-nav"
           className={`mobile-menu ${isMenuOpen ? 'mobile-menu-active' : ''}`}
-          x
         >
           <ul className="mobile-main-nav" ref={menuRef}>
             <li className="mobile-menu-item">

@@ -21,24 +21,26 @@
 
 /* --- */
 .policy-bar {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between; /* Dàn đều các phần tử */
-  align-items: center; /* Căn giữa theo chiều dọc */
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
+  flex-wrap: nowrap; 
   padding: 16px 0;
+  gap: 20px; 
 }
 
 .policy-item {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  text-align: left;
-  flex: 1; /* Chia đều diện tích */
-  padding: 8px 16px;
+  justify-content: center; 
+  flex: 1; 
+  min-width: 0; 
+  text-align: center;
   box-sizing: border-box;
   font-size: 16px;
   font-weight: 500;
   color: #333;
+  padding: 8px;
 }
 
 .policy-item i {

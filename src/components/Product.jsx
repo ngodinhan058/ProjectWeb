@@ -32,7 +32,7 @@ const Product = ({
   const [isHovered, setIsHovered] = useState(false);
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
   const truncateName = (text) => {
-    return text.length > 13 ? text.substring(0, 13) + '...' : text;
+    return text.length > 10 ? text.substring(0, 10) + '...' : text;
 };
   const handleClick = () => {
     navigate(`/product-detail/${id}`, {
@@ -61,11 +61,11 @@ const Product = ({
           <img
             src={
               isHovered
-                ? `../${image[0]?.[1]?.['productImagePath'] ||
+                ? `${image[0]?.[1]?.['productImagePath'] ||
                 image[0]?.[0]?.['productImagePath'] ||
                 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/langvi-300px-No_image_available.svg.png'
                 }`
-                : `../${image[0]?.[0]?.['productImagePath'] ||
+                : `${image[0]?.[0]?.['productImagePath'] ||
                 image[0]?.[1]?.['productImagePath'] ||
                 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/langvi-300px-No_image_available.svg.png'
                 }`

@@ -112,7 +112,7 @@ const ProductDetail = () => {
 
   useEffect(() => {
     if (productsState && productsState.productImages && productsState.productImages.length > 0) {
-      setSelectedImage(`../${productsState.productImages[0]?.productImagePath}`);
+      setSelectedImage(`${productsState.productImages[0]?.productImagePath}`);
     } else {
       setSelectedImage(
         'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/langvi-300px-No_image_available.svg.png'
@@ -120,7 +120,7 @@ const ProductDetail = () => {
     }
   }, [productsState, id]);
   const handleImageClick = (imgSrc, index) => {
-    setSelectedImage(`../${imgSrc}`);
+    setSelectedImage(`${imgSrc}`);
   };
   const renderRating = () => {
     const stars = [];
@@ -440,7 +440,7 @@ const ProductDetail = () => {
                         onClick={() => handleImageClick(image.productImagePath)}
                       >
                         <img
-                          src={`../${image.productImagePath}`}
+                          src={`${image.productImagePath}`}
                           alt={`Product ${index + 1}`}
                         />
                       </div>

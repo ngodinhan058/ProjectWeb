@@ -1,22 +1,29 @@
-# Base image
-FROM node:16 AS build
+# Sử dụng Node.js image chính thức để build ứng dụng
+FROM node:20 AS builder
 
-# Set working directory
-WORKDIR /usr/src/app
+# Đặt thư mục làm việc
+WORKDIR /app
 
-# Copy package.json và cài đặt dependencies
-COPY package.json ./
+# Sao chép file package.json và package-lock.json vào container
+COPY package*.json ./
+
+# Cài đặt dependencies
 RUN npm install
 
-# Copy mã nguồn và build dự án
+# Sao chép toàn bộ mã nguồn vào container
 COPY . .
+
+# Build ứng dụng React
 RUN npm run build
 
-# Sử dụng image NGINX để phục vụ nội dung static
-FROM nginx:alpine
-COPY --from=build /usr/src/app/build /usr/share/nginx/html
+# Sử dụng Nginx để phục vụ ứng dụng React
+FROM nginx:1.21
 
-# Expose port và start NGINX
+# Sao chép file build của React từ bước trước vào Nginx
+COPY --from=builder /app/build /usr/share/nginx/html
+
+# Expose port 80
 EXPOSE 80
+
+# Chạy Nginx
 CMD ["nginx", "-g", "daemon off;"]
-    

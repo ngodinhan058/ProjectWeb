@@ -2,6 +2,6 @@ version: '3.8'
 services:
   frontend:
     build:
-      context: ./frontend
+      context: .
     ports:
       - "3000:80"

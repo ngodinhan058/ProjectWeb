@@ -183,7 +183,7 @@ const Header = () => {
               {!isMobile && (
                 <div className="col-3 d-flex justify-content-start align-items-center">
                   <div className="header-logo">
-                    <a href="http://localhost:3000/" className="logo">
+                    <a href="/" className="logo">
                       <img src="../img/logo.png" alt="Logo" />
                     </a>
                   </div>

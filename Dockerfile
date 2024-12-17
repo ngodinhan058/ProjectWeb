@@ -22,6 +22,9 @@ FROM nginx:1.21
 # Sao chép file build của React từ bước trước vào Nginx
 COPY --from=builder /app/build /usr/share/nginx/html
 
+# Sao chép file cấu hình Nginx tùy chỉnh từ thư mục /nginx
+COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
+
 # Expose port 80
 EXPOSE 80
 

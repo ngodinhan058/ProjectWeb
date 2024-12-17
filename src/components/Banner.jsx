@@ -1,22 +1,45 @@
-import React from "react";
+import React, { useEffect, useState, useRef } from 'react';
 import Slider from "react-slick";
 import { Link } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { useNavigate } from 'react-router-dom';
 
 const BannerCarousel = ({ banners, loading }) => {
-  // Cấu hình cho react-slick
+  const navigate = useNavigate();
   const settings = {
-    dots: true, // Hiển thị các chấm indicator
-    infinite: true, // Vòng lặp carousel
-    speed: 500, // Thời gian chuyển đổi
-    slidesToShow: 1, // Số slide hiển thị
-    slidesToScroll: 1, // Số slide scroll mỗi lần
-    autoplay: true, // Tự động chuyển
-    autoplaySpeed: 10000, // Thời gian mỗi slide (10 giây)
-    pauseOnHover: true, // Dừng khi hover
-    arrows: false, // Ẩn nút mũi tên
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 10000,
+    pauseOnHover: true,
+    arrows: false,
+  };
+  const [dragging, setDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+
+  const handleMouseDown = (e) => {
+    setDragging(false);
+    setStartX(e.clientX); // Lưu vị trí bắt đầu
+  };
+
+  const handleMouseMove = (e) => {
+    if (Math.abs(e.clientX - startX) > 5) {
+      setDragging(true); // Nếu khoảng cách kéo lớn hơn 5px => coi như đang kéo
+    }
+  };
+
+  const handleMouseUp = (supplierId) => {
+    if (!dragging) {
+      handleClick(supplierId); // Chỉ gọi handleClick nếu không kéo
+    }
+  };
+  const handleClick = (url) => {
+    navigate(`/product-list/${url}`); // Truyền dữ liệu qua state
   };
 
   if (loading) {
@@ -29,26 +52,25 @@ const BannerCarousel = ({ banners, loading }) => {
       "https://placehold.co/1200x400"
     );
     return (
-        <Slider {...settings}>
-          {placeholderImages.map((url, index) => (
-            <div
-              key={index}
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: "#f5f5f5",
-                
-              }}
-            >
-              <img
-                src={url}
-                alt={`Placeholder ${index + 1}`}
-                style={{ maxWidth: "100%", height: 390, objectFit: "contain" }}
-              />
-            </div>
-          ))}
-        </Slider>
+      <Slider {...settings}>
+        {placeholderImages.map((url, index) => (
+          <div
+            key={index}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "#f5f5f5",
+            }}
+          >
+            <img
+              src={url}
+              alt={`Placeholder ${index + 1}`}
+              style={{ maxWidth: "100%", height: 390, objectFit: "contain", }}
+            />
+          </div>
+        ))}
+      </Slider>
     );
   }
 
@@ -64,18 +86,21 @@ const BannerCarousel = ({ banners, loading }) => {
               alignItems: "center",
               backgroundColor: "#f5f5f5",
             }}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onClick={() => handleMouseUp(banner.imageUrl)}
           >
-            <Link to={`/product-list/${banner.imageUrl}`}>
-              <img
-                src={banner.imagePath}
-                alt={`Banner ${index + 1}`}
-                style={{
-                  maxWidth: "100%",
-                  height: 390,
-                  objectFit: "contain",
-                }}
-              />
-            </Link>
+            <img
+              src={banner.imagePath}
+              alt={`Banner ${index + 1}`}
+              style={{
+                maxWidth: "100%",
+                height: 390,
+                objectFit: "contain",
+                cursor: 'pointer'
+
+              }}
+            />
           </div>
         ))}
       </Slider>

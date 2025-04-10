@@ -41,7 +41,7 @@ const ProductTabs = ({ image, id }) => {
 
 ### Description
 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliq.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-![Product Image](../${productsImage[0]?.["productImagePath"]}) 
+![Product Image](${productsImage[0]?.["productImagePath"]}) 
 
 
 ### Kết Thúc Mô Tả
@@ -51,7 +51,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
     return markdown
     .replace(/!\[(.*?)\]\((.*?)\)/g, (index , altText, imgPath) => {
       // Chuyển đổi cú pháp ảnh Markdown thành thẻ HTML <img>
-      return `<img alt="${altText}" src="../${productsImage[imgPath]?.["productImagePath"]}" style="width:300px; height:250px; display:inline-block;" />`;
+      return `<img alt="${altText}" src="${productsImage[imgPath]?.["productImagePath"]}" style="width:300px; height:250px; display:inline-block;" />`;
     })
       .replace(/#### (.*?)\n/g, '<h4>$1</h4>') // Chuyển đổi #### thành <h4>
       .replace(/### (.*?)\n/g, '<h3>$1</h3>')  // Chuyển đổi ### thành <h3>

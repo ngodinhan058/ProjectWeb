@@ -26,7 +26,7 @@ const HomePage = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        let apiUrl = `${BASE_URL}collection/123e4567-e89b-12d3-a456-426614174000`;
+        let apiUrl = `${BASE_URL}collections`;
         setLoading(true);
         axiosInstance
             .get(apiUrl, {
@@ -76,7 +76,7 @@ const HomePage = () => {
             });
     }, []);
     useEffect(() => {
-        let apiUrl = `${BASE_URL}products/filters?direction=desc&sort=productSale`;
+        let apiUrl = `${BASE_URL}newsale?status=1`;
         setLoading(true);
         axiosInstance
             .get(apiUrl, {
@@ -85,7 +85,7 @@ const HomePage = () => {
                 },
             })
             .then((response) => {
-                const dataColletion = response.data.data.content;
+                const dataColletion = response.data.data.products;
                 setSaleOffProducts(dataColletion);
             })
             .catch((error) => {
@@ -101,7 +101,7 @@ const HomePage = () => {
             });
     }, []);
     useEffect(() => {
-        let apiUrl = `${BASE_URL}products/new/created`;
+        let apiUrl = `${BASE_URL}newsale?status=0`;
         setLoading(true);
         axiosInstance
             .get(apiUrl, {
@@ -110,7 +110,7 @@ const HomePage = () => {
                 },
             })
             .then((response) => {
-                const dataColletion = response.data.data;
+                const dataColletion = response.data.data.products;
                 setNewProducts(dataColletion);
             })
             .catch((error) => {
@@ -211,14 +211,16 @@ const HomePage = () => {
                 <div className="container">
                     {/* New Products Section */}
                     <div className="row row-title">
-                        <Banner banners={banners} loading={loading} />
+                        <div style={{ marginBottom: 50, }}>
+                            <Banner banners={banners} loading={loading} />
+                        </div>
                         {loading ? <Skeleton height={150} /> : (<Slider {...settings}>
                             {suppliers.map((supplier) => (
-                                <div 
-                                key={supplier.productSupplierSd}
-                                onMouseDown={handleMouseDown}
-                                onMouseMove={handleMouseMove} 
-                                onClick={() => handleMouseUp(supplier.productSupplierSd)}>
+                                <div
+                                    key={supplier.productSupplierSd}
+                                    onMouseDown={handleMouseDown}
+                                    onMouseMove={handleMouseMove}
+                                    onClick={() => handleMouseUp(supplier.productSupplierSd)}>
                                     <img
                                         src={supplier.productSupplierLogo}
                                         alt={supplier.productSupplierName}
@@ -390,12 +392,8 @@ const HomePage = () => {
                             </div>
                         )}
                     </div>
-                    <div className="row">
-                        <div className="col-md-12">
-                            <div className="section-title">
-                                <h3 className="title" style={{ textAlign: 'center' }}>Collections</h3>
-                            </div>
-                        </div>
+                    <div className="row row-title">
+                        
                         {loading ? (
                             <Skeleton count={3} height={200} />
                         ) : isDesktop ? (
@@ -405,19 +403,22 @@ const HomePage = () => {
                         )}
                     </div>
                     {/* Policy Bar */}
-                    <div className="row policy-bar">
-                        <div className="col-md-4 policy-item">
-                            <i className="bi bi-truck"></i>
-                            MIỄN PHÍ VẬN CHUYỂN (BILL lớn 1M)
-                        </div>
-                        <div className="col-md-4 policy-item">
-                            <i className="bi bi-arrow-repeat"></i>
-                            ĐỔI TRẢ TRONG VÒNG 7 NGÀY
-                        </div>
-                        <div className="col-md-4 policy-item">
-                            <i className="bi bi-shop"></i>
-                            SẢN PHẨM TRẢI NGHIỆM SẴN TẠI STORE
-                        </div>
+
+                </div>
+            </div>
+            <div className="container align-item-center">
+                <div className="row policy-bar">
+                    <div className="col-md-4 policy-item">
+                        <i className="bi bi-truck"></i>
+                        MIỄN PHÍ VẬN CHUYỂN (BILL lớn 1M)
+                    </div>
+                    <div className="col-md-4 policy-item">
+                        <i className="bi bi-arrow-repeat"></i>
+                        ĐỔI TRẢ TRONG VÒNG 7 NGÀY
+                    </div>
+                    <div className="col-md-4 policy-item">
+                        <i className="bi bi-shop"></i>
+                        SẢN PHẨM TRẢI NGHIỆM SẴN TẠI STORE
                     </div>
                 </div>
             </div>
